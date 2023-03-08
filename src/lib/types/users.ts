@@ -12,5 +12,7 @@ export interface Clazz {
 
 export interface User {
 	id: number
+	name: string
 	clazz: Clazz
+	type: 'student' | 'teacher' | 'organizer' | 'admin'
 }

@@ -1,10 +1,12 @@
 <script lang="ts">
-	import Topbar from '$lib/components/topbar/Topbar.svelte'
+	import Header from '$lib/components/header/Header.svelte'
+	import { darkTheme } from '$lib/prefs'
 	import '../tailwind.css'
+	import '../global.css'
 </script>
 
-<div class="app flex flex-col">
-	<Topbar />
+<div class="app flex flex-col" class:dark={$darkTheme}>
+	<Header />
 	<main>
 		<slot />
 	</main>
