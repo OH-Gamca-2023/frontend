@@ -3,22 +3,22 @@
 	import { darkTheme } from '$lib/prefs'
 	import '../tailwind.css'
 	import '../global.css'
+	import Background from '$lib/components/Background.svelte'
+	import Footer from '$lib/components/footer/Footer.svelte'
+	import Lipsum from '$lib/components/Lipsum.svelte'
 </script>
 
-<div class="app flex flex-col" class:dark={$darkTheme}>
+<main class="app flex flex-col" class:dark={$darkTheme}>
 	<Header />
-	<main>
+	<Background>
 		<slot />
-	</main>
-</div>
+	</Background>
+	<Footer />
+</main>
 
 <style lang="scss">
 	.app {
 		min-height: 100vh;
 		min-width: 100vw;
-
-		& > main {
-			flex: 1;
-		}
 	}
 </style>

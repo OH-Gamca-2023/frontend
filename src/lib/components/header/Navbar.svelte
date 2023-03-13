@@ -14,7 +14,7 @@
         dark:from-gray-800 dark:to-gray-900
         border-b border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200 pl-4 pr-4
-        shadow-md sticky"
+        shadow-md sticky top-0"
 >
 	<div id="left" class="flex flex-row items-center justify-start">
 		<div id="home" transition:fade>

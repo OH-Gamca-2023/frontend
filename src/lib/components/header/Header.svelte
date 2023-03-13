@@ -3,7 +3,5 @@
 	import Navbar from './Navbar.svelte'
 </script>
 
-<div class="h-auto flex flex-col min-w-full">
-	<Topbar />
-	<Navbar />
-</div>
+<Topbar />
+<Navbar />
