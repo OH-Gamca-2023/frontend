@@ -13,6 +13,9 @@ module.exports = {
       maxWidth: {
         '1/2': '50%',
         '1/3': '33.333333%',
+      },
+      screens: {
+        'lmd': '860px'
       }
     }
   },

@@ -10,13 +10,13 @@
     })
 </script>
 
-<div class="flex flex-row w-full h-full space-x-10 justify-around flex-1">
+<div class="flex flex-row w-full h-full space-x-10 flex-1 justify-center">
     {#each columns as column}
-        <div class="flex flex-col justify-around">
+        <div class="flex flex-col justify-around space-y-5">
             {#each column as sponsor}
                 <div class="flex justify-center items-center">
                     <a href={sponsor.url} target="_blank" rel="noopener noreferrer">
-                        <img src="/assets/sponsors/{sponsor.logo}" alt={sponsor.name} />
+                        <img src="/assets/sponsors/{sponsor.logo}" alt={sponsor.name} class="max-h-14" />
                     </a>
                 </div>
             {/each}
