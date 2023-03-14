@@ -14,7 +14,7 @@
 
 {#if $state.loading}
     <div id="user-menu" class="flex flex-row items-center justify-center">
-        <Spinner />
+        <Spinner class="h-12 w-12 p-2" />
     </div>
 {:else if $state.loggedIn}
     <div id="user-menu" class="flex flex-row items-center justify-center">
@@ -27,12 +27,12 @@
                 {userRoleDict[$state.user?.type ?? 'unknown'][0]}
             </div>
         </div>
-        <a id="logout" href="/logout" class="flex flex-row items-center justify-center" data-tooltip="Odhlásiť sa">
+        <a id="logout" href="/auth/logout" class="flex flex-row items-center justify-center" data-tooltip="Odhlásiť sa">
             <Icon icon="carbon:logout" class="h-6 w-6 ml-2" />
         </a>
     </div>
 {:else}
-    <a id="login" href="/login" class="flex flex-row items-center justify-center cursor-pointer">
+    <a id="login" href="/auth/login" class="flex flex-row items-center justify-center cursor-pointer">
         <Icon icon="carbon:login" class="h-6 w-6 mr-2" />
         Prihlásiť sa
     </a>

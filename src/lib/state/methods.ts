@@ -1,3 +1,4 @@
+import { browser } from '$app/environment'
 import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
 
@@ -7,9 +8,11 @@ class InternalUserState implements Readable<UserState> {
 	private currentState: UserState = {
 		user: null,
 		loggedIn: false,
+		loading: true,
 	}
 
 	get accessToken(): string | undefined {
+		if(!browser) return undefined
 		return document.cookie
 			.split(';')
 			.find((cookie) => cookie.startsWith('token='))
@@ -17,6 +20,7 @@ class InternalUserState implements Readable<UserState> {
 	}
 
 	set accessToken(token: string | undefined) {
+		if(!browser) return
 		let expires
 		if (token === undefined) {
 			expires = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
@@ -35,6 +39,19 @@ class InternalUserState implements Readable<UserState> {
 	set state(newState: UserState) {
 		this.currentState = newState
 		this.subscribers.forEach((subscriber) => subscriber(newState))
+	}
+
+	constructor() {
+		const token = this.accessToken
+		if (token) {
+			// TODO: fetch user data
+		} else {
+			this.state = {
+				user: null,
+				loggedIn: false,
+				loading: false,
+			}
+		}
 	}
 }
 
