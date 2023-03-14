@@ -1,6 +1,11 @@
-import type { Clazz, Category } from './users'
+import type { Clazz, Grade } from './users'
 
 export interface Tag {
+	id: number
+	name: string
+}
+
+export interface Category {
 	id: number
 	name: string
 }
@@ -15,7 +20,8 @@ export interface Discipline {
 	time: string
 	location: string
 
-	target_categories: Category[]
+	grades: Grade[]
+	category: Category
 
 	date_published: boolean
 	description_published: boolean

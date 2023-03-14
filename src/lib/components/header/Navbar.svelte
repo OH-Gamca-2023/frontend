@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { get, darkTheme } from '$lib/prefs'
+	import { categories } from '$lib/state'
 	import Icon from '@iconify/svelte'
 	import { fade, slide } from 'svelte/transition'
+	import Spinner from '../Spinner.svelte'
 	import Hamburger from './Hamburger.svelte'
 	import UserMenu from './UserMenu.svelte'
 
@@ -40,7 +42,7 @@
 					<span>Novinky</span>
 				</a>
 				<div
-					class="flex flex-row space-x-1"
+					class="flex flex-row space-x-1 cursor-pointer"
 					on:click={() => (categoriesOpen = !categoriesOpen)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
@@ -134,14 +136,15 @@
 				dark:from-gray-800 dark:to-slate-800
 				text-gray-800 dark:text-gray-200
 				shadow-md sticky top-0 flex flex-col justify-start items-start
-				[&>*]:w-full"
+				[&>*]:w-full [&>*]:py-4 [&>*]:px-4 divide-y
+				divide-gray-300 dark:divide-gray-700"
 			transition:slide
 		>
-			<div class="flex flex-row justify-between px-4 py-1">
+			<div class="flex flex-row justify-between">
 				<a
 					id="home"
 					href="/"
-					class="flex flex-row items-center justify-start p-2"
+					class="flex flex-row items-center justify-start px-2 -py-1"
 					on:click={() => (sidebarOpen = !sidebarOpen)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
@@ -170,6 +173,110 @@
 					{/if}
 				</div>
 			</div>
+			<a
+				href="/news"
+				class="flex flex-row space-x-1"
+				on:click={() => (sidebarOpen = !sidebarOpen)}
+				on:keypress={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						sidebarOpen = !sidebarOpen
+					}
+				}}
+			>
+				<Icon icon="tabler:news" class="h-6 w-6" />
+				<span>Novinky</span>
+			</a>
+			<div class="flex flex-col space-y-1">
+				<div
+					class="flex flex-row space-x-1 cursor-pointer"
+					on:click={() => (categoriesOpen = !categoriesOpen)}
+					on:keypress={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							categoriesOpen = !categoriesOpen
+						}
+					}}
+				>
+					<Icon
+						icon="tabler:chevron-right"
+						class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
+							? 'rotate-90'
+							: ''}"
+					/>
+					<Icon icon="bxs:category-alt" class="h-6 w-6" />
+					<span>Kategórie</span>
+				</div>
+				{#if categoriesOpen}
+					<div class="flex flex-col space-y-2" transition:slide>
+						{#await categories.loaded}
+							<div class="flex flex-row space-x-1 pl-8 pt-2">
+								<Spinner class="h-6 w-6" />
+								<span>Načítavam...</span>
+							</div>
+						{:then}
+							<div
+								class="pt-2 px-8 divide-y
+								divide-gray-300 dark:divide-gray-700"
+								transition:slide
+							>
+								{#each $categories as category}
+									<a
+										href={`/category/${category.id}`}
+										class="flex flex-row p-1 pr-0"
+										on:click={() => (sidebarOpen = !sidebarOpen)}
+										on:keypress={(e) => {
+											if (e.key === 'Enter' || e.key === ' ') {
+												sidebarOpen = !sidebarOpen
+											}
+										}}
+										transition:fade
+									>
+										<span>{category.name}</span>
+									</a>
+								{/each}
+							</div>
+						{/await}
+					</div>
+				{/if}
+			</div>
+			<a
+				href="/results"
+				class="flex flex-row space-x-1"
+				on:click={() => (sidebarOpen = !sidebarOpen)}
+				on:keypress={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						sidebarOpen = !sidebarOpen
+					}
+				}}
+			>
+				<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
+				<span>Výsledky</span>
+			</a>
+			<a
+				href="/calendar"
+				class="flex flex-row space-x-1"
+				on:click={() => (sidebarOpen = !sidebarOpen)}
+				on:keypress={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						sidebarOpen = !sidebarOpen
+					}
+				}}
+			>
+				<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
+				<span>Kalendár</span>
+			</a>
+			<a
+				href="/gallery"
+				class="flex flex-row space-x-1"
+				on:click={() => (sidebarOpen = !sidebarOpen)}
+				on:keypress={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						sidebarOpen = !sidebarOpen
+					}
+				}}
+			>
+				<Icon icon="tabler:photo" class="h-6 w-6" />
+				<span>Galéria</span>
+			</a>
 		</div>
 	{/if}
 </div>

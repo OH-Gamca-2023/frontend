@@ -1,5 +1,5 @@
 import type { Discipline, Tag } from './disciplines'
-import type { Category, User } from './users'
+import type { Grade, User } from './users'
 
 export interface Post {
 	id: number
@@ -9,7 +9,7 @@ export interface Post {
 	date: number // Unix timestamp
 
 	related_disciplines: Discipline[]
-	affected_categories: Category[]
+	affected_categories: Grade[]
 	tags: Tag[]
 
 	disable_comments: boolean

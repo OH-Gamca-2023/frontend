@@ -1,4 +1,4 @@
-export interface Category {
+export interface Grade {
 	id: number
 	name: string
 }
@@ -6,7 +6,7 @@ export interface Category {
 export interface Clazz {
 	id: number
 	name: string
-	category: Category
+	grade: Grade
 	is_fake: boolean
 }
 

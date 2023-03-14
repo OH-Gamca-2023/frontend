@@ -1,2 +1,5 @@
 export type { UserState } from './types'
-export { userState as state } from './methods'
+
+export { userState } from './methods'
+
+export { categories } from './posts'
