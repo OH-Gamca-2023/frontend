@@ -1,29 +1,35 @@
-import type { Clazz, Category } from "./users";
+import type { Clazz, Grade } from './users'
 
 export interface Tag {
-    id: number;
-    name: string;
+	id: number
+	name: string
+}
+
+export interface Category {
+	id: number
+	name: string
 }
 
 export interface Discipline {
-    id: number;
-    name: string;
-    description: string;
-    tags: Tag[];
+	id: number
+	name: string
+	description: string
+	tags: Tag[]
 
-    date: string;
-    time: string;
-    location: string;
+	date: string
+	time: string
+	location: string
 
-    target_categories: Category[];
+	grades: Grade[]
+	category: Category
 
-    date_published: boolean;
-    description_published: boolean;
+	date_published: boolean
+	description_published: boolean
 }
 
 export interface Results {
-    id: number;
-    discipline: Discipline;
-    
-    placements: {clazz: Clazz, place: number}[];
+	id: number
+	discipline: Discipline
+
+	placements: { clazz: Clazz; place: number }[]
 }

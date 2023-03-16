@@ -1,8 +1,9 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import type { UserConfig } from 'vite';
+import { sveltekit } from '@sveltejs/kit/vite'
+import type { UserConfig } from 'vite'
+import { isoImport } from 'vite-plugin-iso-import'
 
 const config: UserConfig = {
-	plugins: [sveltekit()]
-};
+	plugins: [sveltekit(), isoImport()],
+}
 
-export default config;
+export default config
