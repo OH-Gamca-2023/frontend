@@ -37,12 +37,15 @@
 				id="links"
 				class="flex flex-row justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-gray-300 dark:divide-gray-700 divide-x"
 			>
-				<a href="/news" class="flex flex-row space-x-1">
+				<a
+					href="/news"
+					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
+				>
 					<Icon icon="tabler:news" class="h-6 w-6" />
 					<span>Novinky</span>
 				</a>
 				<div
-					class="flex flex-row space-x-1 cursor-pointer"
+					class="flex flex-row space-x-1 cursor-pointer rounded-md p-1"
 					on:click={() => (categoriesOpen = !categoriesOpen)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
@@ -53,21 +56,30 @@
 					<Icon icon="bxs:category-alt" class="h-6 w-6" />
 					<span>Kategórie</span>
 					<Icon
-						icon="tabler:chevron-down"
+						icon="tabler:chevron-left"
 						class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
-							? 'rotate-90'
+							? '-rotate-90'
 							: ''}"
 					/>
 				</div>
-				<a href="/results" class="flex flex-row space-x-1">
+				<a
+					href="/results"
+					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
+				>
 					<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
 					<span>Výsledky</span>
 				</a>
-				<a href="/calendar" class="flex flex-row space-x-1">
+				<a
+					href="/calendar"
+					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
+				>
 					<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
 					<span>Kalendár</span>
 				</a>
-				<a href="/gallery" class="flex flex-row space-x-1">
+				<a
+					href="/gallery"
+					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
+				>
 					<Icon icon="tabler:photo" class="h-6 w-6" />
 					<span>Galéria</span>
 				</a>
