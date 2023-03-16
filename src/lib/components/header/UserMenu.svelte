@@ -21,7 +21,7 @@
         <Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
         <div id="user-data" class="flex flex-col items-start justify-center mr-2 ml-2">
             <div id="user-name" class="text-sm font-medium">
-                {$userState.user?.name ?? 'Neznámy'}
+                {$userState.user?.username ?? 'Neznámy'}
             </div>
             <div id="user-role" class="text-xs font-light">
                 {userRoleDict[$userState.user?.type ?? 'unknown'][0]}

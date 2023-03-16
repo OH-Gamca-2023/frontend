@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-static": "^2.0.1",
+		"buffer": "^6.0.3",
 		"vite-plugin-iso-import": "^1.0.0"
 	}
 }
