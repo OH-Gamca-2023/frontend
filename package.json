@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-static": "^2.0.1",
+		"@sveltejs/adapter-vercel": "^2.4.0",
 		"vite-plugin-iso-import": "^1.0.0"
 	}
 }
