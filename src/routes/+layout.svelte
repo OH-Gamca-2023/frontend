@@ -5,7 +5,7 @@
 	import '../global.css'
 	import Background from '$lib/components/Background.svelte'
 	import Footer from '$lib/components/footer/Footer.svelte'
-	import Lipsum from '$lib/components/Lipsum.svelte'
+	import { ToastContainer, FlatToast } from 'svelte-toasts'
 </script>
 
 <main class="app flex flex-col" class:dark={$darkTheme}>
@@ -14,11 +14,19 @@
 		<slot />
 	</Background>
 	<Footer />
+
+	<ToastContainer let:data>
+		<FlatToast {data} />
+	</ToastContainer>
 </main>
 
 <style lang="scss">
 	.app {
 		min-height: 100vh;
 		min-width: 100vw;
+
+		&.dark {
+			color: #fff;
+		}
 	}
 </style>

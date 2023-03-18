@@ -1,9 +1,8 @@
 <span class="wrapper {$$props.class}">
-	<span class="loader"></span>
+	<span class="loader" />
 </span>
 
 <style lang="scss">
-
 	.wrapper {
 		display: flex;
 		align-items: center;

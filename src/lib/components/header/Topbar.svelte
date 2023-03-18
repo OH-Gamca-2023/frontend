@@ -36,4 +36,4 @@
 	</div>
 </div>
 
-<div class="h-40" id="spacer"></div>
+<div class="h-40" id="spacer" />

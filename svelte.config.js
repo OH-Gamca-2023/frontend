@@ -1,6 +1,6 @@
-import staticAdapter from '@sveltejs/adapter-static';
-import vercelAdapter from '@sveltejs/adapter-vercel';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import staticAdapter from '@sveltejs/adapter-static'
+import vercelAdapter from '@sveltejs/adapter-vercel'
+import { vitePreprocess } from '@sveltejs/kit/vite'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -17,14 +17,12 @@ export default config;
 
 function getAdapter() {
 	if (process.env.VERCEL) {
-		return vercelAdapter({
-
-		});
+		return vercelAdapter()
 	} else {
 		return staticAdapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: null
-		});
+			fallback: null,
+		})
 	}
 }
