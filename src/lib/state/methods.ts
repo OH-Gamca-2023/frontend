@@ -18,7 +18,7 @@ function rotateAlphabetically(token: string, rotation: number) {
 			rotated += token[i]
 			continue
 		}
-		charCode = ((charCode - base + rotation) % 26 + 26) % 26 + base
+		charCode = ((((charCode - base + rotation) % 26) + 26) % 26) + base
 		rotated += String.fromCharCode(charCode)
 	}
 	return rotated
@@ -28,7 +28,7 @@ function encodeToken(token: string, expiryDate: number) {
 	const rotatedToken = rotateAlphabetically(token, 7)
 	const encryptedToken = Buffer.from(rotatedToken).toString('base64')
 	const encryptedExpiry = Buffer.from(String(expiryDate)).toString('base64')
-	return rotateAlphabetically(encryptedToken + "." + encryptedExpiry, 3)
+	return rotateAlphabetically(encryptedToken + '.' + encryptedExpiry, 3)
 }
 
 function decodeToken(rawToken: string) {
@@ -141,11 +141,11 @@ class InternalUserState implements Readable<UserState> {
 				loggedIn: false,
 				loading: false,
 			}
-			if(response.status === 401) {
+			if (response.status === 401) {
 				this.accessToken = undefined
 			}
 		}
-		if(this.resolveLoaded) {
+		if (this.resolveLoaded) {
 			this.resolveLoaded(this.currentState)
 			this.resolveLoaded = undefined
 		}
@@ -153,15 +153,15 @@ class InternalUserState implements Readable<UserState> {
 
 	async logout() {
 		let error = false
-		if(!this.currentState.loggedIn) return
-		if(this.accessToken) {
+		if (!this.currentState.loggedIn) return
+		if (this.accessToken) {
 			const resp = await makeApiRequest('/auth/invalidate', 'DELETE')
-			if(!resp.ok) {
-				console.error("Failed to invalidate token")
+			if (!resp.ok) {
+				console.error('Failed to invalidate token')
 				error = true
 			}
 		}
-		
+
 		this.accessToken = undefined
 		this.state = {
 			user: null,
@@ -169,7 +169,7 @@ class InternalUserState implements Readable<UserState> {
 			loading: false,
 		}
 		return !error
-	}	
+	}
 }
 
 export const userState = new InternalUserState()
@@ -215,7 +215,7 @@ export function getClazz(id: number) {
 }
 
 async function fetchAll() {
-	if(!browser) return
+	if (!browser) return
 	await fetchGrades()
 	await fetchClazzes()
 }

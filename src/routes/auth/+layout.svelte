@@ -7,7 +7,7 @@
             dark:bg-gray-800
         "
 		>
-        <slot />
-        </div>
-    </div>
+			<slot />
+		</div>
+	</div>
 </div>

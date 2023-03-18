@@ -5,7 +5,7 @@
 	import '../global.css'
 	import Background from '$lib/components/Background.svelte'
 	import Footer from '$lib/components/footer/Footer.svelte'
-	import {ToastContainer, FlatToast} from 'svelte-toasts'
+	import { ToastContainer, FlatToast } from 'svelte-toasts'
 </script>
 
 <main class="app flex flex-col" class:dark={$darkTheme}>
@@ -14,9 +14,9 @@
 		<slot />
 	</Background>
 	<Footer />
-	
-	<ToastContainer let:data={data}>
-		<FlatToast {data}  />
+
+	<ToastContainer let:data>
+		<FlatToast {data} />
 	</ToastContainer>
 </main>
 
@@ -24,7 +24,7 @@
 	.app {
 		min-height: 100vh;
 		min-width: 100vw;
-		
+
 		&.dark {
 			color: #fff;
 		}
