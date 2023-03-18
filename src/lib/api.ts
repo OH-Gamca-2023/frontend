@@ -29,7 +29,8 @@ export function getApiHost() {
 }
 
 
-export function makeApiRequest(url: string, method: RequestMethod, body?: object | string) {
+export function makeApiRequest(url: string, method: RequestMethod, body?: object | string, noAuth = false){
+	if(!browser) return fetch("", {method: "GET"})
 	const headers = new Headers()
 	switch (typeof body) {
 		case 'object':
@@ -40,7 +41,7 @@ export function makeApiRequest(url: string, method: RequestMethod, body?: object
 			break
 	}
 
-	if(userState.accessToken) headers.append('Authorization', `Bearer ${userState.accessToken}`)
+	if(!noAuth && userState.accessToken) headers.append('Authorization', `Bearer ${userState.accessToken}`)
 
 	if (url.startsWith('/api')) url = url.slice(4)
 	if (!url.startsWith('/')) url = '/' + url

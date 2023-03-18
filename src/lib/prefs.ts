@@ -66,20 +66,20 @@ function save(prefs: Prefs) {
     localStorage.setItem('prefs', JSON.stringify(prefs))
 }
 
-export function get<K extends keyof Prefs>(key: K): Writable<Prefs[K]> {
+export function getPref<K extends keyof Prefs>(key: K): Writable<Prefs[K]> {
     return writables[key]
 }
 
-export function getValue<K extends keyof Prefs>(key: K): Prefs[K] {
+export function getPrefValue<K extends keyof Prefs>(key: K): Prefs[K] {
     return prefs[key]
 }
 
-export function setValue<K extends keyof Prefs>(key: K, value: Prefs[K]) {
+export function setPrefValue<K extends keyof Prefs>(key: K, value: Prefs[K]) {
     writables[key].set(value)
 }
 
 // Additional stores if any other logic is needed
 
-export const darkTheme = derived(get('theme'), ($theme) => {
+export const darkTheme = derived(getPref('theme'), ($theme) => {
     return $theme === 'dark'
 })

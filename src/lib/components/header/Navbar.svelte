@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
-	import { get, darkTheme } from '$lib/prefs'
+	import { getPref, darkTheme } from '$lib/prefs'
 	import { categories } from '$lib/state'
 	import Icon from '@iconify/svelte'
 	import { fade, slide } from 'svelte/transition'
@@ -8,7 +7,7 @@
 	import Hamburger from './Hamburger.svelte'
 	import UserMenu from './UserMenu.svelte'
 
-	const theme = get('theme')
+	const theme = getPref('theme')
 
 	let categoriesOpen = false
 	let sidebarOpen = false

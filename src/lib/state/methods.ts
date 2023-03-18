@@ -52,6 +52,11 @@ class InternalUserState implements Readable<UserState> {
 	private currentAccessToken: string | undefined = undefined
 	private currentTokenExpiry: number | undefined = undefined
 
+	private resolveLoaded: ((state: UserState) => void) | undefined = undefined
+	public loaded: Promise<UserState> = new Promise((resolve) => {
+		this.resolveLoaded = resolve
+	})
+
 	get accessToken(): string | undefined {
 		if (!browser) return undefined
 		if (this.currentAccessToken === undefined) {
@@ -121,12 +126,9 @@ class InternalUserState implements Readable<UserState> {
 		const response = await getUserDetails()
 		if (response.ok) {
 			const rawUser = await response.json()
-			if (!clazzes.has(rawUser.clazz)) {
-				await fetchClazzes()
-			}
 			const user = {
 				...rawUser,
-				clazz: clazzes.get(rawUser.clazz),
+				clazz: getClazz(rawUser.clazz),
 			}
 			this.state = {
 				user,
@@ -143,7 +145,31 @@ class InternalUserState implements Readable<UserState> {
 				this.accessToken = undefined
 			}
 		}
+		if(this.resolveLoaded) {
+			this.resolveLoaded(this.currentState)
+			this.resolveLoaded = undefined
+		}
 	}
+
+	async logout() {
+		let error = false
+		if(!this.currentState.loggedIn) return
+		if(this.accessToken) {
+			const resp = await makeApiRequest('/auth/invalidate', 'DELETE')
+			if(!resp.ok) {
+				console.error("Failed to invalidate token")
+				error = true
+			}
+		}
+		
+		this.accessToken = undefined
+		this.state = {
+			user: null,
+			loggedIn: false,
+			loading: false,
+		}
+		return !error
+	}	
 }
 
 export const userState = new InternalUserState()
@@ -152,7 +178,7 @@ let grades: Map<number, Grade> = new Map()
 let clazzes: Map<number, Clazz> = new Map()
 
 export async function fetchGrades() {
-	const response = await makeApiRequest('/user/grades', 'GET')
+	const response = await makeApiRequest('/user/grades', 'GET', undefined, true)
 	if (response.ok) {
 		const data = await response.json()
 		grades = new Map(data.map((grade: Grade) => [grade.id, grade]))
@@ -165,7 +191,7 @@ export function getGrade(id: number) {
 }
 
 export async function fetchClazzes() {
-	const response = await makeApiRequest('/user/classes', 'GET')
+	const response = await makeApiRequest('/user/classes', 'GET', undefined, true)
 	if (response.ok) {
 		const data = await response.json()
 		clazzes = new Map()
@@ -187,3 +213,10 @@ export async function fetchClazzes() {
 export function getClazz(id: number) {
 	return clazzes.get(id)
 }
+
+async function fetchAll() {
+	if(!browser) return
+	await fetchGrades()
+	await fetchClazzes()
+}
+fetchAll()
