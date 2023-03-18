@@ -6,6 +6,10 @@
 	import Background from '$lib/components/Background.svelte'
 	import Footer from '$lib/components/footer/Footer.svelte'
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
+	import { startConnectionCheck } from '$lib/connection'
+	import { onMount } from 'svelte'
+
+	onMount(startConnectionCheck)
 </script>
 
 <main class="app flex flex-col" class:dark={$darkTheme}>

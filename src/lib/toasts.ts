@@ -44,5 +44,5 @@ export function toast(options: ToastOptions, onClick?: () => void, onRemove?: ()
 		onRemove,
 	}
 
-	toasts.add(toastProps)
+	return toasts.add(toastProps)
 }
