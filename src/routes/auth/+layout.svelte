@@ -1,5 +1,5 @@
 <div class="flex flex-col items-center justify-center h-full">
-	<div class="flex flex-col items-center justify-center w-96">
+	<div class="flex flex-col items-center justify-center min-w-96 max-w-screen">
 		<div
 			class="
             flex flex-col items-center justify-center

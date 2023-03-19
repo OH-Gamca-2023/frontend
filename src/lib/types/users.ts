@@ -17,5 +17,7 @@ export interface User {
 	first_name: string
 	last_name: string
 	clazz: Clazz
+	microsoft_user: string
 	type: 'student' | 'teacher' | 'organizer' | 'admin'
+	has_password: boolean
 }
