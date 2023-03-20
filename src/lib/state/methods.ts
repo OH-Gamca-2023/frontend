@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { getUserDetails, invalidateAccessToken, makeApiRequest, type ErrorResponse } from '$lib/api'
+import { getUserDetails, invalidateAccessToken, type ErrorResponse } from '$lib/api'
 import type { Clazz, Grade } from '$lib/types'
 import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'

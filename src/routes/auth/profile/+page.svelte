@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte'
 	import { userRoleDict } from '$lib/components/header/UserMenu.svelte'
 	import Icon from '@iconify/svelte'
-	import { makeApiRequest, setUserPassword, type ErrorResponse } from '$lib/api'
+	import { setUserPassword, type ErrorResponse } from '$lib/api'
 	import { toast } from '$lib/toasts'
 
 	let title = 'Profil'
@@ -28,10 +28,11 @@
 	let email = ''
 	let username = ''
 
-	let emailError = ''
 	let savingProfile = false
 
-	function saveProfile() {}
+	function saveProfile() {
+		/* ... */
+	}
 
 	let oldPassword = ''
 	let newPassword = ''
@@ -56,7 +57,7 @@
 		}
 
 		const hasNumber = /\d/
-		const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/
+		const hasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
 		const hasLetter = /[a-zA-Z]/
 		if (!hasNumber.test(newPassword) && !hasSpecial.test(newPassword)) {
 			passwordError = 'Heslo musí obsahovať aspoň jedno číslo alebo špeciálny znak'

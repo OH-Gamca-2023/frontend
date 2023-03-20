@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
 	import { darkTheme } from '$lib/prefs'
 	import Sponsors from '$lib/components/footer/Sponsors.svelte'
 </script>

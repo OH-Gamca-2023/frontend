@@ -1,10 +1,10 @@
 <script lang="ts">
 	import lipsum from '$lib/data/lipsum'
 
-	export let paragraphs: number = -1
-	export let words: number = -1
+	export let paragraphs = -1
+	export let words = -1
 
-	let processed: string = ''
+	let processed = ''
 	$: {
 		if (paragraphs > -1) {
 			processed = lipsum.split('\n').slice(0, paragraphs).join('\n')
