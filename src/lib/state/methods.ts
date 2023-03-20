@@ -1,9 +1,10 @@
 import { browser } from '$app/environment'
-import { getUserDetails, makeApiRequest } from '$lib/api'
+import { getUserDetails, invalidateAccessToken, makeApiRequest, type ErrorResponse } from '$lib/api'
 import type { Clazz, Grade } from '$lib/types'
 import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
 import { Buffer } from 'buffer'
+import { LoadableModel } from '$lib/models'
 
 function rotateAlphabetically(token: string, rotation: number) {
 	let rotated = ''
@@ -108,7 +109,7 @@ class InternalUserState implements Readable<UserState> {
 				loggedIn: false,
 				loading: true,
 			}
-			setTimeout(() => this.fetchUser(), 50)
+			clazzes.onLoaded(() => this.fetchUser())
 		} else {
 			this.state = {
 				user: null,
@@ -125,11 +126,11 @@ class InternalUserState implements Readable<UserState> {
 			loading: true,
 		}
 		const response = await getUserDetails()
-		if (response.ok) {
-			const rawUser = await response.json()
+		if (!response.error) {
+			const rawUser = response.data!
 			const user = {
 				...rawUser,
-				clazz: getClazz(rawUser.clazz),
+				clazz: clazzes.get(rawUser.clazz as any)!,
 			}
 			this.state = {
 				user,
@@ -156,11 +157,14 @@ class InternalUserState implements Readable<UserState> {
 		let error = false
 		if (!this.currentState.loggedIn) return
 		if (this.accessToken) {
-			const resp = await makeApiRequest('/auth/invalidate', 'DELETE')
-			if (!resp.ok) {
-				console.error('Failed to invalidate token')
+			const resp = await invalidateAccessToken()
+			if (resp.error) {
+				const { errorCode, errorMessage } = resp as ErrorResponse
+				console.error('Failed to invalidate token', errorCode, errorMessage)
 				error = true
 			}
+		} else {
+			console.warn('No access token to invalidate')
 		}
 
 		this.accessToken = undefined
@@ -175,49 +179,18 @@ class InternalUserState implements Readable<UserState> {
 
 export const userState = new InternalUserState()
 
-let grades: Map<number, Grade> = new Map()
-let clazzes: Map<number, Clazz> = new Map()
-
-export async function fetchGrades() {
-	const response = await makeApiRequest('/user/grades', 'GET', undefined, true)
-	if (response.ok) {
-		const data = await response.json()
-		grades = new Map(data.map((grade: Grade) => [grade.id, grade]))
-	}
-	return grades
-}
-
-export function getGrade(id: number) {
-	return grades.get(id)
-}
-
-export async function fetchClazzes() {
-	const response = await makeApiRequest('/user/classes', 'GET', undefined, true)
-	if (response.ok) {
-		const data = await response.json()
-		clazzes = new Map()
-		data.forEach((rawClazz: any) => {
-			if (!grades.has(rawClazz.grade)) {
-				fetchGrades()
-			}
-			clazzes.set(rawClazz.id, {
-				id: rawClazz.id,
-				name: rawClazz.name,
-				grade: grades.get(rawClazz.grade)!,
-				is_fake: rawClazz.is_fake,
-			})
-		})
-	}
-	return clazzes
-}
-
-export function getClazz(id: number) {
-	return clazzes.get(id)
-}
-
-async function fetchAll() {
-	if (!browser) return
-	await fetchGrades()
-	await fetchClazzes()
-}
-fetchAll()
+const grades = new LoadableModel<Grade>('user/grades', (rawGrade: any) => ({
+	id: rawGrade.id,
+	name: rawGrade.name,
+}))
+const clazzes = new LoadableModel<Clazz>(
+	'user/classes',
+	(rawClazz: any) => ({
+		id: rawClazz.id,
+		name: rawClazz.name,
+		grade: grades.get(rawClazz.grade)!,
+		is_fake: rawClazz.is_fake,
+	}),
+	false,
+)
+grades.onLoaded(() => clazzes.load())

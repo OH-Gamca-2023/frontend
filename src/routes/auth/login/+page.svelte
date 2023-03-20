@@ -59,11 +59,16 @@
 		userState.accessToken = userToken.token
 
 		const serverStatus = await getUserDetails()
-		if (serverStatus.status === 401) {
+		if (serverStatus.error) {
 			loginPending = false
 			error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
 		} else {
-			const serverUser = await serverStatus.json()
+			const serverUser = serverStatus.data
+			if (!serverUser) {
+				loginPending = false
+				error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
+				return
+			}
 			if (serverUser.id == user.id) {
 				if (userToken.user == user.id) {
 					userState.accessToken = userToken.token

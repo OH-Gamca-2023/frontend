@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte'
 	import { userRoleDict } from '$lib/components/header/UserMenu.svelte'
 	import Icon from '@iconify/svelte'
-	import { makeApiRequest } from '$lib/api'
+	import { makeApiRequest, setUserPassword, type ErrorResponse } from '$lib/api'
 	import { toast } from '$lib/toasts'
 
 	let title = 'Profil'
@@ -66,28 +66,52 @@
 			return
 		}
 
-        passwordError = ''
+		passwordError = ''
 
-        changingPassword = true
+		changingPassword = true
 
-        const payload = $userState.user?.has_password ? { old_password: oldPassword, new_password: newPassword } : { new_password: newPassword }
+		const resp = await setUserPassword(
+			$userState.user?.has_password ? oldPassword : undefined,
+			newPassword,
+		)
 
-        const resp = await makeApiRequest('/user/me/password', $userState.user?.has_password ? 'PUT' : 'POST', payload)
-        if (resp.status === 200) {
-            oldPassword = ''
-            newPassword = ''
-            newPasswordRepeat = ''
+		if (!resp.error) {
+			oldPassword = ''
+			newPassword = ''
+			newPasswordRepeat = ''
 
-            toast({
-                title: 'Heslo bolo úspešne zmenené',
-                type: 'success',
-                duration: 3000,
-            })
-        } else {
-            oldPassword = ''
-            console.warn('Password change failed', resp.status, await resp.json())
-            passwordError = 'Nepodarilo sa zmeniť heslo, zadali ste správne staré heslo?'
-        }
+			toast({
+				title: 'Heslo bolo úspešne zmenené',
+				type: 'success',
+				duration: 3000,
+			})
+			// Ensure that if oldPassword was previously disabled, it is now enabled
+			await userState.fetchUser()
+		} else {
+			oldPassword = ''
+			const { status, errorCode, errorMessage } = resp as ErrorResponse
+			console.warn(`Error changing password: ${errorCode} (${status}) - ${errorMessage}`)
+			switch (status) {
+				case 400:
+					passwordError = 'Staré heslo je nesprávne'
+					break
+				case 401:
+					passwordError = 'Nie ste prihlásený'
+					console.error('User is not logged in, while trying to change password')
+					break
+				case 403:
+					passwordError = 'Nemáte oprávnenie zmeniť heslo'
+					break
+				case 409:
+					passwordError = errorMessage
+					break
+				default:
+					passwordError = 'Nepodarilo sa zmeniť heslo:<br>' + errorMessage
+					break
+			}
+		}
+
+		changingPassword = false
 	}
 </script>
 
@@ -241,13 +265,13 @@
 						Pre váš typ účtu nie je povolená zmena hesla.
 					</div>
 				{:else}
-                    <div class="text-red-500 text-md font-bold">
-                        {passwordError}
-                    </div>
+					<div class="text-red-500 text-md font-bold">
+						{passwordError}
+					</div>
 					<div class="flex flex-row items-center justify-center pb-2">
 						<button
 							class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4"
-                            on:click={changePassword}
+							on:click={changePassword}
 						>
 							<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
 							Zmeniť heslo

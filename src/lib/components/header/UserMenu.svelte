@@ -20,7 +20,9 @@
 		<Spinner class="h-12 w-12 p-2" />
 	</div>
 {:else if $userState.loggedIn}
-	<div id="user-menu" class="flex flex-row items-center justify-center"
+	<div
+		id="user-menu"
+		class="flex flex-row items-center justify-center"
 		on:click={() => goto('/auth/profile')}
 		on:keypress={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {

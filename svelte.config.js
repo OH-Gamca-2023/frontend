@@ -10,10 +10,10 @@ const config = {
 
 	kit: {
 		adapter: getAdapter(),
-	}
-};
+	},
+}
 
-export default config;
+export default config
 
 function getAdapter() {
 	if (process.env.VERCEL) {
