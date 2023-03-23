@@ -45,7 +45,7 @@ function internalApiRequest(
 }
 
 /**
- * Don't use this function directly, use the endpoints instead.
+ * Don't use this function directly, use the endpoints or LoadableModel instead.
  */
 export async function makeApiRequest<T>(
 	url: string,
@@ -60,7 +60,7 @@ export async function makeApiRequest<T>(
 			if (response.status === 204) return { status: 204 } as SuccessResponse<never>
 			else if (response.ok) {
 				const data = await response.json()
-				return { status: response.status, data } as SuccessResponse<T>
+				return { status: response.status, data, error: false } as SuccessResponse<T>
 			} else {
 				const data = await response.json()
 				return {
@@ -68,6 +68,7 @@ export async function makeApiRequest<T>(
 					errorCode: data.error,
 					errorMessage: data.error_message,
 					internal: data.internal ?? false,
+					error: true,
 				} as ErrorResponse
 			}
 	} catch (e) {
@@ -78,5 +79,6 @@ export async function makeApiRequest<T>(
 		errorCode: 'connection',
 		errorMessage: 'Connection error',
 		internal: true,
+		error: true,
 	} as ErrorResponse
 }

@@ -1,10 +1,9 @@
 import { browser } from '$app/environment'
 import { getUserDetails, invalidateAccessToken, type ErrorResponse } from '$lib/api'
-import type { Clazz, Grade } from '$lib/types'
 import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
+import { clazzes } from './data'
 import { Buffer } from 'buffer'
-import { LoadableModel } from '$lib/models'
 
 function rotateAlphabetically(token: string, rotation: number) {
 	let rotated = ''
@@ -178,19 +177,3 @@ class InternalUserState implements Readable<UserState> {
 }
 
 export const userState = new InternalUserState()
-
-const grades = new LoadableModel<Grade>('user/grades', (rawGrade: any) => ({
-	id: rawGrade.id,
-	name: rawGrade.name,
-}))
-const clazzes = new LoadableModel<Clazz>(
-	'user/classes',
-	(rawClazz: any) => ({
-		id: rawClazz.id,
-		name: rawClazz.name,
-		grade: grades.get(rawClazz.grade)!,
-		is_fake: rawClazz.is_fake,
-	}),
-	false,
-)
-grades.onLoaded(() => clazzes.load())

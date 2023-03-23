@@ -2,11 +2,12 @@
 	import { goto } from '$app/navigation'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/toasts'
+	import { onMount } from 'svelte'
 
 	let error = ''
 	let message = 'Načítavajú sa údaje...'
 
-	setTimeout(async () => {
+	onMount(async () => {
 		await userState.loaded
 		if ($userState.loggedIn) {
 			message = 'Prebieha odhlásenie, prosím čakajte...'
@@ -34,7 +35,7 @@
 			})
 			goto('/auth/login')
 		}
-	}, 50)
+	})
 </script>
 
 <svelte:head>
