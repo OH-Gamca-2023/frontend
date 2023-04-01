@@ -17,3 +17,4 @@ export const clazzes = new LoadableModel<Clazz>(
 	false,
 )
 grades.onLoaded(() => clazzes.load())
+grades.onLoadError(() => clazzes.triggerLoadError())

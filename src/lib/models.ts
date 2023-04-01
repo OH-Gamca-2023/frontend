@@ -4,6 +4,7 @@ import { browser } from '$app/environment'
 export class LoadableModel<T> {
 	public isLoaded = false
 	protected loadListeners: (() => void)[] = []
+	protected loadErrorListeners: (() => void)[] = []
 	private data: Map<string, T> = new Map()
 
 	constructor(protected apiUrl: string, protected parser: (data: unknown) => T, autoload = true) {
@@ -34,6 +35,7 @@ export class LoadableModel<T> {
 				listener()
 			}
 		} else {
+			this.triggerLoadError()
 			throw new Error('Error loading data for model ' + this.apiUrl)
 		}
 	}
@@ -63,5 +65,13 @@ export class LoadableModel<T> {
 		if (this.isLoaded) {
 			listener()
 		}
+	}
+
+	public onLoadError(listener: () => void) {
+		this.loadErrorListeners.push(listener)
+	}
+
+	public triggerLoadError() {
+		this.loadErrorListeners.forEach((listener) => listener())
 	}
 }

@@ -20,25 +20,18 @@
 		<Spinner class="h-12 w-12 p-2" />
 	</div>
 {:else if $userState.loggedIn}
-	<div
-		id="user-menu"
-		class="flex flex-row items-center justify-center"
-		on:click={() => goto('/auth/profile')}
-		on:keypress={(e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
-				goto('/auth/profile')
-			}
-		}}
-	>
-		<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
-		<div id="user-data" class="flex flex-col items-start justify-center mr-2 ml-2">
-			<div id="user-name" class="text-sm font-medium">
-				{$userState.user?.username ?? 'Neznámy'}
+	<div id="user-menu" class="flex flex-row items-center justify-center">
+		<a href="/auth/profile" class="flex flex-row items-center justify-center">
+			<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
+			<div id="user-data" class="flex flex-col items-start justify-center mr-2 ml-2">
+				<div id="user-name" class="text-sm font-medium">
+					{$userState.user?.username ?? 'Neznámy'}
+				</div>
+				<div id="user-role" class="text-xs font-light">
+					{userRoleDict[$userState.user?.type ?? 'unknown'][0]}
+				</div>
 			</div>
-			<div id="user-role" class="text-xs font-light">
-				{userRoleDict[$userState.user?.type ?? 'unknown'][0]}
-			</div>
-		</div>
+		</a>
 		<a
 			id="logout"
 			href="/auth/logout"

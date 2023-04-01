@@ -109,6 +109,14 @@ class InternalUserState implements Readable<UserState> {
 				loading: true,
 			}
 			clazzes.onLoaded(() => this.fetchUser())
+			clazzes.onLoadError(() => {
+				this.state = {
+					user: null,
+					loggedIn: false,
+					loading: false,
+				}
+				this.resolveLoaded?.(this.currentState)
+			})
 		} else {
 			this.state = {
 				user: null,

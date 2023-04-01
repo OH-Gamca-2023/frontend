@@ -1,3 +1,4 @@
+import { userState } from '$lib/state'
 import type { User } from '$lib/types'
 import { makeApiRequest } from './api'
 
@@ -34,6 +35,24 @@ export async function getUserDetails() {
 getUserDetails.requiresAuth = true
 
 /**
+ * Get the permissions of the currently logged in user
+ * @returns the user permissions
+ * @throws 401 error if not logged in
+ */
+export async function getUserPermissions() {
+	return makeApiRequest<{
+		user_type: string
+		permissions: string[]
+		details?: string
+		profile_edit: string[]
+		staff: boolean
+		admin: boolean
+		superuser: boolean
+	}>('user/me/permissions', 'GET', undefined, true)
+}
+getUserPermissions.requiresAuth = true
+
+/**
  * Update the currently logged in user.
  * Before updating data, the server checks whether user has permission to update they're own details.
  *
@@ -44,8 +63,12 @@ getUserDetails.requiresAuth = true
  * @throws 403 error if user doesn't have permission to update they're own details
  * @throws 409 error if the new user details conflict with existing data
  */
-export async function setUserDetails(user: User) {
-	return makeApiRequest<User>('user/me', 'POST', user, true)
+export async function setUserDetails(changes: Partial<User>) {
+	const resp = await makeApiRequest<User>('user/me', 'POST', changes, true)
+	if (!resp.error) {
+		await userState.fetchUser()
+	}
+	return resp
 }
 setUserDetails.requiresAuth = true
 
