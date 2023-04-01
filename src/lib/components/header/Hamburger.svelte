@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let open: boolean = false
+	export let open = false
 </script>
 
 <svg width="32" height="24" viewBox="0 0 32 24" class={$$props.class} class:open>
