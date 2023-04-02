@@ -8,6 +8,8 @@
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
 	import { startConnectionCheck } from '$lib/connection'
 	import { onMount } from 'svelte'
+	import { fade } from 'svelte/transition'
+	import { page } from '$app/stores'
 
 	onMount(startConnectionCheck)
 </script>
@@ -15,7 +17,11 @@
 <main class="app flex flex-col" class:dark={$darkTheme}>
 	<Header />
 	<Background>
-		<slot />
+		{#key $page.url}
+			<div class="flex-grow" in:fade={{ duration: 300 }}>
+				<slot />
+			</div>
+		{/key}
 	</Background>
 	<Footer />
 
