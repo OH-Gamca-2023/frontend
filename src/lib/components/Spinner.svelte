@@ -1,5 +1,5 @@
 <span class="wrapper {$$props.class}">
-	<span class="loader" />
+	<span class="loader border-t-white dark:border-t-black" />
 </span>
 
 <style lang="scss">
@@ -14,7 +14,7 @@
 		height: 100%;
 		border-radius: 50%;
 		display: inline-block;
-		border-top: 3px solid #fff;
+		border-top: 3px solid;
 		border-right: 3px solid transparent;
 		box-sizing: border-box;
 		animation: rotation 1s linear infinite;
