@@ -17,11 +17,9 @@
 <main class="app flex flex-col" class:dark={$darkTheme}>
 	<Header />
 	<Background>
-		{#key $page.url}
-			<div class="flex-grow" in:fade={{ duration: 300 }}>
-				<slot />
-			</div>
-		{/key}
+		<div class="flex-grow">
+			<slot />
+		</div>
 	</Background>
 	<Footer />
 
