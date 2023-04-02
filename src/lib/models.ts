@@ -7,13 +7,42 @@ export class LoadableModel<T> {
 	protected loadErrorListeners: (() => void)[] = []
 	private data: Map<string, T> = new Map()
 
-	constructor(protected apiUrl: string, protected parser: (data: unknown) => T, autoload = true) {
+	constructor(
+		protected apiUrl: string,
+		protected parser: (data: unknown) => T,
+		autoload = true,
+		protected cache = false,
+	) {
 		if (autoload) {
-			this.load()
+			if (cache && browser) {
+				const cached = localStorage.getItem('cache_' + apiUrl)
+				if (
+					cached &&
+					cached.length > 0 &&
+					cached !== 'undefined' &&
+					cached !== 'null' &&
+					cached !== '[]' &&
+					cached !== '{}' &&
+					cached !== '""'
+				) {
+					const parsed = JSON.parse(cached)
+					for (const item of parsed) {
+						this.data.set(item.id.toString(), this.parser(item))
+					}
+
+					this.isLoaded = true
+					for (const listener of this.loadListeners) {
+						listener()
+					}
+
+					console.log('Loaded ' + apiUrl + ' from cache')
+				}
+			}
+			this.load(this.isLoaded)
 		}
 	}
 
-	public async load(): Promise<void> {
+	public async load(skipHandlers = false): Promise<void> {
 		if (!browser) return
 
 		const response = await makeApiRequest<{ id: string | number; [key: string]: unknown }[]>(
@@ -26,17 +55,27 @@ export class LoadableModel<T> {
 		if (response.status === 200 && response.data) {
 			this.data.clear()
 			for (const item of response.data) {
-				const { id, ...rest } = item
-				this.data.set(id.toString(), this.parser(rest))
+				this.data.set(item.id.toString(), this.parser(item))
 			}
+		} else if (!skipHandlers) {
+			this.triggerLoadError()
+			throw new Error('Error loading data for model ' + this.apiUrl)
+		} else {
+			console.warn('Suppressing error loading data for model ' + this.apiUrl)
+			return
+		}
 
-			this.isLoaded = true
+		this.isLoaded = true
+		if (!skipHandlers) {
 			for (const listener of this.loadListeners) {
 				listener()
 			}
-		} else {
-			this.triggerLoadError()
-			throw new Error('Error loading data for model ' + this.apiUrl)
+		}
+		console.log('Loaded ' + this.apiUrl + ' from API')
+
+		if (this.cache && browser) {
+			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(response.data))
+			console.log('Saved ' + this.apiUrl + ' to cache')
 		}
 	}
 
