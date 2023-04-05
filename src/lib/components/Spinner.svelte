@@ -1,4 +1,4 @@
-<span class="wrapper {$$props.class}">
+<span class="wrapper {$$props.class}" style={$$props.style}>
 	<span class="loader border-t-white dark:border-t-black" />
 </span>
 

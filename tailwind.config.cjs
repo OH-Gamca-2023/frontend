@@ -17,6 +17,11 @@ module.exports = {
 			screens: {
 				lmd: '860px',
 			},
+			colors: {
+				gray: {
+					950: '#030712',
+				}
+			}
 		},
 	},
 	plugins: [],
