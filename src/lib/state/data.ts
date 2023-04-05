@@ -8,7 +8,7 @@ export const grades = new LoadableModel<Grade>(
 		name: rawGrade.name,
 	}),
 	true,
-	true,
+	[],
 )
 
 export const clazzes = new LoadableModel<Clazz>(
@@ -19,8 +19,6 @@ export const clazzes = new LoadableModel<Clazz>(
 		grade: grades.get(rawClazz.grade)!,
 		is_fake: rawClazz.is_fake,
 	}),
-	false,
 	true,
+	[grades],
 )
-grades.onLoaded(() => clazzes.load())
-grades.onLoadError(() => clazzes.triggerLoadError())

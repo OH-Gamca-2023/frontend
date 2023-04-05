@@ -3,6 +3,8 @@ import { browser } from '$app/environment'
 
 export class LoadableModel<T> {
 	public isLoaded = false
+	private loadingPromise: Promise<void> | undefined = undefined
+	public isCached = false
 	protected loadListeners: (() => void)[] = []
 	protected loadErrorListeners: (() => void)[] = []
 	private data: Map<string, T> = new Map()
@@ -10,40 +12,69 @@ export class LoadableModel<T> {
 	constructor(
 		protected apiUrl: string,
 		protected parser: (data: unknown) => T,
-		autoload = true,
 		protected cache = false,
+		protected dependencies: LoadableModel<unknown>[] = [],
 	) {
-		if (autoload) {
-			if (cache && browser) {
-				const cached = localStorage.getItem('cache_' + apiUrl)
-				if (
-					cached &&
-					cached.length > 0 &&
-					cached !== 'undefined' &&
-					cached !== 'null' &&
-					cached !== '[]' &&
-					cached !== '{}' &&
-					cached !== '""'
-				) {
-					const parsed = JSON.parse(cached)
-					for (const item of parsed) {
-						this.data.set(item.id.toString(), this.parser(item))
-					}
-
-					this.isLoaded = true
-					for (const listener of this.loadListeners) {
-						listener()
-					}
-
-					console.log('Loaded ' + apiUrl + ' from cache')
-				}
-			}
-			this.load(this.isLoaded)
+		if (cache && !dependencies.every((dep) => dep.cache)) {
+			throw new Error('Cache can only be used on models with all dependencies cached')
 		}
+
+		this.isCached = cache && browser && localStorage.getItem('cache_' + this.apiUrl) !== null
+
+		if (cache && browser && this.isCached) {
+			if (dependencies.length > 0) {
+				if (dependencies.every((dep) => dep.isLoaded)) {
+					console.log(
+						`[model ${this.apiUrl}] all dependencies loaded or cached, loading from cache`,
+					)
+					this.loadFromCache()
+					this.load(true)
+				} else {
+					console.log(
+						`[model ${this.apiUrl}] some dependencies not loaded or cached, waiting for dependencies`,
+					)
+					;(async () => {
+						await Promise.all(dependencies.map((dep) => dep.load()))
+						console.log(`[model ${this.apiUrl}] all dependencies loaded, loading from cache`)
+						this.loadFromCache()
+						this.load(true)
+					})()
+				}
+			} else {
+				console.log(`[model ${this.apiUrl}] loading from cache`)
+				this.loadFromCache()
+				this.load(true)
+			}
+		} else if (dependencies.length > 0) {
+			console.log(`[model ${this.apiUrl}] waiting for dependencies`)
+			;(async () => {
+				await Promise.all(dependencies.map((dep) => dep.load()))
+				console.log(`[model ${this.apiUrl}] all dependencies loaded, loading`)
+				await this.load()
+			})()
+		}
+	}
+
+	private loadFromCache() {
+		if (!browser) return
+
+		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
+		for (const item of data) {
+			this.data.set(item.id.toString(), this.parser(item))
+		}
+		this.triggerLoaded()
+		console.log(`[model ${this.apiUrl}] loaded from cache`)
 	}
 
 	public async load(skipHandlers = false): Promise<void> {
 		if (!browser) return
+		if (this.loadingPromise) {
+			return this.loadingPromise
+		}
+		let resolve: () => void = () => {
+			/* do nothing */
+		}
+		this.loadingPromise = new Promise((r) => (resolve = r))
 
 		const response = await makeApiRequest<{ id: string | number; [key: string]: unknown }[]>(
 			this.apiUrl,
@@ -61,7 +92,7 @@ export class LoadableModel<T> {
 			this.triggerLoadError()
 			throw new Error('Error loading data for model ' + this.apiUrl)
 		} else {
-			console.warn('Suppressing error loading data for model ' + this.apiUrl)
+			console.log(`[model ${this.apiUrl}] suppressing load error`)
 			return
 		}
 
@@ -71,12 +102,16 @@ export class LoadableModel<T> {
 				listener()
 			}
 		}
-		console.log('Loaded ' + this.apiUrl + ' from API')
+		console.log(`[model ${this.apiUrl}] loaded`)
 
 		if (this.cache && browser) {
 			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(response.data))
-			console.log('Saved ' + this.apiUrl + ' to cache')
+			console.log(`[model ${this.apiUrl}] cached`)
 		}
+
+		resolve()
+		this.loadingPromise = Promise.resolve()
+		setTimeout(() => (this.loadingPromise = undefined), 5000)
 	}
 
 	public get(id: string | number): T | undefined {
@@ -112,5 +147,10 @@ export class LoadableModel<T> {
 
 	public triggerLoadError() {
 		this.loadErrorListeners.forEach((listener) => listener())
+	}
+
+	public triggerLoaded() {
+		this.isLoaded = true
+		this.loadListeners.forEach((listener) => listener())
 	}
 }
