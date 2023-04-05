@@ -1,5 +1,5 @@
 <span class="wrapper {$$props.class}" style={$$props.style}>
-	<span class="loader border-t-white dark:border-t-black" />
+	<span class="loader dark:border-t-white border-t-black" />
 </span>
 
 <style lang="scss">
