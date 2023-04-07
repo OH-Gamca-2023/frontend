@@ -1,10 +1,15 @@
 import type { Clazz, Grade } from '$lib/types'
 import { LoadableModel } from '$lib/models'
 
-export const grades = new LoadableModel<Grade>('user/grades', (rawGrade: any) => ({
-	id: rawGrade.id,
-	name: rawGrade.name,
-}))
+export const grades = new LoadableModel<Grade>(
+	'user/grades',
+	(rawGrade: any) => ({
+		id: rawGrade.id,
+		name: rawGrade.name,
+	}),
+	true,
+	[],
+)
 
 export const clazzes = new LoadableModel<Clazz>(
 	'user/classes',
@@ -14,7 +19,6 @@ export const clazzes = new LoadableModel<Clazz>(
 		grade: grades.get(rawClazz.grade)!,
 		is_fake: rawClazz.is_fake,
 	}),
-	false,
+	true,
+	[grades],
 )
-grades.onLoaded(() => clazzes.load())
-grades.onLoadError(() => clazzes.triggerLoadError())
