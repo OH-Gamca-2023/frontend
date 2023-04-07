@@ -1,5 +1,6 @@
 import { makeApiRequest } from './api'
 import { browser } from '$app/environment'
+import { addReconnectListener } from './connection'
 
 export class LoadableModel<T> {
 	public isLoaded = false
@@ -90,6 +91,12 @@ export class LoadableModel<T> {
 			}
 		} else if (!skipHandlers) {
 			this.triggerLoadError()
+			
+			addReconnectListener(() => {
+				// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
+				this.load()
+			})
+
 			throw new Error('Error loading data for model ' + this.apiUrl)
 		} else {
 			console.log(`[model ${this.apiUrl}] suppressing load error`)
