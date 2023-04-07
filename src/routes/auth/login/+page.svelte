@@ -164,7 +164,7 @@
 		icon="material-symbols:admin-panel-settings"
 		class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}"
 	/>
-	<h4 class="text-gray-800 dark:text-gray-200" class:opacity-30={loginPending}>
+	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
 		Prihlásiť sa ako administrátor
 	</h4>
 </div>

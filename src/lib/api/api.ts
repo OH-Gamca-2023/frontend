@@ -65,7 +65,7 @@ export async function makeApiRequest<T>(
 				const data = await response.json()
 				return {
 					status: response.status,
-					errorCode: data.error,
+					errorCode: data.error_code,
 					errorMessage: data.error_message,
 					internal: data.internal ?? false,
 					error: true,

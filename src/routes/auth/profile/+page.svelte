@@ -184,7 +184,7 @@
 			console.warn(`Error changing password: ${errorCode} (${status}) - ${errorMessage}`)
 			switch (status) {
 				case 400:
-					errorToast('Staré heslo je nesprávne')
+					errorToast(errorMessage)
 					break
 				case 401:
 					errorToast('Nie ste prihlásený')
@@ -241,7 +241,7 @@
 				<div class="flex flex-col">
 					<span class="text-md font-medium pb-1"> Meno </span>
 					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 						type="text"
 						disabled={!editPermissions.first_name}
 						bind:value={firstName}
@@ -250,7 +250,7 @@
 				<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 					<span class="text-md font-medium pb-1"> Priezvisko </span>
 					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 						type="text"
 						disabled={!editPermissions.last_name}
 						bind:value={lastName}
@@ -261,7 +261,7 @@
 				<div class="flex flex-col">
 					<span class="text-md font-medium pb-1"> Email </span>
 					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 						type="text"
 						disabled={!editPermissions.email}
 						bind:value={email}
@@ -270,7 +270,7 @@
 				<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 					<span class="text-md font-medium pb-1"> Používateľské meno </span>
 					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 						type="text"
 						disabled={!editPermissions.username}
 						bind:value={username}
@@ -281,7 +281,7 @@
 				<div class="flex flex-col">
 					<span class="text-md font-medium pb-1"> Microsoft účet </span>
 					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed w-auto"
+						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed w-auto"
 						type="text"
 						value={$userState.user?.microsoft_user ?? ''}
 						disabled
@@ -290,7 +290,7 @@
 				<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 					<span class="text-md font-medium pb-1"> Trieda </span>
 					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 						type="text"
 						value={($userState.user?.clazz?.name ?? '') +
 							(' (' + $userState.user?.clazz?.grade?.name + ')' ?? '')}
@@ -342,7 +342,7 @@
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Staré heslo </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 							type="password"
 							disabled={!editPermissions.password || !$userState.user?.has_password}
 							bind:value={oldPassword}
@@ -361,7 +361,7 @@
 					<div class="flex flex-col mt-2 md:mt-0 md:ml-4 justify-start">
 						<span class="text-md font-medium pb-1"> Nové heslo </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 							type="password"
 							disabled={!editPermissions.password}
 							bind:value={newPassword}
@@ -369,7 +369,7 @@
 						<div class="pb-2" />
 						<span class="text-md font-medium pb-1"> Nové heslo znova </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-gray-700 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
 							type="password"
 							disabled={!editPermissions.password}
 							bind:value={newPasswordRepeat}
