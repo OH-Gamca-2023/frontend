@@ -20,6 +20,17 @@ const lastCheck = {
 let errorToast: any = undefined
 let waitingCheck: any = undefined
 
+const reconnectListeners: (() => void)[] = []
+const disconnectListeners: (() => void)[] = []
+
+export function addReconnectListener(listener: () => void) {
+	reconnectListeners.push(listener)
+}
+
+export function addDisconnectListener(listener: () => void) {
+	disconnectListeners.push(listener)
+}
+
 async function runCheck() {
 	const now = Date.now()
 	try {
@@ -59,6 +70,8 @@ function processCheckResult() {
 				type: 'error',
 			})
 			nextCheck = consecutiveFailures > 2 ? (consecutiveFailures > 6 ? 30000 : 6000) : 2000
+
+			disconnectListeners.forEach((listener) => listener())
 		} else {
 			nextCheck = consecutiveFailures > 5 ? 30000 : 10000
 		}
@@ -73,6 +86,8 @@ function processCheckResult() {
 			})
 			consecutiveFailures = 1
 			nextCheck = 1000
+
+			disconnectListeners.forEach((listener) => listener())
 		} else if (previousCheck.status !== '01') {
 			// Internet is online, server is offline, previous check had server connection
 			errorToast?.remove()
@@ -83,6 +98,8 @@ function processCheckResult() {
 			})
 			consecutiveFailures = 1
 			nextCheck = 1000
+
+			disconnectListeners.forEach((listener) => listener())
 		} else {
 			// Internet is online, server is offline, previous check had no server connection
 			if (consecutiveFailures == 3) {
@@ -110,6 +127,8 @@ function processCheckResult() {
 		})
 		nextCheck = 10000
 	} else if (lastCheck.status === '11') {
+		reconnectListeners.forEach((listener) => listener())
+
 		// Internet and server are online
 		errorToast?.remove()
 		if (previousCheck && !previousCheck.internet) {
