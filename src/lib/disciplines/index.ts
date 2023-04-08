@@ -1,2 +1,1 @@
-
 export { categories } from './data'

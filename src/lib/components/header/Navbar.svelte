@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getPref, darkTheme } from '$lib/prefs'
-	import { categories } from '$lib/state'
+	import { categories } from '$lib/disciplines'
 	import Icon from '@iconify/svelte'
 	import { fade, slide } from 'svelte/transition'
 	import Spinner from '../Spinner.svelte'
@@ -54,9 +54,9 @@
 				>
 					<Icon icon="bxs:category-alt" class="h-6 w-6" />
 					<span>Kategórie</span>
-					{#await categories.loaded}
+					{#await categories.load()}
 						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
-					{:then value}
+					{:then}
 						<Icon
 							icon="tabler:chevron-left"
 							class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
@@ -73,7 +73,7 @@
 								style="top: -1px"
 								transition:slide={{ duration: 500 }}
 							>
-								{#each $categories as category}
+								{#each categories.getAll() as category}
 									<a
 										href={`/category/${category}`}
 										class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
@@ -247,7 +247,7 @@
 							divide-gray-300 dark:divide-gray-700"
 							transition:slide
 						>
-							{#each $categories as category}
+							{#each categories.getAll() as category}
 								<a
 									href={`/category/${category.id}`}
 									class="flex flex-row p-1 pr-0"

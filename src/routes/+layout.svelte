@@ -8,8 +8,6 @@
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
 	import { startConnectionCheck } from '$lib/connection'
 	import { onMount } from 'svelte'
-	import { fade } from 'svelte/transition'
-	import { page } from '$app/stores'
 
 	onMount(startConnectionCheck)
 </script>

@@ -12,7 +12,6 @@
 	import Icon from '@iconify/svelte'
 	import { userState } from '$lib/state'
 	import Spinner from '$lib/components/Spinner.svelte'
-	import { goto } from '$app/navigation'
 </script>
 
 {#if $userState.loading}

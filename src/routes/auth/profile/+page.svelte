@@ -69,7 +69,7 @@
 			errorToast('Všetky polia musia byť vyplnené')
 			return
 		}
-		if (email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) === null) {
+		if (email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g) === null) {
 			errorToast('Emailová adresa nie je platná')
 			return
 		}
@@ -129,7 +129,6 @@
 	let newPassword = ''
 	let newPasswordRepeat = ''
 
-	let passwordError = ''
 	let changingPassword = false
 
 	async function changePassword() {

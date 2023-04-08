@@ -91,7 +91,7 @@ export class LoadableModel<T> {
 			}
 		} else if (!skipHandlers) {
 			this.triggerLoadError()
-			
+
 			addReconnectListener(() => {
 				// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
 				this.load()
