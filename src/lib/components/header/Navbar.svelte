@@ -224,19 +224,23 @@
 			<div class="flex flex-col space-y-1">
 				<div
 					class="flex flex-row space-x-1 cursor-pointer"
-					on:click={() => (categoriesOpen = !categoriesOpen)}
+					on:click={() => categories.isLoaded && (categoriesOpen = !categoriesOpen)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
 							categoriesOpen = !categoriesOpen
 						}
 					}}
 				>
-					<Icon
-						icon="tabler:chevron-right"
-						class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
-							? 'rotate-90'
-							: ''}"
-					/>
+					{#await categories.load()}
+						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+					{:then}
+						<Icon
+							icon="tabler:chevron-right"
+							class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
+								? 'rotate-90'
+								: ''}"
+						/>
+					{/await}
 					<Icon icon="bxs:category-alt" class="h-6 w-6" />
 					<span>Kategórie</span>
 				</div>
@@ -245,7 +249,6 @@
 						<div
 							class="pt-2 px-8 divide-y
 							divide-gray-300 dark:divide-gray-700"
-							transition:slide
 						>
 							{#each categories.getAll() as category}
 								<a
@@ -257,7 +260,6 @@
 											sidebarOpen = !sidebarOpen
 										}
 									}}
-									transition:fade
 								>
 									<span>{category.name}</span>
 								</a>
