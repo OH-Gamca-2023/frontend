@@ -1,4 +1,4 @@
-import { getApiHost } from './api/data'
+import { getApiHost } from '$lib/api/data'
 import { browser } from '$app/environment'
 import { addReconnectListener } from './connection'
 

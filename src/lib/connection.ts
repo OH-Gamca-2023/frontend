@@ -1,5 +1,5 @@
-import { getApiHost } from './api/data'
-import { toast } from './toasts'
+import { getApiHost } from '$lib/api/data'
+import { toast } from '$lib/toasts'
 
 let consecutiveFailures = 0
 let previousCheck:
