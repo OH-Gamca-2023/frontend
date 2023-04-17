@@ -1,4 +1,4 @@
-import { makeApiRequest } from './api'
+import { getApiHost } from './api/data'
 import { browser } from '$app/environment'
 import { addReconnectListener } from './connection'
 
@@ -94,29 +94,43 @@ export class LoadableModel<T> {
 			this.loadRan = true
 		}
 
-		const response = await makeApiRequest<{ id: string | number; [key: string]: unknown }[]>(
-			this.apiUrl,
-			'GET',
-			undefined,
-			false,
-		)
-
-		if (response.status === 200 && response.data) {
-			this.data.clear()
-			for (const item of response.data) {
-				this.data.set(item.id.toString(), this.parser(item))
+		const error = () => {
+			if (!force) {
+				this.triggerLoadError()
+	
+				addReconnectListener(() => {
+					// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
+					this.load()
+				})
+	
+				throw new Error('Error loading data for model ' + this.apiUrl)
+			} else {
+				console.debug(`[model ${this.apiUrl}] suppressing load error`)
+				return
 			}
-		} else if (!force) {
-			this.triggerLoadError()
+		}
 
-			addReconnectListener(() => {
-				// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
-				this.load()
-			})
+		try {
+			let url = this.apiUrl
 
-			throw new Error('Error loading data for model ' + this.apiUrl)
-		} else {
-			console.debug(`[model ${this.apiUrl}] suppressing load error`)
+			if (!url.startsWith('/')) url = '/' + url
+			if (!url.endsWith('/')) url += '/'
+
+			const response = await fetch(getApiHost() + url, {method: 'GET'})
+	
+			if (response.status)
+				if (response.ok) {
+					const data = await response.json()
+					this.data.clear()
+					for (const item of data) {
+						this.data.set(item.id.toString(), this.parser(item))
+					}
+				} else {
+					error()
+					return
+				}
+		} catch (e) {
+			error()
 			return
 		}
 
