@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
-	import { getApiHost, getUserDetails } from '$lib/api'
+	import { getUserDetails } from '$lib/api'
 	import { darkTheme } from '$lib/prefs'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/toasts'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	import { getApiHost } from '$lib/api/data'
 
 	export let data: PageData
 

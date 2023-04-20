@@ -12,7 +12,15 @@
         shadow-md-top sticky bottom-0"
 >
 	<div class="flex flex-row items-center">
-		<!-- For now empty -->
+		<a href="/dev">
+			<Icon icon="bi:code" class="h-5 w-5" />
+		</a>
+		<a href="/dev/rss" class="ml-2">
+			<Icon icon="material-symbols:rss-feed" class="h-5 w-5" />
+		</a>
+		<a href="/dev/discord" class="ml-2">
+			<Icon icon="material-symbols:webhook" class="h-5 w-5" />
+		</a>
 	</div>
 	<div class="flex flex-row items-center">
 		<a
@@ -23,12 +31,7 @@
 		>
 			<Icon icon="bi:youtube" class="h-7 w-7" />
 		</a>
-		<a
-			href="https://www.instagram.com/ohgamca2023"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="ig social"
-		>
+		<a href="https://www.instagram.com/ohgamca2023" target="_blank" rel="noopener noreferrer">
 			<Icon icon="bi:instagram" class="h-6 w-6" />
 		</a>
 	</div>
