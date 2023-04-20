@@ -219,7 +219,7 @@
 {:then}
 	{#if $userState.loggedIn}
 		<div class="pb-4 flex" />
-		<div class="flex flex-col text-gray-800 dark:text-gray-200 ">
+		<div class="flex flex-col text-gray-800 dark:text-gray-200">
 			<div class="flex flex-row items-center justify-center pb-2">
 				<Icon
 					icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]}
@@ -236,177 +236,198 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-col md:flex-row items-center justify-start pb-2">
-				<div class="flex flex-col">
-					<span class="text-md font-medium pb-1"> Meno </span>
-					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-						type="text"
-						disabled={!editPermissions.first_name}
-						bind:value={firstName}
-					/>
-				</div>
-				<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
-					<span class="text-md font-medium pb-1"> Priezvisko </span>
-					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-						type="text"
-						disabled={!editPermissions.last_name}
-						bind:value={lastName}
-					/>
-				</div>
-			</div>
-			<div class="flex flex-col md:flex-row items-center justify-start pb-2">
-				<div class="flex flex-col">
-					<span class="text-md font-medium pb-1"> Email </span>
-					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-						type="text"
-						disabled={!editPermissions.email}
-						bind:value={email}
-					/>
-				</div>
-				<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
-					<span class="text-md font-medium pb-1"> Používateľské meno </span>
-					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-						type="text"
-						disabled={!editPermissions.username}
-						bind:value={username}
-					/>
-				</div>
-			</div>
-			<div class="flex flex-col md:flex-row items-center justify-start pb-2">
-				<div class="flex flex-col">
-					<span class="text-md font-medium pb-1"> Microsoft účet </span>
-					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed w-auto"
-						type="text"
-						value={$userState.user?.microsoft_user ?? ''}
-						disabled
-					/>
-				</div>
-				<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
-					<span class="text-md font-medium pb-1"> Trieda </span>
-					<input
-						class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-						type="text"
-						value={($userState.user?.clazz?.name ?? '') +
-							(' (' + $userState.user?.clazz?.grade?.name + ')' ?? '')}
-						disabled
-					/>
-				</div>
-			</div>
-			<div class="flex flex-col items-center justify-center py-2">
-				{#if permissionsLoaded}
-					{#if !Object.values(editPermissions).some((x) => x)}
-						<div class="text-red-500 text-md font-bold">
-							Pre váš typ účtu nie sú povolené úpravy profilu.
-						</div>
-					{:else if !Object.values(editPermissions).every((x) => x)}
-						<div class="text-amber-500 text-md font-bold">
-							Pre váš typ účtu sú povolené iba limitované úpravy profilu.
-						</div>
-					{/if}
-					{#if Object.values(editPermissions).some((x) => x)}
-						<div class="flex flex-row items-center justify-center">
-							<button
-								class="flex flex-row items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
-								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700"
-								on:click={saveProfile}
-								disabled={savingProfile}
-							>
-								{#if savingProfile}
-									<Spinner class="w-4 h-4 mr-2" />
-									Ukladám...
-								{:else}
-									<Icon icon="material-symbols:save" class="w-4 h-4 mr-2" />
-									Uložiť zmeny
-								{/if}
-							</button>
-						</div>
-					{/if}
-				{:else if permissionLoadError}
-					<div class="text-red-500 text-md font-bold">Chyba pri načítavaní oprávnení.</div>
-				{:else}
-					<div class="flex flex-row items-center justify-center pb-2 pt-2">
-						<Spinner class="w-6 h-6" />
-						<span class="text-sm font-bold ml-2">Načítavam...</span>
-					</div>
-				{/if}
-			</div>
-			<div class="flex flex-col items-center justify-center pt-5 pb-2">
-				<h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 pb-2">Zmena hesla</h2>
-				<div class="flex flex-col md:flex-row items-start justify-center pb-2">
+			<form>
+				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
 					<div class="flex flex-col">
-						<span class="text-md font-medium pb-1"> Staré heslo </span>
+						<span class="text-md font-medium pb-1"> Meno </span>
 						<input
 							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-							type="password"
-							disabled={!editPermissions.password || !$userState.user?.has_password}
-							bind:value={oldPassword}
+							type="text"
+							autocomplete="given-name"
+							disabled={!editPermissions.first_name}
+							bind:value={firstName}
 						/>
-						<span class="text-xs md:text-sm font-medium text-gray-500 dark:text-gray-400">
-							{#if $userState.user?.has_password}
-								Zadajte staré heslo, ak chcete zmeniť heslo.
-							{:else}
-								Ešte nemáte nastavené žiadne heslo.
-								{#if editPermissions.password}
-									<br />Bez nastaveného hesla sa neviete dostať<br />do organizátorského rozhrania.
-								{/if}
-							{/if}
-						</span>
 					</div>
-					<div class="flex flex-col mt-2 md:mt-0 md:ml-4 justify-start">
-						<span class="text-md font-medium pb-1"> Nové heslo </span>
+					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
+						<span class="text-md font-medium pb-1"> Priezvisko </span>
 						<input
 							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-							type="password"
-							disabled={!editPermissions.password}
-							bind:value={newPassword}
-						/>
-						<div class="pb-2" />
-						<span class="text-md font-medium pb-1"> Nové heslo znova </span>
-						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
-							type="password"
-							disabled={!editPermissions.password}
-							bind:value={newPasswordRepeat}
+							type="text"
+							autocomplete="family-name"
+							disabled={!editPermissions.last_name}
+							bind:value={lastName}
 						/>
 					</div>
 				</div>
-				{#if permissionsLoaded}
-					{#if !editPermissions.password}
-						<div class="text-red-500 text-md font-bold">
-							Pre váš typ účtu nie je povolená zmena hesla.
-						</div>
+				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+					<div class="flex flex-col">
+						<span class="text-md font-medium pb-1"> Email </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							type="text"
+							autocomplete="email"
+							disabled={!editPermissions.email}
+							bind:value={email}
+						/>
+					</div>
+					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
+						<span class="text-md font-medium pb-1"> Používateľské meno </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							type="text"
+							autocomplete="username"
+							disabled={!editPermissions.username}
+							bind:value={username}
+						/>
+					</div>
+				</div>
+				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+					<div class="flex flex-col">
+						<span class="text-md font-medium pb-1"> Microsoft účet </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed w-auto"
+							type="text"
+							autocomplete="off"
+							value={$userState.user?.microsoft_user ?? ''}
+							disabled
+						/>
+					</div>
+					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
+						<span class="text-md font-medium pb-1"> Trieda </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							type="text"
+							autocomplete="off"
+							value={($userState.user?.clazz?.name ?? '') +
+								(' (' + $userState.user?.clazz?.grade?.name + ')' ?? '')}
+							disabled
+						/>
+					</div>
+				</div>
+				<div class="flex flex-col items-center justify-center py-2">
+					{#if permissionsLoaded}
+						{#if !Object.values(editPermissions).some((x) => x)}
+							<div class="text-red-500 text-md font-bold">
+								Pre váš typ účtu nie sú povolené úpravy profilu.
+							</div>
+						{:else if !Object.values(editPermissions).every((x) => x)}
+							<div class="text-amber-500 text-md font-bold">
+								Pre váš typ účtu sú povolené iba limitované úpravy profilu.
+							</div>
+						{/if}
+						{#if Object.values(editPermissions).some((x) => x)}
+							<div class="flex flex-row items-center justify-center">
+								<button
+									class="flex flex-row items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
+								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700"
+									on:click={saveProfile}
+									disabled={savingProfile}
+								>
+									{#if savingProfile}
+										<Spinner class="w-4 h-4 mr-2" />
+										Ukladám...
+									{:else}
+										<Icon icon="material-symbols:save" class="w-4 h-4 mr-2" />
+										Uložiť zmeny
+									{/if}
+								</button>
+							</div>
+						{/if}
+					{:else if permissionLoadError}
+						<div class="text-red-500 text-md font-bold">Chyba pri načítavaní oprávnení.</div>
 					{:else}
-						<div class="flex flex-row items-center justify-center pb-2">
-							<button
-								class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
-								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700"
-								on:click={changePassword}
-								disabled={changingPassword}
-							>
-								{#if changingPassword}
-									<Spinner class="w-4 h-4 mr-2" />
-									Ukladám...
-								{:else}
-									<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
-									Zmeniť heslo
-								{/if}
-							</button>
+						<div class="flex flex-row items-center justify-center pb-2 pt-2">
+							<Spinner class="w-6 h-6" />
+							<span class="text-sm font-bold ml-2">Načítavam...</span>
 						</div>
 					{/if}
-				{:else if permissionLoadError}
-					<div class="text-red-500 text-md font-bold">Chyba pri načítavaní oprávnení.</div>
-				{:else}
-					<div class="flex flex-row items-center justify-center pb-2 pt-2">
-						<Spinner class="w-6 h-6" />
-						<span class="text-sm font-bold ml-2">Načítavam...</span>
+				</div>
+			</form>
+			<form>
+				<div class="flex flex-col items-center justify-center pt-5 pb-2">
+					<h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 pb-2">Zmena hesla</h2>
+					<div class="flex flex-col md:flex-row items-start justify-center pb-2">
+						<div class="flex flex-col">
+							<input
+								type="text"
+								autocomplete="username"
+								value={$userState.user?.username}
+								style="display: none"
+								disabled
+							/>
+							<span class="text-md font-medium pb-1"> Staré heslo </span>
+							<input
+								class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+								type="password"
+								autocomplete="current-password"
+								disabled={!editPermissions.password || !$userState.user?.has_password}
+								bind:value={oldPassword}
+							/>
+							<span class="text-xs md:text-sm font-medium text-gray-500 dark:text-gray-400">
+								{#if $userState.user?.has_password}
+									Zadajte staré heslo, ak chcete zmeniť heslo.
+								{:else}
+									Ešte nemáte nastavené žiadne heslo.
+									{#if editPermissions.password}
+										<br />Bez nastaveného hesla sa neviete dostať<br />do organizátorského
+										rozhrania.
+									{/if}
+								{/if}
+							</span>
+						</div>
+						<div class="flex flex-col mt-2 md:mt-0 md:ml-4 justify-start">
+							<span class="text-md font-medium pb-1"> Nové heslo </span>
+							<input
+								class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+								type="password"
+								autocomplete="new-password"
+								disabled={!editPermissions.password}
+								bind:value={newPassword}
+							/>
+							<div class="pb-2" />
+							<span class="text-md font-medium pb-1"> Nové heslo znova </span>
+							<input
+								class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+								type="password"
+								autocomplete="new-password"
+								disabled={!editPermissions.password}
+								bind:value={newPasswordRepeat}
+							/>
+						</div>
 					</div>
-				{/if}
-			</div>
+					{#if permissionsLoaded}
+						{#if !editPermissions.password}
+							<div class="text-red-500 text-md font-bold">
+								Pre váš typ účtu nie je povolená zmena hesla.
+							</div>
+						{:else}
+							<div class="flex flex-row items-center justify-center pb-2">
+								<button
+									class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
+								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700"
+									on:click={changePassword}
+									disabled={changingPassword}
+								>
+									{#if changingPassword}
+										<Spinner class="w-4 h-4 mr-2" />
+										Ukladám...
+									{:else}
+										<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
+										Zmeniť heslo
+									{/if}
+								</button>
+							</div>
+						{/if}
+					{:else if permissionLoadError}
+						<div class="text-red-500 text-md font-bold">Chyba pri načítavaní oprávnení.</div>
+					{:else}
+						<div class="flex flex-row items-center justify-center pb-2 pt-2">
+							<Spinner class="w-6 h-6" />
+							<span class="text-sm font-bold ml-2">Načítavam...</span>
+						</div>
+					{/if}
+				</div>
+			</form>
 		</div>
 	{:else}
 		<h3 class="text-gray-800 dark:text-gray-200 pb-4">Neprihlásený</h3>
