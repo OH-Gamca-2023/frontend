@@ -7,6 +7,7 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
+	import { setAccessToken } from '$lib/state'
 
 	export let data: PageData
 
@@ -57,7 +58,7 @@
 			return
 		}
 
-		userState.accessToken = userToken.token
+		setAccessToken(userToken.token)
 
 		const serverStatus = await getUserDetails()
 		if (serverStatus.error) {
@@ -72,7 +73,7 @@
 			}
 			if (serverUser.id == user.id) {
 				if (userToken.user == user.id) {
-					userState.accessToken = userToken.token
+					setAccessToken(userToken.token)
 				}
 				await userState.fetchUser()
 				loginPending = false

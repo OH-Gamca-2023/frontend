@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { userState } from '$lib/state'
+import { getAccessToken, userState } from '$lib/state'
 import { getApiHost } from './data'
 import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from './types'
 
@@ -20,8 +20,8 @@ function internalApiRequest(
 			break
 	}
 
-	if (auth && userState.accessToken)
-		headers.append('Authorization', `Bearer ${userState.accessToken}`)
+	if (auth && getAccessToken())
+		headers.append('Authorization', `Bearer ${getAccessToken()}`)
 	else if (auth)
 		console.warn('No access token found for authenticated request. Details:', url, method, body)
 
@@ -64,12 +64,12 @@ export async function makeApiRequest<T>(
 				} as ErrorResponse
 			}
 	} catch (e) {
-		/* empty */
+		console.warn('Connection error', e)
 	}
 	return {
 		status: 500,
 		errorCode: 'connection',
-		errorMessage: 'Connection error',
+		errorMessage: 'Connection or internal error',
 		internal: true,
 		error: true,
 	} as ErrorResponse

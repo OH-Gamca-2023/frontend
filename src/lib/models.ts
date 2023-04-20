@@ -73,7 +73,7 @@ export class LoadableModel<T> {
 	 */
 	private loadFromCache() {
 		if (!browser) return
-
+		
 		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
 		for (const item of data) {
 			this.data.set(item.id.toString(), this.parser(item))
@@ -109,7 +109,7 @@ export class LoadableModel<T> {
 				return
 			}
 		}
-
+		let respData: unknown
 		try {
 			let url = this.apiUrl
 
@@ -121,6 +121,7 @@ export class LoadableModel<T> {
 			if (response.status)
 				if (response.ok) {
 					const data = await response.json()
+					respData = data
 					this.data.clear()
 					for (const item of data) {
 						this.data.set(item.id.toString(), this.parser(item))
@@ -140,8 +141,8 @@ export class LoadableModel<T> {
 		}
 		console.debug(`[model ${this.apiUrl}] loaded`)
 
-		if (this.cache) {
-			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(response.data))
+		if (this.cache && respData) {
+			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(respData))
 			console.debug(`[model ${this.apiUrl}] cached`)
 		}
 	}
