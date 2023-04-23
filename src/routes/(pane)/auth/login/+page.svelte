@@ -9,7 +9,7 @@
 	import { getApiHost } from '$lib/api/data'
 	import { setAccessToken } from '$lib/state'
 	import { loginRequired } from '$lib/settings'
-	import { onMount } from 'svelte/types/runtime/internal/lifecycle'
+	import { onMount } from 'svelte'
 
 	export let data: PageData
 
