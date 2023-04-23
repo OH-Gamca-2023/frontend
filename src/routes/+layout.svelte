@@ -8,18 +8,48 @@
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
 	import { startConnectionCheck } from '$lib/connection'
 	import { onMount } from 'svelte'
+	import { loginRequired } from '$lib/settings'
+	import { userState } from '$lib/state'
+	import { goto } from '$app/navigation'
 
 	onMount(startConnectionCheck)
+
+	/*
+	 * If login is required:
+	 * - Hides header, content and footer until userState is loaded
+	 * - Redirects to login page if user is not logged in
+	 * - If user is logged in, shows everything
+	 */
+	let showContent = !loginRequired
+	let headerAndFooter = showContent
+	if (loginRequired) {
+		onMount(async () => {
+			await userState.loaded
+			showContent = true
+			if (!$userState.loggedIn) {
+				if (window.location.pathname !== '/auth/login') goto('/auth/login')
+				else console.log('Already on login page')
+			} else {
+				headerAndFooter = true
+			}
+		})
+	}
 </script>
 
 <main class="app flex flex-col" class:dark={$darkTheme}>
-	<Header />
+	{#if headerAndFooter}
+		<Header />
+	{/if}
 	<Background>
-		<div class="flex-grow">
-			<slot />
-		</div>
+		{#if showContent}
+			<div class="flex-grow">
+				<slot />
+			</div>
+		{/if}
 	</Background>
-	<Footer />
+	{#if headerAndFooter}
+		<Footer />
+	{/if}
 
 	<ToastContainer let:data>
 		<FlatToast {data} />
