@@ -1,21 +1,16 @@
 {
 	"debug.enableBreakpointsAnywhere": true,
-    "javascript.format.enable": false,
-    "typescript.format.enable": false,
-    "eslint.format.enable": true,
-    "eslint.lintTask.enable": true,
+	"javascript.format.enable": false,
+	"typescript.format.enable": false,
+	"eslint.format.enable": true,
+	"eslint.lintTask.enable": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true
 	},
-	"eslint.validate": [
-		"javascript",
-		"typescript",
-		"javascriptreact",
-		"typescriptreact"
-	],
+	"eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
 	"eslint.run": "onSave",
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"svelte.enable-ts-plugin": true,
 	"js/ts.implicitProjectConfig.checkJs": true,
-	"eslint.packageManager": "npm",
+	"eslint.packageManager": "npm"
 }

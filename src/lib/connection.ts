@@ -1,5 +1,5 @@
-import { makeApiRequest } from './api'
-import { toast } from './toasts'
+import { getApiHost } from '$lib/api/data'
+import { toast } from '$lib/toasts'
 
 let consecutiveFailures = 0
 let previousCheck:
@@ -34,7 +34,7 @@ export function addDisconnectListener(listener: () => void) {
 async function runCheck() {
 	const now = Date.now()
 	try {
-		const serverResult = await makeApiRequest('status', 'GET', undefined, false)
+		const serverResult = await fetch(getApiHost() + '/status', { method: 'GET' })
 		if (serverResult.status === 200) {
 			lastCheck.server = true
 		} else {

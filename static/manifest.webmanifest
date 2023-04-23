@@ -1,15 +1,15 @@
 {
-    "name": "OH Gamča 2023",
-    "start_url": "index.html",
-    "display": "fullscreen",
-    "theme_color": "#000",
-    "background_color": "#000",
-    "icons": [
-       {
-          "src": "/favicon.png",
-          "type": "image/png",
-          "sizes": "512x512",
-          "purpose": "any"
-       }
-    ]
- }
+	"name": "OH Gamča 2023",
+	"start_url": "index.html",
+	"display": "fullscreen",
+	"theme_color": "#000",
+	"background_color": "#000",
+	"icons": [
+		{
+			"src": "/favicon.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "any"
+		}
+	]
+}

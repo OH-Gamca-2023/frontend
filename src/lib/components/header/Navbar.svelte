@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getPref, darkTheme } from '$lib/prefs'
-	import { categories } from '$lib/state'
+	import { categories } from '$lib/disciplines'
 	import Icon from '@iconify/svelte'
 	import { fade, slide } from 'svelte/transition'
 	import Spinner from '../Spinner.svelte'
@@ -44,7 +44,7 @@
 					<span>Novinky</span>
 				</a>
 				<div
-					class="flex flex-row space-x-1 cursor-pointer rounded-md p-1"
+					class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
 					on:click={() => (categoriesOpen = !categoriesOpen)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
@@ -54,12 +54,36 @@
 				>
 					<Icon icon="bxs:category-alt" class="h-6 w-6" />
 					<span>Kategórie</span>
-					<Icon
-						icon="tabler:chevron-left"
-						class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
-							? '-rotate-90'
-							: ''}"
-					/>
+					{#await categories.load()}
+						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+					{:then}
+						<Icon
+							icon="tabler:chevron-left"
+							class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
+								? '-rotate-90'
+								: ''}"
+						/>
+					{/await}
+					<div class="absolute -bottom-3 left-0 right-0">
+						{#if categoriesOpen}
+							<div
+								class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
+									from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
+									bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
+								style="top: -1px"
+								transition:slide={{ duration: 500 }}
+							>
+								{#each categories.getAll() as category}
+									<a
+										href={`/category/${category}`}
+										class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
+									>
+										<span>{category.name}</span>
+									</a>
+								{/each}
+							</div>
+						{/if}
+					</div>
 				</div>
 				<a
 					href="/results"
@@ -147,7 +171,7 @@
 				dark:from-gray-800 dark:to-slate-800
 				text-gray-800 dark:text-gray-200
 				shadow-md sticky top-0 flex flex-col justify-start items-start
-				[&>*]:w-full [&>*]:py-4 [&>*]:px-4 divide-y
+				[&>*]:w-full [&>*]:py-3 [&>*]:px-4 divide-y
 				divide-gray-300 dark:divide-gray-700"
 			transition:slide
 		>
@@ -200,52 +224,47 @@
 			<div class="flex flex-col space-y-1">
 				<div
 					class="flex flex-row space-x-1 cursor-pointer"
-					on:click={() => (categoriesOpen = !categoriesOpen)}
+					on:click={() => categories.isLoaded && (categoriesOpen = !categoriesOpen)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
 							categoriesOpen = !categoriesOpen
 						}
 					}}
 				>
-					<Icon
-						icon="tabler:chevron-right"
-						class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
-							? 'rotate-90'
-							: ''}"
-					/>
+					{#await categories.load()}
+						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+					{:then}
+						<Icon
+							icon="tabler:chevron-right"
+							class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
+								? 'rotate-90'
+								: ''}"
+						/>
+					{/await}
 					<Icon icon="bxs:category-alt" class="h-6 w-6" />
 					<span>Kategórie</span>
 				</div>
 				{#if categoriesOpen}
 					<div class="flex flex-col space-y-2" transition:slide>
-						{#await categories.loaded}
-							<div class="flex flex-row space-x-1 pl-8 pt-2">
-								<Spinner class="h-6 w-6" />
-								<span>Načítavam...</span>
-							</div>
-						{:then}
-							<div
-								class="pt-2 px-8 divide-y
-								divide-gray-300 dark:divide-gray-700"
-								transition:slide
-							>
-								{#each $categories as category}
-									<a
-										href={`/category/${category.id}`}
-										class="flex flex-row p-1 pr-0"
-										on:click={() => (sidebarOpen = !sidebarOpen)}
-										on:keypress={(e) => {
-											if (e.key === 'Enter' || e.key === ' ') {
-												sidebarOpen = !sidebarOpen
-											}
-										}}
-										transition:fade
-									>
-										<span>{category.name}</span>
-									</a>
-								{/each}
-							</div>
-						{/await}
+						<div
+							class="pt-2 px-8 divide-y
+							divide-gray-300 dark:divide-gray-700"
+						>
+							{#each categories.getAll() as category}
+								<a
+									href={`/category/${category.id}`}
+									class="flex flex-row p-1 pr-0"
+									on:click={() => (sidebarOpen = !sidebarOpen)}
+									on:keypress={(e) => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											sidebarOpen = !sidebarOpen
+										}
+									}}
+								>
+									<span>{category.name}</span>
+								</a>
+							{/each}
+						</div>
 					</div>
 				{/if}
 			</div>

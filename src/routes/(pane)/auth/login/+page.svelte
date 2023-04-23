@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
-	import { getApiHost, getUserDetails } from '$lib/api'
+	import { getUserDetails } from '$lib/api'
 	import { darkTheme } from '$lib/prefs'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/toasts'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	import { getApiHost } from '$lib/api/data'
+	import { setAccessToken } from '$lib/state'
+	import { loginRequired } from '$lib/data/settings'
+	import { onMount } from 'svelte'
 
 	export let data: PageData
 
@@ -56,7 +60,7 @@
 			return
 		}
 
-		userState.accessToken = userToken.token
+		setAccessToken(userToken.token)
 
 		const serverStatus = await getUserDetails()
 		if (serverStatus.error) {
@@ -71,7 +75,7 @@
 			}
 			if (serverUser.id == user.id) {
 				if (userToken.user == user.id) {
-					userState.accessToken = userToken.token
+					setAccessToken(userToken.token)
 				}
 				await userState.fetchUser()
 				loginPending = false
@@ -91,7 +95,7 @@
 		window.open(getApiHost() + '/auth/login', '_self')
 	}
 
-	setTimeout(async () => {
+	onMount(async () => {
 		await userState.loaded
 		if ($userState.loggedIn && !loginPending) {
 			toast({
@@ -101,23 +105,29 @@
 			})
 			goto('/')
 		}
-	}, 50)
+	})
 </script>
 
 <svelte:head>
 	<title>Prihlásenie</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 pb-2">Prihlásenie</h1>
+{#if loginRequired}
+	<h3 class="text-red-500 font-bold pb-4">
+		Stránka je aktuálne dostupná iba pre prihlásených používateľov.
+	</h3>
+{/if}
+
+<h1 class="text-2xl font-bold pb-2">Prihlásenie</h1>
 
 <h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
 
-<h4 class="text-gray-800 dark:text-gray-200 pb-4">Vyberte si spôsob prihlásenia</h4>
+<h4 class="text-gray-800 dark:text-gray-100 pb-4">Vyberte si spôsob prihlásenia</h4>
 <div
 	id="microsoft-login"
 	class="flex flex-row items-center justify-center
-                    bg-gray-100 dark:bg-gray-700 rounded-lg shadow-lg px-4 py-2 mb-6
-                    hover:bg-gray-200 dark:hover:bg-gray-600 relative"
+                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2 mb-6
+                    hover:bg-gray-200 dark:hover:bg-gray-900 relative"
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
@@ -138,7 +148,7 @@
 		<div class="absolute w-full h-full flex flex-row items-center justify-center">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			{#if loginStatus}
-				<span class="ml-4 text-gray-800 dark:text-gray-100">{loginStatus}</span>
+				<span class="ml-4">{loginStatus}</span>
 			{/if}
 		</div>
 	{/if}
@@ -146,8 +156,8 @@
 <div
 	id="admin-login"
 	class="flex flex-row items-center justify-center
-                    bg-gray-100 dark:bg-gray-700 rounded-lg shadow-lg px-4 py-2
-                    hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
+                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
+                    hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
@@ -164,7 +174,7 @@
 		icon="material-symbols:admin-panel-settings"
 		class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}"
 	/>
-	<h4 class="text-gray-800 dark:text-gray-200" class:opacity-30={loginPending}>
+	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
 		Prihlásiť sa ako administrátor
 	</h4>
 </div>

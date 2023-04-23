@@ -10,6 +10,9 @@ const config = {
 
 	kit: {
 		adapter: getAdapter(),
+		serviceWorker: {
+			register: process.env.NODE_ENV === 'development' ? false : true
+		}
 	},
 }
 
@@ -19,10 +22,6 @@ function getAdapter() {
 	if (process.env.VERCEL) {
 		return vercelAdapter()
 	} else {
-		return staticAdapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: null,
-		})
+		return staticAdapter()
 	}
 }

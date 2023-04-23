@@ -5,7 +5,6 @@
 
 const sw = self as unknown as ServiceWorkerGlobalScope
 
-import { dev } from '$app/environment'
 import { build, files, version } from '$service-worker'
 
 // Create a cache name from the current version
@@ -16,7 +15,6 @@ const CACHE_FILES = [...build, ...files]
 
 // Install the service worker
 sw.addEventListener('install', (event) => {
-	if (dev) return
 	async function addAll() {
 		const cache = await caches.open(CACHE_NAME)
 		await cache.addAll(CACHE_FILES)
@@ -30,7 +28,6 @@ sw.addEventListener('install', (event) => {
 
 // Activate the service worker
 sw.addEventListener('activate', (event) => {
-	if (dev) return
 	async function deleteOldCaches() {
 		const keys = await caches.keys()
 		const oldKeys = keys.filter((key) => key !== CACHE_NAME)
@@ -42,7 +39,6 @@ sw.addEventListener('activate', (event) => {
 
 // Intercept fetch requests
 sw.addEventListener('fetch', (event) => {
-	if (dev) return
 	// Only handle GET requests
 	if (event.request.method !== 'GET') return
 
