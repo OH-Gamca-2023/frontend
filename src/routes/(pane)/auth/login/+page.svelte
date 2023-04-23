@@ -8,7 +8,7 @@
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
 	import { setAccessToken } from '$lib/state'
-	import { loginRequired } from '$lib/settings'
+	import { loginRequired } from '$lib/data/settings'
 	import { onMount } from 'svelte'
 
 	export let data: PageData

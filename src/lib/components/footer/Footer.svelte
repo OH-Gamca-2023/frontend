@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte'
 	import Bottombar from './Bottombar.svelte'
-	import { devOptionsEnabled } from '$lib/settings'
+	import { devOptionsEnabled } from '$lib/data/settings'
 </script>
 
 <div

@@ -1,4 +1,4 @@
-import { devOptionsEnabled } from '$lib/settings'
+import { devOptionsEnabled } from '$lib/data/settings'
 import { redirect } from '@sveltejs/kit'
 import type { PageLoad } from './$types'
 

@@ -9,7 +9,7 @@
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
 	import { startConnectionCheck } from '$lib/connection'
 	import { onMount } from 'svelte'
-	import { loginRequired } from '$lib/settings'
+	import { loginRequired } from '$lib/data/settings'
 	import { userState } from '$lib/state'
 	import { goto } from '$app/navigation'
 	import { browser } from '$app/environment'
