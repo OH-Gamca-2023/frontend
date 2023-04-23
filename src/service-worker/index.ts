@@ -42,8 +42,8 @@ sw.addEventListener('fetch', (event) => {
 	// Only handle GET requests
 	if (event.request.method !== 'GET') return
 
-	// Ignore requests for /api/* and /admin/*
-	if (event.request.url.includes('/api') || event.request.url.includes('/admin')) return
+	// Ignore requests for /api/* and /admin/* and /docker/*
+	if (event.request.url.includes('/api') || event.request.url.includes('/admin') || event.request.url.includes('/docker')) return
 
 	async function respond() {
 		const url = new URL(event.request.url)
