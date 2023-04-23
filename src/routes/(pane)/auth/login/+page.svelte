@@ -23,7 +23,11 @@
 		const response = data.params
 		if (response.status === 'error') {
 			console.warn('Login error', response)
-			error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
+			if (response.error.startsWith('STRERROR')) {
+				error = 'Nastala chyba pri prihlasovaní: ' + response.error.split(':', 2)[1]
+			} else {
+				error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
+			}
 			loginPending = false
 		} else if (response.status === 'success') {
 			try {
