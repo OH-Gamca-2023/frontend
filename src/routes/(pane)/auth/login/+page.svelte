@@ -8,6 +8,8 @@
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
 	import { setAccessToken } from '$lib/state'
+	import { loginRequired } from '$lib/settings'
+	import { onMount } from 'svelte/types/runtime/internal/lifecycle'
 
 	export let data: PageData
 
@@ -93,7 +95,7 @@
 		window.open(getApiHost() + '/auth/login', '_self')
 	}
 
-	setTimeout(async () => {
+	onMount(async () => {
 		await userState.loaded
 		if ($userState.loggedIn && !loginPending) {
 			toast({
@@ -103,12 +105,18 @@
 			})
 			goto('/')
 		}
-	}, 50)
+	})
 </script>
 
 <svelte:head>
 	<title>Prihlásenie</title>
 </svelte:head>
+
+{#if loginRequired}
+	<h3 class="text-red-500 font-bold pb-4">
+		Stránka je aktuálne dostupná iba pre prihlásených používateľov.
+	</h3>
+{/if}
 
 <h1 class="text-2xl font-bold pb-2">Prihlásenie</h1>
 
