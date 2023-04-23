@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte'
-	import Bottombar from './Bottombar.svelte'
+	import BottomLogo from './BottomLogo.svelte'
 	import { devOptionsEnabled } from '$lib/data/settings'
 </script>
 
@@ -39,4 +39,4 @@
 		</a>
 	</div>
 </div>
-<Bottombar />
+<BottomLogo />
