@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores'
 	import Header from '$lib/components/header/Header.svelte'
 	import { darkTheme } from '$lib/prefs'
 	import '../tailwind.css'
@@ -11,28 +12,16 @@
 	import { loginRequired } from '$lib/settings'
 	import { userState } from '$lib/state'
 	import { goto } from '$app/navigation'
+	import { browser } from '$app/environment'
 
 	onMount(startConnectionCheck)
 
-	/*
-	 * If login is required:
-	 * - Hides header, content and footer until userState is loaded
-	 * - Redirects to login page if user is not logged in
-	 * - If user is logged in, shows everything
-	 */
-	let showContent = !loginRequired
-	let headerAndFooter = showContent
-	if (loginRequired) {
-		onMount(async () => {
-			await userState.loaded
-			showContent = true
-			if (!$userState.loggedIn) {
-				if (window.location.pathname !== '/auth/login') goto('/auth/login')
-				else console.log('Already on login page')
-			} else {
-				headerAndFooter = true
-			}
-		})
+	$: headerAndFooter = !loginRequired || $userState.loggedIn
+	$: showContent = headerAndFooter || $page.url.pathname.includes('auth/login')
+	$: if (loginRequired && !$userState.loggedIn) {
+		if ($page.url.pathname !== '/auth/login') {
+			if (browser) goto('/auth/login')
+		}
 	}
 </script>
 
