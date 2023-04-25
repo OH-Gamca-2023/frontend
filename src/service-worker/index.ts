@@ -13,6 +13,8 @@ const CACHE_NAME = `cache-${version}`
 // Create a list of all the files we want to cache
 const CACHE_FILES = [...build, ...files]
 
+const IGNORED_PATHS = ['/api', '/admin', '/docker', '/admin_static', '/robots.txt']
+
 // Install the service worker
 sw.addEventListener('install', (event) => {
 	async function addAll() {
@@ -42,8 +44,8 @@ sw.addEventListener('fetch', (event) => {
 	// Only handle GET requests
 	if (event.request.method !== 'GET') return
 
-	// Ignore requests for /api/* and /admin/* and /docker/*
-	if (event.request.url.includes('/api') || event.request.url.includes('/admin') || event.request.url.includes('/docker')) return
+	// Ignore requests for certain paths
+	if (IGNORED_PATHS.some((path) => event.request.url.includes(path))) return
 
 	async function respond() {
 		const url = new URL(event.request.url)
