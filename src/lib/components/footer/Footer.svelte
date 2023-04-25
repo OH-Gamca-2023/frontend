@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte'
-	import Bottombar from './Bottombar.svelte'
+	import BottomLogo from './BottomLogo.svelte'
+	import { devOptionsEnabled } from '$lib/data/settings'
 </script>
 
 <div
@@ -12,15 +13,17 @@
         shadow-md-top sticky bottom-0"
 >
 	<div class="flex flex-row items-center">
-		<a href="/dev">
-			<Icon icon="bi:code" class="h-5 w-5" />
-		</a>
-		<a href="/dev/rss" class="ml-2">
-			<Icon icon="material-symbols:rss-feed" class="h-5 w-5" />
-		</a>
-		<a href="/dev/discord" class="ml-2">
-			<Icon icon="material-symbols:webhook" class="h-5 w-5" />
-		</a>
+		{#if devOptionsEnabled}
+			<a href="/dev">
+				<Icon icon="bi:code" class="h-5 w-5" />
+			</a>
+			<a href="/dev/rss" class="ml-2">
+				<Icon icon="material-symbols:rss-feed" class="h-5 w-5" />
+			</a>
+			<a href="/dev/discord" class="ml-2">
+				<Icon icon="material-symbols:webhook" class="h-5 w-5" />
+			</a>
+		{/if}
 	</div>
 	<div class="flex flex-row items-center">
 		<a
@@ -36,4 +39,4 @@
 		</a>
 	</div>
 </div>
-<Bottombar />
+<BottomLogo />

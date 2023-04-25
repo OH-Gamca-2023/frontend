@@ -8,6 +8,8 @@
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
 	import { setAccessToken } from '$lib/state'
+	import { loginRequired } from '$lib/data/settings'
+	import { onMount } from 'svelte'
 
 	export let data: PageData
 
@@ -21,7 +23,11 @@
 		const response = data.params
 		if (response.status === 'error') {
 			console.warn('Login error', response)
-			error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
+			if (response.error.startsWith('STRERROR')) {
+				error = 'Nastala chyba pri prihlasovaní: ' + response.error.split(':', 2)[1]
+			} else {
+				error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
+			}
 			loginPending = false
 		} else if (response.status === 'success') {
 			try {
@@ -93,7 +99,7 @@
 		window.open(getApiHost() + '/auth/login', '_self')
 	}
 
-	setTimeout(async () => {
+	onMount(async () => {
 		await userState.loaded
 		if ($userState.loggedIn && !loginPending) {
 			toast({
@@ -103,12 +109,18 @@
 			})
 			goto('/')
 		}
-	}, 50)
+	})
 </script>
 
 <svelte:head>
 	<title>Prihlásenie</title>
 </svelte:head>
+
+{#if loginRequired}
+	<h3 class="text-red-500 font-bold pb-4">
+		Stránka je aktuálne dostupná iba pre prihlásených používateľov.
+	</h3>
+{/if}
 
 <h1 class="text-2xl font-bold pb-2">Prihlásenie</h1>
 
