@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { getAccessToken, userState } from '$lib/state'
+import { getAccessToken } from '$lib/state/token'
 import { getApiHost } from './data'
 import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from './types'
 

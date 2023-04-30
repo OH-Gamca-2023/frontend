@@ -7,7 +7,7 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
-	import { setAccessToken } from '$lib/state'
+	import { setAccessToken } from '$lib/state/token'
 	import { loginRequired } from '$lib/data/settings'
 	import { onMount } from 'svelte'
 
