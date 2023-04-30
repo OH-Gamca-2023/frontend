@@ -36,46 +36,50 @@
 				id="links"
 				class="flex flex-row justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-gray-300 dark:divide-gray-700 divide-x"
 			>
-				<a
-					href="/news"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="tabler:news" class="h-6 w-6" />
-					<span>Novinky</span>
-				</a>
-				<div
-					class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
-					on:click={() => (categoriesOpen = !categoriesOpen)}
-					on:keypress={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							categoriesOpen = !categoriesOpen
-						}
-					}}
-				>
-					<Icon icon="bxs:category-alt" class="h-6 w-6" />
-					<span>Kategórie</span>
-					{#await categories.load()}
-						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
-					{:then}
-						<Icon
-							icon="tabler:chevron-left"
-							class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
-								? '-rotate-90'
-								: ''}"
-						/>
-					{/await}
+				<div>
+					<a
+						href="/news"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="tabler:news" class="h-6 w-6" />
+						<span>Novinky</span>
+					</a>
+				</div>
+				<div class="relative">
+					<div
+						class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
+						on:click={() => (categoriesOpen = !categoriesOpen)}
+						on:keypress={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								categoriesOpen = !categoriesOpen
+							}
+						}}
+					>
+						<Icon icon="bxs:category-alt" class="h-6 w-6" />
+						<span>Kategórie</span>
+						{#await categories.load()}
+							<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+						{:then}
+							<Icon
+								icon="tabler:chevron-left"
+								class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
+									? '-rotate-90'
+									: ''}"
+							/>
+						{/await}
+					</div>
 					<div class="absolute -bottom-3 left-0 right-0">
 						{#if categoriesOpen}
 							<div
 								class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
-									from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
-									bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
+								from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
+								bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
 								style="top: -1px"
 								transition:slide={{ duration: 500 }}
 							>
 								{#each categories.getAll() as category}
 									<a
-										href={`/category/${category}`}
+										href={`/news?category=${category.id}`}
 										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
 									>
 										<span>{category.name}</span>
@@ -85,27 +89,33 @@
 						{/if}
 					</div>
 				</div>
-				<a
-					href="/results"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
-					<span>Výsledky</span>
-				</a>
-				<a
-					href="/calendar"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
-					<span>Kalendár</span>
-				</a>
-				<a
-					href="/gallery"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="tabler:photo" class="h-6 w-6" />
-					<span>Galéria</span>
-				</a>
+				<div>
+					<a
+						href="/results"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
+						<span>Výsledky</span>
+					</a>
+				</div>
+				<div>
+					<a
+						href="/calendar"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
+						<span>Kalendár</span>
+					</a>
+				</div>
+				<div>
+					<a
+						href="/gallery"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="tabler:photo" class="h-6 w-6" />
+						<span>Galéria</span>
+					</a>
+				</div>
 			</div>
 		</div>
 		<div
