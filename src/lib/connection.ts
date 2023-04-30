@@ -1,5 +1,5 @@
 import { getApiHost } from '$lib/api/data'
-import { toast } from '$lib/toasts'
+import { toast } from '$lib/utils/toasts'
 import { get } from 'svelte/store'
 import { getAccessToken } from './state/token'
 

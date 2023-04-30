@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getPref, darkTheme } from '$lib/prefs'
+	import { getPref, darkTheme } from '$lib/data/prefs'
 	import { categories } from '$lib/disciplines'
 	import Icon from '@iconify/svelte'
 	import { fade, slide } from 'svelte/transition'

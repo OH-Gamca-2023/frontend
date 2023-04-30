@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { userState } from '$lib/state'
-	import { toast } from '$lib/toasts'
+	import { toast } from '$lib/utils/toasts'
 	import { onMount } from 'svelte'
 
 	let error = ''

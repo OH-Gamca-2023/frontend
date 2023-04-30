@@ -1,5 +1,5 @@
 import type { Category } from '$lib/types'
-import { LoadableModel } from '$lib/models'
+import { LoadableModel } from '$lib/utils/models'
 
 export const categories = new LoadableModel<Category>(
 	'disciplines/categories',

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import Header from '$lib/components/header/Header.svelte'
-	import { darkTheme } from '$lib/prefs'
+	import { darkTheme } from '$lib/data/prefs'
 	import '../tailwind.css'
 	import '../global.css'
 	import Background from '$lib/components/Background.svelte'

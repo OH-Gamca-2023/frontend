@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { getUserDetails } from '$lib/api'
-	import { darkTheme } from '$lib/prefs'
+	import { darkTheme } from '$lib/data/prefs'
 	import { userState } from '$lib/state'
-	import { toast } from '$lib/toasts'
+	import { toast } from '$lib/utils/toasts'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
