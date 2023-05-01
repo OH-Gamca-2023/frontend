@@ -21,6 +21,7 @@ export class LoadableModel<T> {
 		protected parser: (data: unknown) => T,
 		protected cache = false,
 		protected dependencies: LoadableModel<unknown>[] = [],
+		protected list = true,
 	) {
 		if (!browser) return
 		if (cache && !dependencies.every((dep) => dep.cache)) {
@@ -75,9 +76,12 @@ export class LoadableModel<T> {
 		if (!browser) return
 
 		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
-		for (const item of data) {
-			this.data.set(item.id.toString(), this.parser(item))
-		}
+		if (this.list) {
+			for (const item of data) {
+				this.data.set(item.id.toString(), this.parser(item))
+			}
+		} else this.data.set('0', this.parser(data))
+
 		this.triggerLoaded()
 		console.debug(`[model ${this.apiUrl}] loaded from cache`)
 	}
@@ -94,7 +98,7 @@ export class LoadableModel<T> {
 			this.loadRan = true
 		}
 
-		const error = () => {
+		const error = (e: any) => {
 			if (!force) {
 				this.triggerLoadError()
 
@@ -102,7 +106,8 @@ export class LoadableModel<T> {
 					// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
 					this.load()
 				})
-
+				
+				if (e) console.error(e)
 				throw new Error('Error loading data for model ' + this.apiUrl)
 			} else {
 				console.debug(`[model ${this.apiUrl}] suppressing load error`)
@@ -114,7 +119,7 @@ export class LoadableModel<T> {
 			let url = this.apiUrl
 
 			if (!url.startsWith('/')) url = '/' + url
-			if (!url.endsWith('/')) url += '/'
+			if (!url.endsWith('/') && !url.includes('.')) url += '/'
 
 			const response = await fetch(getApiHost() + url, { method: 'GET' })
 
@@ -123,15 +128,17 @@ export class LoadableModel<T> {
 					const data = await response.json()
 					respData = data
 					this.data.clear()
-					for (const item of data) {
-						this.data.set(item.id.toString(), this.parser(item))
-					}
+					if (this.list) {
+						for (const item of data) {
+							this.data.set(item.id.toString(), this.parser(item))
+						}
+					} else this.data.set('0', this.parser(data))
 				} else {
-					error()
+					error(undefined)
 					return
 				}
 		} catch (e) {
-			error()
+			error(e)
 			return
 		}
 
@@ -148,6 +155,7 @@ export class LoadableModel<T> {
 	}
 
 	public get(id: string | number): T | undefined {
+		if (!this.list) id = 0
 		return this.data.get(id.toString())
 	}
 

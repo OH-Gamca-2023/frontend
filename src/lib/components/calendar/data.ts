@@ -23,4 +23,4 @@ export const calendarData = new LoadableModel<CalendarData>('/calendar/json.json
         ...props as CalendarProps,
         events: parsedEvents
     }
-}, true, [gradesModel, categories])
+}, false, [gradesModel, categories], false)
