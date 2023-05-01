@@ -28,7 +28,7 @@ export class LoadableModel<T> {
 		}
 
 		this.isCached = cache && localStorage.getItem('cache_' + this.apiUrl) !== null
-		
+
 		this.loadingPromise = new Promise((resolve) => (this.resolveLoadingPromise = resolve))
 
 		if (cache && this.isCached) {
@@ -73,7 +73,7 @@ export class LoadableModel<T> {
 	 */
 	private loadFromCache() {
 		if (!browser) return
-		
+
 		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
 		for (const item of data) {
 			this.data.set(item.id.toString(), this.parser(item))
@@ -97,12 +97,12 @@ export class LoadableModel<T> {
 		const error = () => {
 			if (!force) {
 				this.triggerLoadError()
-	
+
 				addReconnectListener(() => {
 					// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
 					this.load()
 				})
-	
+
 				throw new Error('Error loading data for model ' + this.apiUrl)
 			} else {
 				console.debug(`[model ${this.apiUrl}] suppressing load error`)
@@ -116,8 +116,8 @@ export class LoadableModel<T> {
 			if (!url.startsWith('/')) url = '/' + url
 			if (!url.endsWith('/')) url += '/'
 
-			const response = await fetch(getApiHost() + url, {method: 'GET'})
-	
+			const response = await fetch(getApiHost() + url, { method: 'GET' })
+
 			if (response.status)
 				if (response.ok) {
 					const data = await response.json()

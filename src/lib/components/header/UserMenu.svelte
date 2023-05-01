@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-	import Icon from '@iconify/svelte'
+	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
 	import Spinner from '$lib/components/Spinner.svelte'
 	import { slide } from 'svelte/transition'

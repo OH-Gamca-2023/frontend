@@ -4,7 +4,6 @@ export interface Sponsor {
 	url: string // URL to the sponsor's website
 }
 
-export const sponsors: Sponsor[] = [
-]
+export const sponsors: Sponsor[] = []
 
 export default sponsors

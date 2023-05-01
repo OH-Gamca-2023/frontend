@@ -60,11 +60,11 @@ export function addDisconnectListener(listener: () => void) {
 async function runCheck() {
 	const now = Date.now()
 	try {
-		let headers: any = {}
+		const headers: any = {}
 
 		if (getAccessToken()) headers['Authorization'] = 'Bearer ' + getAccessToken()
 
-		const serverResult = await fetch(getApiHost() + '/status/', { method: 'GET', headers }) 
+		const serverResult = await fetch(getApiHost() + '/status/', { method: 'GET', headers })
 		if (serverResult.status === 200) {
 			lastCheck.server = true
 		} else {
@@ -188,7 +188,7 @@ async function processCheckResult() {
 			if (!lastCheck.response.token.present) nextCheck = 10000
 			else {
 				const token_response = lastCheck.response.token
-				if(!token_response.valid || token_response.expired || !token_response.found) {
+				if (!token_response.valid || token_response.expired || !token_response.found) {
 					// User was logged out
 					const state = (await import('./state/state')).userState
 					await state.fetchUser()
@@ -206,7 +206,7 @@ async function processCheckResult() {
 		}
 	}
 	consecutiveFailures++
-	previousCheck = { ...lastCheck } 
+	previousCheck = { ...lastCheck }
 
 	if (waitingCheck) clearTimeout(waitingCheck)
 	waitingCheck = setTimeout(runCheck, nextCheck)

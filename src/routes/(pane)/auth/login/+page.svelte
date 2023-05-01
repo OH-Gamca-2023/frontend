@@ -4,12 +4,12 @@
 	import { darkTheme } from '$lib/data/prefs'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/utils/toasts'
-	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
 	import { setAccessToken } from '$lib/state/token'
 	import { loginRequired } from '$lib/data/settings'
 	import { onMount } from 'svelte'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 

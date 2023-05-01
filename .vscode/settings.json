@@ -11,6 +11,5 @@
 	"eslint.run": "onSave",
 	"eslint.lintTask.enable": true,
 	"eslint.packageManager": "npm",
-	"eslint.options": {
-	}
+	"eslint.options": {}
 }

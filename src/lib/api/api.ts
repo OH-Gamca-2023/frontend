@@ -20,8 +20,7 @@ function internalApiRequest(
 			break
 	}
 
-	if (auth && getAccessToken())
-		headers.append('Authorization', `Bearer ${getAccessToken()}`)
+	if (auth && getAccessToken()) headers.append('Authorization', `Bearer ${getAccessToken()}`)
 	else if (auth)
 		console.warn('No access token found for authenticated request. Details:', url, method, body)
 

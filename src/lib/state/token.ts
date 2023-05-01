@@ -1,4 +1,4 @@
-import { browser } from "$app/environment"
+import { browser } from '$app/environment'
 import { Buffer } from 'buffer'
 
 function rotateAlphabetically(token: string, rotation: number) {
@@ -40,35 +40,34 @@ function decodeToken(rawToken: string) {
 let currentAccessToken: string | undefined = undefined
 let currentTokenExpiry: number | undefined = undefined
 
-
 export function getAccessToken(): string | undefined {
-    if (!browser) return undefined
-    if (currentAccessToken === undefined) {
-        const rawToken = localStorage.getItem('token')
-        if (rawToken) {
-            const { token, expiryDate } = decodeToken(rawToken)
-            if (expiryDate > new Date().getTime()) {
-                currentAccessToken = token
-                currentTokenExpiry = expiryDate
-            } else {
-                setAccessToken(undefined)
-            }
-        }
-    } else if (currentTokenExpiry && currentTokenExpiry < new Date().getTime()) {
-        setAccessToken(undefined)
-    }
-    return currentAccessToken
+	if (!browser) return undefined
+	if (currentAccessToken === undefined) {
+		const rawToken = localStorage.getItem('token')
+		if (rawToken) {
+			const { token, expiryDate } = decodeToken(rawToken)
+			if (expiryDate > new Date().getTime()) {
+				currentAccessToken = token
+				currentTokenExpiry = expiryDate
+			} else {
+				setAccessToken(undefined)
+			}
+		}
+	} else if (currentTokenExpiry && currentTokenExpiry < new Date().getTime()) {
+		setAccessToken(undefined)
+	}
+	return currentAccessToken
 }
 
 export function setAccessToken(token: string | undefined) {
-    if (!browser) return
-    if (token) {
-        const expires = new Date().getTime() + 1000 * 60 * 60 * 24 * 7
-        localStorage.setItem('token', encodeToken(token, expires))
-        currentTokenExpiry = expires
-    } else {
-        localStorage.removeItem('token')
-        currentTokenExpiry = undefined
-    }
-    currentAccessToken = token
+	if (!browser) return
+	if (token) {
+		const expires = new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+		localStorage.setItem('token', encodeToken(token, expires))
+		currentTokenExpiry = expires
+	} else {
+		localStorage.removeItem('token')
+		currentTokenExpiry = undefined
+	}
+	currentAccessToken = token
 }

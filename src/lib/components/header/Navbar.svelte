@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getPref, darkTheme } from '$lib/data/prefs'
 	import { categories } from '$lib/disciplines'
-	import Icon from '@iconify/svelte'
+	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
 	import Spinner from '../Spinner.svelte'
 	import Hamburger from './Hamburger.svelte'

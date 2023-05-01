@@ -11,15 +11,15 @@ const config = {
 	kit: {
 		adapter: getAdapter(),
 		serviceWorker: {
-			register: process.env.NODE_ENV === 'development' ? false : true
-		}
+			register: process.env.NODE_ENV === 'development' ? false : true,
+		},
 	},
 
 	compilerOptions: {
 		cssHash: ({ hash, css }) => {
 			return `oh-${hash(css)}`
-		}
-	}
+		},
+	},
 }
 
 export default config

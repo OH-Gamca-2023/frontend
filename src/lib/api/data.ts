@@ -1,4 +1,4 @@
-import { browser } from "$app/environment"
+import { browser } from '$app/environment'
 
 export function getApiHost() {
 	if (!browser) return '/api'
