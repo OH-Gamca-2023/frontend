@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from 'svelte'
 	import type { Day, Header, Item } from './types'
 	import { dayNames } from './consts'
+	import clickOutside from '$lib/utils/clickOutside'
 
 	export let useShortHeaders = false
 	export let headers: Header[] = dayNames
@@ -14,17 +15,22 @@
 	let dispatch = createEventDispatcher()
 </script>
 
-<div class="calendar">
+<div class="calendar" use:clickOutside={() => dispatch('clickOutside')}>
 	{#each usedHeaders as header}
-		<span class="day-name" on:click={() => dispatch('headerClick', header)}>{header}</span>
+		<span class="day-name">{header}</span>
 	{/each}
 
 	{#each days as day}
-		{#if day.enabled}
-			<span class="day" on:click={() => dispatch('dayClick', day)}>{day.name}</span>
-		{:else}
-			<span class="day day-disabled" on:click={() => dispatch('dayClick', day)}>{day.name}</span>
-		{/if}
+		<span
+			class="day"
+			class:day-disabled={!day.enabled}
+			class:day-today={day.today}
+			class:day-selected={day.selected}
+			on:click={() => dispatch('dayClick', day)}
+			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
+		>
+			{day.name}
+		</span>
 	{/each}
 
 	{#each items as item}
@@ -32,39 +38,133 @@
 			on:click={() => dispatch('itemClick', item)}
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
 			class="task {item.className}"
-			style="grid-column: {item.startCol} / span {item.len};      
+			class:task-selected={item.selected}
+			style="grid-column: {item.startCol};      
                     grid-row: {item.startRow};  
                     align-self: {item.isBottom ? 'end' : 'center'};"
 		>
 			{item.title}
-			{#if item.detailHeader}
-				<div class="task-detail">
-					<h2>{item.detailHeader}</h2>
-					<p>{item.detailContent}</p>
-				</div>
-			{/if}
+			<div class="task-overlay task-select-overlay">
+				{item.title}
+			</div>
+			<div class="task-overlay task-hover-overlay" />
 		</section>
 	{/each}
 </div>
 
 <style lang="scss">
+	.day {
+		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
+		border-right: 1px solid rgba(166, 168, 179, 0.12);
+		color: #98a0a6;
+	}
+
+	.day-name {
+		color: #e9a1a7;
+		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
+	}
+
+	.day-disabled {
+		color: rgba(152, 160, 166, 0.5);
+		background-color: #ffffff;
+		background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fdf9ff' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+		cursor: not-allowed;
+	}
+
+	.day-today {
+		background-color: #ffeab4;
+		color: #767c81;
+
+		&.day-selected {
+			background-color: #efd798;
+		}
+	}
+
+	.day-selected {
+		background-color: #f7f3e6;
+		color: #767c81;
+	}
+
+	.task--warning {
+		border-left-color: #fdb44d;
+		background: #fef0db;
+		color: #fc9b10;
+
+		.task-select-overlay {
+			background-color: #fc9b10 !important;
+			border-left-color: #ffc97d !important;
+			color: #fef0db !important;
+		}
+
+		.task-hover-overlay {
+			background-color: rgba(252, 155, 16, 0.1) !important;
+		}
+	}
+
+	.task--danger {
+		border-left-color: #fa607e;
+		background: #ffd4dd;
+		color: #f8254e;
+
+		.task-select-overlay {
+			background-color: #f8254e !important;
+			border-left-color: #ff839c !important;
+			color: #ffd4dd !important;
+		}
+
+		.task-hover-overlay {
+			background-color: rgba(248, 37, 78, 0.1) !important;
+		}
+	}
+
+	.task--info {
+		border-left-color: #4786ff;
+		background: #dbe7ff;
+		color: #0a5eff;
+
+		.task-select-overlay {
+			background-color: #0a5eff !important;
+			border-left-color: #7ab2ff !important;
+			color: #dbe7ff !important;
+		}
+
+		.task-hover-overlay {
+			background-color: rgba(10, 94, 255, 0.1) !important;
+		}
+	}
+	.task--success {
+		border-left-color: #5cb85c;
+		background: #ccffcc;
+		color: #3c763d;
+
+		.task-select-overlay {
+			background-color: #259c27 !important;
+			border-left-color: #ccffcc !important;
+			color: #bbffbb !important;
+		}
+
+		.task-hover-overlay {
+			background-color: rgba(60, 118, 61, 0.1) !important;
+		}
+	}
+
+	// Below are positioning styles for the calendar
+
 	.calendar {
 		display: grid;
 		width: 100%;
-		grid-template-columns: repeat(7, minmax(120px, 1fr));
+		grid-template-columns: repeat(7, 7fr);
 		grid-template-rows: 50px;
 		grid-auto-rows: 120px;
 		overflow: auto;
 	}
+
 	.day {
-		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-		border-right: 1px solid rgba(166, 168, 179, 0.12);
 		text-align: right;
 		padding: 14px 20px;
 		letter-spacing: 1px;
 		font-size: 14px;
 		box-sizing: border-box;
-		color: #98a0a6;
 		position: relative;
 		z-index: 1;
 
@@ -124,6 +224,7 @@
 			grid-column: 7/7;
 		}
 	}
+
 	.day-name {
 		font-size: 12px;
 		text-transform: uppercase;
@@ -133,12 +234,6 @@
 		line-height: 50px;
 		font-weight: 500;
 	}
-	.day-disabled {
-		color: rgba(152, 160, 166, 0.5);
-		background-color: #ffffff;
-		background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fdf9ff' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
-		cursor: not-allowed;
-	}
 
 	.task {
 		border-left-width: 3px;
@@ -146,82 +241,55 @@
 		margin: 10px;
 		border-left-style: solid;
 		font-size: 14px;
+		font-weight: bold;
 		position: relative;
+		cursor: pointer;
 		align-self: center;
 		z-index: 2;
 		border-radius: 15px;
-	}
-	.task--warning {
-		border-left-color: #fdb44d;
-		background: #fef0db;
-		color: #fc9b10;
-		margin-top: -5px;
-	}
-	.task--danger {
-		border-left-color: #fa607e;
-		grid-column: 2 / span 3;
-		grid-row: 3;
 		margin-top: 15px;
-		background: rgba(253, 197, 208, 0.7);
-		color: #f8254e;
-	}
-	.task--info {
-		border-left-color: #4786ff;
-		margin-top: 15px;
-		background: rgba(218, 231, 255, 0.7);
-		color: #0a5eff;
-	}
-	.task--primary {
-		background: #4786ff;
-		border: 0;
-		border-radius: 14px;
-		color: #f00;
-		box-shadow: 0 10px 14px rgba(71, 134, 255, 0.4);
-	}
-	.task-detail {
-		position: absolute;
-		left: 0;
-		top: calc(100% + 8px);
-		background: #efe;
-		border: 1px solid rgba(166, 168, 179, 0.2);
-		color: #100;
-		padding: 20px;
-		box-sizing: border-box;
-		border-radius: 14px;
-		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-		z-index: 2;
-	}
-	.task-detail:after,
-	.task-detail:before {
-		bottom: 100%;
-		left: 30%;
-		border: solid transparent;
-		content: ' ';
-		height: 0;
-		width: 0;
-		position: absolute;
-		pointer-events: none;
-	}
-	.task-detail:before {
-		border-bottom-color: rgba(166, 168, 179, 0.2);
-		border-width: 8px;
-		margin-left: -8px;
-	}
-	.task-detail:after {
-		border-bottom-color: #fff;
-		border-width: 6px;
-		margin-left: -6px;
-	}
-	.task-detail h2 {
-		font-size: 15px;
-		margin: 0;
-		color: #91565d;
-	}
-	.task-detail p {
-		margin-top: 4px;
-		font-size: 12px;
-		margin-bottom: 0;
-		font-weight: 500;
-		color: rgba(81, 86, 93, 0.7);
+
+		.task-overlay {
+			all: inherit;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 0px;
+			left: -3px;
+			margin: 0;
+			overflow: hidden;
+
+			&.task-hover-overlay {
+				width: calc(100% + 3px);
+				opacity: 0;
+				transition: opacity 0.2s ease-in-out;
+				z-index: 3;
+				border-left: unset;
+			}
+
+			&.task-select-overlay {
+				width: 0;
+				opacity: 0;
+				transition: width 0.5s ease-in-out, opacity 0.4s ease-in-out;
+			}
+		}
+
+		&:hover:not(.task-selected) {
+			.task-hover-overlay {
+				opacity: 1;
+			}
+		}
+
+		&.task-selected {
+			.task-hover-overlay {
+				transition: opacity 0.5s ease-in-out;
+			}
+
+			.task-select-overlay {
+				width: calc(100% + 3px);
+				opacity: 1;
+				transition: width 0.5s ease-in-out, opacity 0.4s ease-in-out 0.1s;
+			}
+		}
 	}
 </style>

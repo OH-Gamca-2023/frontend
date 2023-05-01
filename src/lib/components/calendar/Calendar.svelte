@@ -1,27 +1,20 @@
 <script lang="ts">
 	import CalendarDisplay from './CalendarDisplay.svelte'
-	import { createEventDispatcher, onMount } from 'svelte'
-	import type { Header, Item, Day } from './types'
-	import { dayNames, monthNames } from './consts'
+	import type { Item, Day } from './types'
+	import { monthNames } from './consts'
+	import { calendarData } from './data'
+
+	export let showHeader = true
+	export let allowExpanding = true
 
 	let now = new Date()
-	let year = now.getFullYear()
-	let month = now.getMonth()
-	let eventText = 'Click an item or date'
+	export let year = now.getFullYear()
+	export let month = now.getMonth()
 
 	let days: Day[] = []
 
-	let items: Item[] = []
-
-	function initMonthItems() {}
-
-	$: month, year, initContent()
-
-	// choose what date/day gets displayed in each date box.
-	function initContent() {
-		initMonth()
-		initMonthItems()
-	}
+	let allItems: Item[] = []
+	let currentItems: Item[] = []
 
 	function initMonth() {
 		days = []
@@ -47,7 +40,7 @@
 		for (let i = 0; i < daysInThisMonth; i++) {
 			let d = new Date(year, month, i + 1)
 			let name = (i == 0 ? monthAbbrev + ' ' : '') + (i + 1)
-			days.push({ name, enabled: true, date: d })
+			days.push({ name, enabled: true, date: d, today: i == now.getDate() - 1 })
 		}
 
 		//	show any days to fill up the last row (disabled) - always less than 7
@@ -56,6 +49,46 @@
 			let name = (i == 0 ? monthNames[nextMonth].shortName + ' ' : '') + (i + 1)
 			days.push({ name, enabled: false, date: d })
 		}
+	}
+
+	function initMonthItems() {
+		currentItems = []
+		allItems.forEach((item) => {
+			if (item.date.getFullYear() === year && item.date.getMonth() === month) {
+				currentItems.push(item)
+			}
+		})
+
+		for (let i of currentItems) {
+			let rc = findRowCol(i.date)
+			if (rc) {
+				i.startRow = rc.row
+				i.startCol = rc.col
+			} else {
+				console.warn('item not found in month', i)
+				i.startRow = i.startCol = 0
+			}
+		}
+	}
+
+	$: month, year, initContent()
+	calendarData.onLoaded(() => {
+		const rawEvents = calendarData.get(0)!.events
+		allItems = rawEvents.map((e) => {
+			return {
+				title: e.name,
+				className: e.category.calendarClass,
+				date: e.date,
+				len: 1,
+			} as Item
+		})
+
+		initContent()
+	})
+
+	function initContent() {
+		initMonth()
+		initMonthItems()
 	}
 
 	function findRowCol(dt: Date): { row: number; col: number } | null {
@@ -71,15 +104,23 @@
 		return null
 	}
 
-	function itemClick(e: any) {
-		eventText = 'itemClick ' + JSON.stringify(e) + ' localtime=' + e.date.toString()
+	function itemClick(e: Item) {
+		if (!allowExpanding) return
+		let day = days.find((d) => d.date.getDate() === e.date.getDate())
+		dayClick(day!)
+
+		currentItems.forEach((i) => (i.selected = false))
+		const index = currentItems.findIndex((i) => i.date.getTime() === e.date.getTime())
+		if (index >= 0) currentItems[index].selected = true
 	}
-	function dayClick(e: any) {
-		eventText = 'onDayClick ' + JSON.stringify(e) + ' localtime=' + e.date.toString()
+
+	function dayClick(e: Day) {
+		if (!allowExpanding) return
+		days.forEach((d) => (d.selected = false))
+		const index = days.findIndex((d) => d.date.getTime() === e.date.getTime())
+		if (index >= 0) days[index].selected = true
 	}
-	function headerClick(e: any) {
-		eventText = 'onHheaderClick ' + JSON.stringify(e)
-	}
+
 	function next() {
 		month++
 		if (month == 12) {
@@ -87,6 +128,7 @@
 			month = 0
 		}
 	}
+
 	function prev() {
 		month--
 		if (month == -1) {
@@ -96,25 +138,26 @@
 	}
 </script>
 
-<div class="calendar-container">
-	<div class="calendar-header">
-		<h1>
-			<button on:click={() => prev()}>&lt;</button>
-			<span class="mx-2">
-				{monthNames[month].name}
-				{year}
-			</span>
-			<button on:click={() => next()}>&gt;</button>
-		</h1>
-		{eventText}
-	</div>
+<div class="calendar-container {$$props.class}">
+	{#if showHeader}
+		<div class="calendar-header">
+			<h1>
+				<button on:click={() => prev()}>&lt;</button>
+				<span class="mx-2">
+					{monthNames[month].name}
+					{year}
+				</span>
+				<button on:click={() => next()}>&gt;</button>
+			</h1>
+		</div>
+	{/if}
 
 	<CalendarDisplay
 		{days}
-		{items}
+		items={currentItems}
 		on:dayClick={(e) => dayClick(e.detail)}
 		on:itemClick={(e) => itemClick(e.detail)}
-		on:headerClick={(e) => headerClick(e.detail)}
+		on:clickOutside={() => (days.forEach((d) => (d.selected = false)), (days = days))}
 	/>
 </div>
 
@@ -126,7 +169,6 @@
 		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 		border-radius: 10px;
 		background: #fff;
-		max-width: 1200px;
 	}
 	.calendar-header {
 		text-align: center;

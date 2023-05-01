@@ -9,17 +9,18 @@ export type Day = {
     name: string
     enabled: boolean
     date: Date
+
+    selected?: boolean
+    today?: boolean
 }
 
 export type Item = {
     title: string
     className: string
     date: Date
-    len: number
-    vlen?: number
+
     isBottom?: boolean
-    detailHeader?: string
-    detailContent?: string
+    selected?: boolean
 
     startCol?: number
     startRow?: number
