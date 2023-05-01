@@ -6,6 +6,7 @@ export const categories = new LoadableModel<Category>(
 	(rawCategory: any) => ({
 		id: rawCategory.id,
 		name: rawCategory.name,
+		calendarClass: rawCategory.calendar_class,
 	}),
 	true,
 	[],

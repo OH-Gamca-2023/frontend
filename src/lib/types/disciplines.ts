@@ -8,6 +8,7 @@ export interface Tag {
 export interface Category {
 	id: number
 	name: string
+	calendarClass: string
 }
 
 export interface Discipline {
