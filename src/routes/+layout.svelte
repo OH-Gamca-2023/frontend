@@ -3,6 +3,7 @@
 	import Header from '$lib/components/header/Header.svelte'
 	import { darkTheme } from '$lib/data/prefs'
 	import '../tailwind.css'
+	import '../tooltip.css'
 	import '../global.css'
 	import Background from '$lib/components/Background.svelte'
 	import Footer from '$lib/components/footer/Footer.svelte'
