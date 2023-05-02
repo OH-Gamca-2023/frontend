@@ -78,7 +78,7 @@
 			color: #f36974;
 		}
 
-		@media (max-width: 1340px) {
+		@media (max-width: 890px) {
 			display: block;
 		}
 	}
@@ -196,7 +196,7 @@
 		grid-template-rows: 0;
 		overflow-x: overlay;
 
-		@media (max-width: 1340px) {
+		@media (max-width: 890px) {
 			grid-template-rows: 50px;
 		}
 	}

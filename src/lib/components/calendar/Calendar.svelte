@@ -230,6 +230,8 @@
 <style lang="scss">
 	.calendar-container {
 		background-color: white;
+		max-width: calc(200px * 7 + 2rem);
+
 		&.dark {
 			background-color: #374151;
 			.calendar-header {
@@ -267,7 +269,7 @@
 				opacity: 1;
 			}
 
-			@media (max-width: 1340px) {
+			@media (max-width: 890px) {
 				top: 0;
 				height: calc(120px * var(--rows) + 50px);
 
@@ -302,7 +304,7 @@
 			color: #f36974;
 		}
 
-		@media (max-width: 1340px) {
+		@media (max-width: 890px) {
 			display: none;
 		}
 

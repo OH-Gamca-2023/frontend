@@ -6,4 +6,6 @@
 	<title>Calendar</title>
 </svelte:head>
 
-<Calendar />
+<div class="flex flex-col items-center justify-center h-full">
+	<Calendar />
+</div>
