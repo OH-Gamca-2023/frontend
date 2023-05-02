@@ -45,7 +45,12 @@
 		for (let i = 0; i < daysInThisMonth; i++) {
 			let d = new Date(year, month, i + 1)
 			let name = (i == 0 ? monthAbbrev + ' ' : '') + (i + 1)
-			days[month].push({ name, enabled: true, date: d, today: i == now.getDate() - 1 })
+			days[month].push({
+				name,
+				enabled: true,
+				date: d,
+				today: i == now.getDate() - 1 && month == now.getMonth(),
+			})
 		}
 
 		//	show any days to fill up the last row (disabled) - always less than 7

@@ -90,16 +90,26 @@
 	}
 
 	.day-today {
-		background-color: #ffeab4;
 		color: #767c81;
+
+		&.dark {
+			color: #ebe9e9;
+		}
+
+		&::before {
+			background-color: rgba(255, 200, 0, 0.572);
+		}
 	}
 
 	.day-selected {
-		background-color: #f7f3e6;
-		color: #767c81;
+		&::before {
+			background-color: rgba(136, 255, 0, 0.123);
+		}
 
 		&.day-today {
-			background-color: #efd798;
+			&::before {
+				background-color: rgba(255, 200, 0, 0.706);
+			}
 		}
 	}
 
@@ -150,6 +160,7 @@
 			background-color: rgba(10, 94, 255, 0.1) !important;
 		}
 	}
+
 	.task--success {
 		border-left-color: #5cb85c;
 		background: #ccffcc;
@@ -172,7 +183,6 @@
 		display: grid;
 		width: 100%;
 		grid-template-columns: repeat(7, 7fr);
-		grid-template-rows: 50px;
 		grid-auto-rows: 120px;
 		overflow: auto;
 	}
@@ -185,6 +195,16 @@
 		box-sizing: border-box;
 		position: relative;
 		z-index: 1;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+		}
 
 		&:nth-of-type(7n + 7) {
 			border-right: 0;
@@ -278,7 +298,7 @@
 			overflow: hidden;
 
 			&.task-hover-overlay {
-				width: calc(100% + 3px);
+				width: calc(100% + 5px);
 				opacity: 0;
 				transition: opacity 0.2s ease-in-out;
 				border-left: unset;
