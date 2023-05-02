@@ -214,8 +214,8 @@
 						7}"
 				>
 					<CalendarDisplay
-						days={days[i]}
-						items={monthItems[i]}
+						days={days[i] ?? []}
+						items={monthItems[i] ?? []}
 						{usedHeaders}
 						on:dayClick={(e) => dayClick(e.detail, i)}
 						on:itemClick={(e) => itemClick(e.detail, i)}
