@@ -1,14 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
-	import type { Day, Header, Item } from './types'
-	import { dayNames } from './consts'
+	import type { Day, Item } from './types'
 	import clickOutside from '$lib/utils/clickOutside'
 	import { darkTheme } from '$lib/data/prefs'
-
-	export let useShortHeaders = false
-	export let headers: Header[] = dayNames
-
-	$: usedHeaders = useShortHeaders ? headers.map((h) => h.shortName) : headers.map((h) => h.name)
 
 	export let days: Day[] = []
 	export let items: Item[] = []
@@ -21,10 +15,6 @@
 	use:clickOutside={() => dispatch('clickOutside')}
 	class:dark={$darkTheme}
 >
-	{#each usedHeaders as header}
-		<span class="day-name" class:dark={$darkTheme}>{header}</span>
-	{/each}
-
 	{#each days as day}
 		<span
 			class="day"
