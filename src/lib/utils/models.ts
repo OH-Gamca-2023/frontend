@@ -13,6 +13,7 @@ export class LoadableModel<T> {
 
 	protected loadListeners: (() => void)[] = []
 	protected loadErrorListeners: (() => void)[] = []
+	protected updateListeners: (() => void)[] = []
 
 	private data: Map<string, T> = new Map()
 
@@ -143,9 +144,8 @@ export class LoadableModel<T> {
 		}
 
 		this.isLoaded = true
-		if (!force) {
-			this.triggerLoaded()
-		}
+		if (!force) this.triggerLoaded()
+		else this.triggerUpdated()
 		console.debug(`[model ${this.apiUrl}] loaded`)
 
 		if (this.cache && respData) {
@@ -186,6 +186,10 @@ export class LoadableModel<T> {
 		this.loadErrorListeners.push(listener)
 	}
 
+	public onUpdated(listener: () => void) {
+		this.updateListeners.push(listener)
+	}
+
 	public triggerLoadError() {
 		this.loadErrorListeners.forEach((listener) => listener())
 	}
@@ -197,5 +201,15 @@ export class LoadableModel<T> {
 		if (this.resolveLoadingPromise) {
 			this.resolveLoadingPromise()
 		}
+
+		this.triggerUpdated()
+	}
+
+	public triggerUpdated() {
+		this.updateListeners.forEach((listener) => listener())
+	}
+
+	public async reload() {
+		this.load(true)
 	}
 }

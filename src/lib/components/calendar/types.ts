@@ -36,7 +36,10 @@ export type CalendarProps = {
 
 export type CalendarEvent = {
     id: string
-    name: string
+    name: {
+        regular: string
+        short: string
+    }
     date: Date
     time: string
     location: string

@@ -79,11 +79,11 @@
 		}
 	}
 
-	calendarData.onLoaded(() => {
+	calendarData.onUpdated(() => {
 		const rawEvents = calendarData.get(0)!.events
 		allItems = rawEvents.map((e) => {
 			return {
-				title: e.name,
+				title: e.name.short,
 				className: e.category.calendarClass,
 				date: e.date,
 				len: 1,
@@ -201,7 +201,7 @@
 		</div>
 	{/if}
 
-	<div class="calendars" style="--curr-rows: {days[displayedMonth]?.length / 7 ?? 0}">
+	<div class="calendars" style="--curr-rows: {(days[displayedMonth]?.length ?? 0) / 7}">
 		<div class="calendar-grid rounded-b-lg" class:dark={$darkTheme}>
 			{#each usedHeaders as header}
 				<span class="day-name" class:dark={$darkTheme}>{header}</span>
@@ -210,8 +210,8 @@
 				<div
 					class="calendar-wrapper"
 					class:active={displayedMonth == i}
-					style="--current-month: {displayedMonth}; --index: {i}; --rows: {days[i]?.length / 7 ??
-						0}"
+					style="--current-month: {displayedMonth}; --index: {i}; --rows: {(days[i]?.length ?? 0) /
+						7}"
 				>
 					<CalendarDisplay
 						days={days[i]}
@@ -305,5 +305,9 @@
 		@media (max-width: 1340px) {
 			display: none;
 		}
+
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 </style>

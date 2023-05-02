@@ -209,9 +209,9 @@
 		box-sizing: border-box;
 		position: relative;
 
-		-webkit-user-select: none; /* Safari */
-		-ms-user-select: none; /* IE 10 and IE 11 */
-		user-select: none; /* Standard syntax */
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 
 		.day-text {
 			z-index: 1;
@@ -299,6 +299,10 @@
 		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
 		line-height: 50px;
 		font-weight: 500;
+
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 
 	.task {
@@ -314,6 +318,9 @@
 		z-index: 2;
 		border-radius: 15px;
 		margin-top: 15px;
+
+		white-space: nowrap;
+		overflow: hidden;
 
 		grid-column: var(--column);
 		grid-row: calc(var(--row) + 1);
