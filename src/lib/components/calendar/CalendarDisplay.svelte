@@ -3,6 +3,7 @@
 	import type { Day, Header, Item } from './types'
 	import { dayNames } from './consts'
 	import clickOutside from '$lib/utils/clickOutside'
+	import { darkTheme } from '$lib/data/prefs'
 
 	export let useShortHeaders = false
 	export let headers: Header[] = dayNames
@@ -15,9 +16,13 @@
 	let dispatch = createEventDispatcher()
 </script>
 
-<div class="calendar" use:clickOutside={() => dispatch('clickOutside')}>
+<div
+	class="calendar rounded-b-lg"
+	use:clickOutside={() => dispatch('clickOutside')}
+	class:dark={$darkTheme}
+>
 	{#each usedHeaders as header}
-		<span class="day-name">{header}</span>
+		<span class="day-name" class:dark={$darkTheme}>{header}</span>
 	{/each}
 
 	{#each days as day}
@@ -26,6 +31,7 @@
 			class:day-disabled={!day.enabled}
 			class:day-today={day.today}
 			class:day-selected={day.selected}
+			class:dark={$darkTheme}
 			on:click={() => dispatch('dayClick', day)}
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
 		>
@@ -40,6 +46,7 @@
 			class="task {item.className}"
 			class:task-selected={item.selected}
 			class:task-disabled={!item.enabled}
+			class:dark={$darkTheme}
 			style="grid-column: {item.startCol};      
                     grid-row: {item.startRow};  
                     align-self: {item.isBottom ? 'end' : 'center'};"
@@ -58,11 +65,23 @@
 		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
 		border-right: 1px solid rgba(166, 168, 179, 0.12);
 		color: #98a0a6;
+		background-color: white;
+
+		&.dark {
+			color: #ccd3d8;
+			background-color: #374151;
+		}
 	}
 
 	.day-name {
 		color: #e9a1a7;
 		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
+		background-color: white;
+
+		&.dark {
+			background-color: #374151;
+			color: #f36974;
+		}
 	}
 
 	.day-disabled {

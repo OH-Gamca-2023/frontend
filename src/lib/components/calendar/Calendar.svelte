@@ -3,6 +3,7 @@
 	import type { Item, Day } from './types'
 	import { monthNames } from './consts'
 	import { calendarData } from './data'
+	import { darkTheme } from '$lib/data/prefs'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -153,16 +154,19 @@
 	}
 </script>
 
-<div class="calendar-container {$$props.class}">
+<div class="calendar-container {$$props.class} rounded-lg shadow-lg w-full">
 	{#if showHeader}
-		<div class="calendar-header">
-			<h1>
-				<button on:click={() => prev()}>&lt;</button>
+		<div
+			class="calendar-header rounded-t-lg bg-violet-100 py-5 px-0 text-center"
+			class:dark={$darkTheme}
+		>
+			<h1 class="text-xl flex justify-center items-center">
+				<button class="mr-2 text-gray-700 dark:text-gray-200" on:click={() => prev()}>&lt;</button>
 				<span class="mx-2">
 					{monthNames[month].name}
 					{year}
 				</span>
-				<button on:click={() => next()}>&gt;</button>
+				<button class="ml-2 text-gray-700 dark:text-gray-200" on:click={() => next()}>&gt;</button>
 			</h1>
 		</div>
 	{/if}
@@ -176,31 +180,12 @@
 	/>
 </div>
 
-<style>
+<style lang="scss">
 	.calendar-container {
-		width: 90%;
-		margin: auto;
-		overflow: hidden;
-		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-		border-radius: 10px;
-		background: #fff;
-	}
-	.calendar-header {
-		text-align: center;
-		padding: 20px 0;
-		background: #eef;
-		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-	}
-	.calendar-header h1 {
-		margin: 0;
-		font-size: 18px;
-	}
-	.calendar-header button {
-		background: #eef;
-		border: 1px;
-		padding: 6;
-		color: rgba(81, 86, 93, 0.7);
-		cursor: pointer;
-		outline: 0;
+		.calendar-header {
+			&.dark {
+				background-color: #2b3544;
+			}
+		}
 	}
 </style>
