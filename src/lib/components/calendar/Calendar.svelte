@@ -148,6 +148,13 @@
 
 		const index = days[month].findIndex((d) => d.date.getTime() === e.date.getTime())
 		if (index >= 0) days[month][index].selected = true
+
+		// unselect all items that are not in this day
+		monthItems[month].forEach((i) => {
+			if (!(i.date.getDate() === e.date.getDate() && i.date.getMonth() === e.date.getMonth()))
+				i.selected = false
+		})
+		monthItems = monthItems
 	}
 
 	function deselectAll(i: number | undefined) {
@@ -194,7 +201,7 @@
 		</div>
 	{/if}
 
-	<div class="calendars" style="--curr-rows: {days[displayedMonth].length / 7}">
+	<div class="calendars" style="--curr-rows: {days[displayedMonth]?.length / 7 ?? 0}">
 		<div class="calendar-grid rounded-b-lg" class:dark={$darkTheme}>
 			{#each usedHeaders as header}
 				<span class="day-name" class:dark={$darkTheme}>{header}</span>
@@ -203,7 +210,8 @@
 				<div
 					class="calendar-wrapper"
 					class:active={displayedMonth == i}
-					style="--current-month: {displayedMonth}; --index: {i}; --rows: {days[i].length / 7}"
+					style="--current-month: {displayedMonth}; --index: {i}; --rows: {days[i]?.length / 7 ??
+						0}"
 				>
 					<CalendarDisplay
 						days={days[i]}

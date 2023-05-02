@@ -209,6 +209,10 @@
 		box-sizing: border-box;
 		position: relative;
 
+		-webkit-user-select: none; /* Safari */
+		-ms-user-select: none; /* IE 10 and IE 11 */
+		user-select: none; /* Standard syntax */
+
 		.day-text {
 			z-index: 1;
 			position: relative;
@@ -222,6 +226,8 @@
 			width: 100%;
 			height: 100%;
 			z-index: 0;
+
+			transition: background-color 0.3s ease;
 		}
 
 		&:nth-of-type(7n + 7) {
