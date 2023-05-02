@@ -6,6 +6,7 @@
 
 	export let days: Day[] = []
 	export let items: Item[] = []
+	export let usedHeaders: string[] = []
 
 	let dispatch = createEventDispatcher()
 </script>
@@ -15,6 +16,9 @@
 	use:clickOutside={() => dispatch('clickOutside')}
 	class:dark={$darkTheme}
 >
+	{#each usedHeaders as header}
+		<span class="day-name" class:dark={$darkTheme}>{header}</span>
+	{/each}
 	{#each days as day}
 		<span
 			class="day"
@@ -25,7 +29,7 @@
 			on:click={() => dispatch('dayClick', day)}
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
 		>
-			{day.name}
+			<span class="day-text">{day.name}</span>
 		</span>
 	{/each}
 
@@ -37,8 +41,8 @@
 			class:task-selected={item.selected}
 			class:task-disabled={!item.enabled}
 			class:dark={$darkTheme}
-			style="grid-column: {item.startCol};      
-                    grid-row: {item.startRow};  
+			style="--column: {item.startCol};      
+                    --row: {item.startRow};  
                     align-self: {item.isBottom ? 'end' : 'center'};"
 		>
 			{item.title}
@@ -67,10 +71,15 @@
 		color: #e9a1a7;
 		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
 		background-color: white;
+		display: none;
 
 		&.dark {
 			background-color: #374151;
 			color: #f36974;
+		}
+
+		@media (max-width: 1340px) {
+			display: block;
 		}
 	}
 
@@ -84,7 +93,7 @@
 	.task.task-disabled {
 		.task-hover-overlay {
 			cursor: not-allowed;
-			background-color: rgba(152, 160, 166, 0.2) !important;
+			background-color: rgba(152, 160, 166, 0.4) !important;
 			opacity: 1 !important;
 		}
 	}
@@ -182,9 +191,14 @@
 	.calendar {
 		display: grid;
 		width: 100%;
-		grid-template-columns: repeat(7, 7fr);
+		grid-template-columns: repeat(7, minmax(120px, 1fr));
 		grid-auto-rows: 120px;
-		overflow: auto;
+		grid-template-rows: 0;
+		overflow-x: overlay;
+
+		@media (max-width: 1340px) {
+			grid-template-rows: 50px;
+		}
 	}
 
 	.day {
@@ -194,7 +208,11 @@
 		font-size: 14px;
 		box-sizing: border-box;
 		position: relative;
-		z-index: 1;
+
+		.day-text {
+			z-index: 1;
+			position: relative;
+		}
 
 		&::before {
 			content: '';
@@ -203,7 +221,7 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			z-index: -1;
+			z-index: 0;
 		}
 
 		&:nth-of-type(7n + 7) {
@@ -232,6 +250,10 @@
 
 		&:nth-of-type(n + 36):nth-of-type(-n + 42) {
 			grid-row: 6;
+		}
+
+		&:nth-of-type(n + 43):nth-of-type(-n + 49) {
+			grid-row: 7;
 		}
 
 		&:nth-of-type(7n + 1) {
@@ -286,6 +308,9 @@
 		z-index: 2;
 		border-radius: 15px;
 		margin-top: 15px;
+
+		grid-column: var(--column);
+		grid-row: calc(var(--row) + 1);
 
 		.task-overlay {
 			all: inherit;

@@ -14,7 +14,7 @@
 
 	let now = new Date()
 	export let year = now.getFullYear()
-	export let month = now.getMonth()
+	export let displayedMonth = now.getMonth()
 
 	let days: Day[][] = []
 
@@ -70,7 +70,7 @@
 			if (rc) {
 				i.startRow = rc.row
 				i.startCol = rc.col
-				i.enabled = days[month][(rc.row - 2) * 7 + rc.col - 1]?.enabled ?? true
+				i.enabled = days[month][(rc.row - 1) * 7 + rc.col - 1]?.enabled ?? true
 				i.selected = false
 				monthItems[month].push(i)
 			} else {
@@ -79,7 +79,6 @@
 		}
 	}
 
-	$: month, year, initContent(year)
 	calendarData.onLoaded(() => {
 		const rawEvents = calendarData.get(0)!.events
 		allItems = rawEvents.map((e) => {
@@ -124,9 +123,8 @@
 		const currItemID = e.id
 
 		if (!e.enabled) {
-			month = e.date.getMonth()
-			year = e.date.getFullYear()
-			initContent(year)
+			displayedMonth = e.date.getMonth()
+			month = displayedMonth
 		}
 
 		setTimeout(() => {
@@ -138,13 +136,13 @@
 			monthItems[month].forEach((i) => (i.selected = false))
 			const index = monthItems[month].findIndex((i) => i.id == currItemID)
 			if (index >= 0) monthItems[month][index].selected = true
-		}, 0) // Only select the item after the calendar has been updated
+		})
 	}
 
 	function dayClick(e: Day | undefined, month: number) {
 		if (!allowExpanding) return
 
-		days[month].forEach((d) => (d.selected = false))
+		days.forEach((m) => m.forEach((d) => (d.selected = false)))
 
 		if (!e || !e.enabled) return
 
@@ -152,19 +150,26 @@
 		if (index >= 0) days[month][index].selected = true
 	}
 
+	function deselectAll(i: number | undefined) {
+		if (i != displayedMonth && i != undefined) return
+		days.forEach((m) => m.forEach((d) => (d.selected = false)))
+		monthItems.forEach((m) => m.forEach((i) => (i.selected = false)))
+		;(days = days), (monthItems = monthItems)
+	}
+
 	function next() {
-		month++
-		if (month == 12) {
+		displayedMonth++
+		if (displayedMonth == 12) {
 			year++
-			month = 0
+			displayedMonth = 0
 		}
 	}
 
 	function prev() {
-		month--
-		if (month == -1) {
+		displayedMonth--
+		if (displayedMonth == -1) {
 			year--
-			month = 11
+			displayedMonth = 11
 		}
 	}
 </script>
@@ -173,15 +178,15 @@
 	{#if showHeader}
 		<div class="calendar-header rounded-t-lg bg-violet-100 py-5 px-0 text-center">
 			<h1 class="text-xl flex justify-center items-center">
-				{#if month > 0}
+				{#if displayedMonth > 0}
 					<button class="mr-2 text-gray-700 dark:text-gray-200" on:click={() => prev()}>&lt;</button
 					>
 				{/if}
 				<span class="mx-2">
-					{monthNames[month].name}
+					{monthNames[displayedMonth].name}
 					{year}
 				</span>
-				{#if month < 11}
+				{#if displayedMonth < 11}
 					<button class="ml-2 text-gray-700 dark:text-gray-200" on:click={() => next()}>&gt;</button
 					>
 				{/if}
@@ -189,7 +194,7 @@
 		</div>
 	{/if}
 
-	<div class="calendars">
+	<div class="calendars" style="--curr-rows: {days[displayedMonth].length / 7}">
 		<div class="calendar-grid rounded-b-lg" class:dark={$darkTheme}>
 			{#each usedHeaders as header}
 				<span class="day-name" class:dark={$darkTheme}>{header}</span>
@@ -197,15 +202,16 @@
 			{#each Array.from({ length: 12 }) as _, i}
 				<div
 					class="calendar-wrapper"
-					class:active={month == i}
-					style="--current-month: {month}; --index: {i};"
+					class:active={displayedMonth == i}
+					style="--current-month: {displayedMonth}; --index: {i}; --rows: {days[i].length / 7}"
 				>
 					<CalendarDisplay
 						days={days[i]}
 						items={monthItems[i]}
+						{usedHeaders}
 						on:dayClick={(e) => dayClick(e.detail, i)}
 						on:itemClick={(e) => itemClick(e.detail, i)}
-						on:clickOutside={() => (days[i].forEach((d) => (d.selected = false)), (days = days))}
+						on:clickOutside={() => deselectAll(i)}
 					/>
 				</div>
 			{/each}
@@ -228,12 +234,14 @@
 		position: relative;
 		width: 100%;
 		overflow: hidden;
+		height: calc(120px * var(--curr-rows) + 50px);
+		transition: height 0.5s ease-in-out;
 
 		.calendar-wrapper {
 			position: absolute;
 			top: 50px;
 			width: 100%;
-			height: 100%;
+			height: calc(120px * var(--rows));
 
 			grid-row: 2/7;
 			grid-column: 1/8;
@@ -242,20 +250,31 @@
 			left: calc(100% * $diff);
 			transition: left 0.5s ease-in-out;
 
+			overflow-x: hidden;
+			overflow-y: visible;
+
 			&.active {
 				top: 0;
 				position: relative;
 				opacity: 1;
+			}
+
+			@media (max-width: 1340px) {
+				top: 0;
+				height: calc(120px * var(--rows) + 50px);
+
+				&.active {
+					top: -50px;
+				}
 			}
 		}
 
 		.calendar-grid {
 			display: grid;
 			width: 100%;
-			grid-template-columns: repeat(7, 7fr);
+			grid-template-columns: repeat(7, 1fr);
 			grid-template-rows: 50px;
 			grid-auto-rows: 120px;
-			overflow: hidden;
 		}
 	}
 
@@ -273,6 +292,10 @@
 		&.dark {
 			background-color: #374151;
 			color: #f36974;
+		}
+
+		@media (max-width: 1340px) {
+			display: none;
 		}
 	}
 </style>
