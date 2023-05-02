@@ -39,6 +39,7 @@
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
 			class="task {item.className}"
 			class:task-selected={item.selected}
+			class:task-disabled={!item.enabled}
 			style="grid-column: {item.startCol};      
                     grid-row: {item.startRow};  
                     align-self: {item.isBottom ? 'end' : 'center'};"
@@ -65,24 +66,32 @@
 	}
 
 	.day-disabled {
-		color: rgba(152, 160, 166, 0.5);
-		background-color: #ffffff;
-		background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fdf9ff' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
-		cursor: not-allowed;
+		&::after {
+			cursor: not-allowed;
+			background-color: rgba(152, 160, 166, 0.2);
+		}
+	}
+
+	.task.task-disabled {
+		.task-hover-overlay {
+			cursor: not-allowed;
+			background-color: rgba(152, 160, 166, 0.2) !important;
+			opacity: 1 !important;
+		}
 	}
 
 	.day-today {
 		background-color: #ffeab4;
 		color: #767c81;
-
-		&.day-selected {
-			background-color: #efd798;
-		}
 	}
 
 	.day-selected {
 		background-color: #f7f3e6;
 		color: #767c81;
+
+		&.day-today {
+			background-color: #efd798;
+		}
 	}
 
 	.task--warning {
@@ -263,7 +272,6 @@
 				width: calc(100% + 3px);
 				opacity: 0;
 				transition: opacity 0.2s ease-in-out;
-				z-index: 3;
 				border-left: unset;
 			}
 
@@ -290,6 +298,19 @@
 				opacity: 1;
 				transition: width 0.5s ease-in-out, opacity 0.4s ease-in-out 0.1s;
 			}
+		}
+	}
+
+	.day-disabled,
+	.task-disabled {
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 5;
 		}
 	}
 </style>

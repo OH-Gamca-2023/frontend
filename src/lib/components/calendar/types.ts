@@ -18,9 +18,11 @@ export type Item = {
     title: string
     className: string
     date: Date
+    id: string
 
     isBottom?: boolean
     selected?: boolean
+    enabled?: boolean
 
     startCol?: number
     startRow?: number

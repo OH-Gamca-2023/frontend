@@ -53,19 +53,16 @@
 
 	function initMonthItems() {
 		currentItems = []
-		allItems.forEach((item) => {
-			if (item.date.getFullYear() === year && item.date.getMonth() === month) {
-				currentItems.push(item)
-			}
-		})
 
-		for (let i of currentItems) {
+		for (let i of allItems) {
 			let rc = findRowCol(i.date)
 			if (rc) {
 				i.startRow = rc.row
 				i.startCol = rc.col
+				i.enabled = days[(rc.row - 2) * 7 + rc.col - 1]?.enabled ?? true
+				i.selected = false
+				currentItems.push(i)
 			} else {
-				console.warn('item not found in month', i)
 				i.startRow = i.startCol = 0
 			}
 		}
@@ -80,6 +77,7 @@
 				className: e.category.calendarClass,
 				date: e.date,
 				len: 1,
+				id: e.id,
 			} as Item
 		})
 
@@ -106,17 +104,34 @@
 
 	function itemClick(e: Item) {
 		if (!allowExpanding) return
-		let day = days.find((d) => d.date.getDate() === e.date.getDate())
-		dayClick(day!)
 
-		currentItems.forEach((i) => (i.selected = false))
-		const index = currentItems.findIndex((i) => i.date.getTime() === e.date.getTime())
-		if (index >= 0) currentItems[index].selected = true
+		const currItemID = e.id
+
+		if (!e.enabled) {
+			month = e.date.getMonth()
+			year = e.date.getFullYear()
+			initContent()
+		}
+
+		setTimeout(() => {
+			let day = days.find(
+				(d) => d.date.getDate() === e.date.getDate() && d.date.getMonth() === e.date.getMonth(),
+			)
+			dayClick(day)
+
+			currentItems.forEach((i) => (i.selected = false))
+			const index = currentItems.findIndex((i) => i.id == currItemID)
+			if (index >= 0) currentItems[index].selected = true
+		}, 0) // Only select the item after the calendar has been updated
 	}
 
-	function dayClick(e: Day) {
+	function dayClick(e: Day | undefined) {
 		if (!allowExpanding) return
+
 		days.forEach((d) => (d.selected = false))
+
+		if (!e || !e.enabled) return
+
 		const index = days.findIndex((d) => d.date.getTime() === e.date.getTime())
 		if (index >= 0) days[index].selected = true
 	}
