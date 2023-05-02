@@ -10,7 +10,7 @@
         dark:from-gray-800 dark:to-gray-900
         border-t border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200 pl-4 pr-4
-        shadow-md-top sticky bottom-0"
+        shadow-md-top sticky bottom-0 z-50"
 >
 	<div class="flex flex-row items-center">
 		{#if devOptionsEnabled}

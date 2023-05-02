@@ -23,7 +23,7 @@
         dark:from-gray-800 dark:to-gray-900
         border-b border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200 pl-4 pr-4
-        shadow-md sticky top-0"
+        shadow-md sticky top-0 z-50"
 >
 	<div id="computer" class="hidden lmd:flex flex-row items-center justify-between flex-1 w-full">
 		<div id="left" class="flex flex-row items-center justify-start">
