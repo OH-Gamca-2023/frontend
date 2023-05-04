@@ -3,17 +3,14 @@
 	import type { Day, Item } from './types'
 	import clickOutside from '$lib/utils/clickOutside'
 	import { darkTheme } from '$lib/data/prefs'
+	import { compareDates } from './utils'
 
 	export let days: Day[] = []
 	export let items: Item[] = []
 	export let usedHeaders: string[] = []
 
-	$: perDayItems = days.map((day) =>
-		items.filter(
-			(item) =>
-				item.date.getDate() == day.date.getDate() && item.date.getMonth() == day.date.getMonth(),
-		),
-	)
+	$: perDayItems = days.map((day) => items.filter((item) => compareDates(item.date, day.date)))
+
 	$: dayPositions = days.map((day) => {
 		let dayIndex = days.indexOf(day)
 		let row = Math.floor(dayIndex / 7) + 1
@@ -25,11 +22,7 @@
 	let dispatch = createEventDispatcher()
 </script>
 
-<div
-	class="calendar rounded-b-lg"
-	use:clickOutside={() => dispatch('clickOutside')}
-	class:dark={$darkTheme}
->
+<div class="calendar" use:clickOutside={() => dispatch('clickOutside')} class:dark={$darkTheme}>
 	{#each usedHeaders as header}
 		<span class="day-name" class:dark={$darkTheme}>{header}</span>
 	{/each}
@@ -40,7 +33,6 @@
 			class:day-today={day.today}
 			class:day-selected={day.selected}
 			class:dark={$darkTheme}
-			class:last-row={dayPositions[index].row == lastRow}
 			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};"
 			on:click={() => dispatch('dayClick', day)}
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
@@ -62,7 +54,7 @@
 					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
 					class="task {item.className}"
 					class:task-selected={item.selected}
-					class:task-disabled={!item.enabled}
+					class:task-disabled={!day.enabled}
 					class:dark={$darkTheme}
 				>
 					{item.title}
@@ -242,10 +234,6 @@
 			position: relative;
 		}
 
-		&.last-row {
-			border-bottom: 0;
-		}
-
 		&::before {
 			content: '';
 			position: absolute;
@@ -256,10 +244,6 @@
 			z-index: 0;
 
 			transition: background-color 0.3s ease;
-		}
-
-		&:nth-of-type(7n + 7) {
-			border-right: 0;
 		}
 
 		grid-column: var(--column);

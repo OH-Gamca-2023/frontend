@@ -20,12 +20,7 @@ export type Item = {
     date: Date
     id: string
 
-    isBottom?: boolean
     selected?: boolean
-    enabled?: boolean
-
-    startCol?: number
-    startRow?: number
 }
 
 export type CalendarProps = {

@@ -5,6 +5,7 @@
 	import { calendarData } from './data'
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
+	import { compareDates } from './utils'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -19,10 +20,9 @@
 
 	let days: Day[][] = []
 
-	let allItems: Item[] = []
-	let monthItems: Item[][] = []
+	let items: Item[] = []
 
-	function initMonth(month: number, year: number) {
+	function initMonthDays(month: number, year: number) {
 		days[month] = []
 		let monthAbbrev = monthNames[month].shortName
 
@@ -62,60 +62,12 @@
 		}
 	}
 
-	function initMonthItems(month: number = 0, year: number = 0) {
-		monthItems[month] = []
-
-		for (let i of allItems) {
-			i = { ...i }
-			let rc = findRowCol(month, i.date)
-			if (rc) {
-				i.startRow = rc.row
-				i.startCol = rc.col
-				i.enabled = days[month][(rc.row - 1) * 7 + rc.col - 1]?.enabled ?? true
-				i.selected = false
-				monthItems[month].push(i)
-			} else {
-				i.startRow = i.startCol = 0
-			}
-		}
-	}
-
-	calendarData.onUpdated(() => {
-		const rawEvents = calendarData.get(0)!.events
-		allItems = rawEvents.map((e) => {
-			return {
-				title: e.name.short,
-				className: e.category.calendarClass,
-				date: e.date,
-				len: 1,
-				id: e.id,
-			} as Item
-		})
-
-		initContent(year)
-	})
-
-	function initContent(year: number) {
-		while (days.length < 12) days.push([])
-		while (monthItems.length < 12) monthItems.push([])
+	function initDays(year: number) {
+		days = [[], [], [], [], [], [], [], [], [], [], [], []]
 
 		for (let i = 0; i < 12; i++) {
-			initMonth(i, year)
-			initMonthItems(i, year)
+			initMonthDays(i, year)
 		}
-	}
-
-	function findRowCol(month: number, dt: Date): { row: number; col: number } | null {
-		for (let i = 0; i < days[month].length; i++) {
-			let d = days[month][i].date
-			if (
-				d.getFullYear() === dt.getFullYear() &&
-				d.getMonth() === dt.getMonth() &&
-				d.getDate() === dt.getDate()
-			)
-				return { row: Math.floor(i / 7) + 1, col: (i % 7) + 1 }
-		}
-		return null
 	}
 
 	function itemClick(e: Item, month: number) {
@@ -123,21 +75,12 @@
 
 		const currItemID = e.id
 
-		if (!e.enabled) {
-			displayedMonth = e.date.getMonth()
-			month = displayedMonth
-		}
+		let day = days[month].find((d) => compareDates(d.date, e.date))
+		dayClick(day, month)
 
-		setTimeout(() => {
-			let day = days[month].find(
-				(d) => d.date.getDate() === e.date.getDate() && d.date.getMonth() === e.date.getMonth(),
-			)
-			dayClick(day, month)
-
-			monthItems[month].forEach((i) => (i.selected = false))
-			const index = monthItems[month].findIndex((i) => i.id == currItemID)
-			if (index >= 0) monthItems[month][index].selected = true
-		})
+		items.forEach((i) => (i.selected = false))
+		const index = items.findIndex((i) => i.id == currItemID)
+		if (index >= 0) items[index].selected = true
 	}
 
 	function dayClick(e: Day | undefined, month: number) {
@@ -151,39 +94,34 @@
 		if (index >= 0) days[month][index].selected = true
 
 		// unselect all items that are not in this day
-		monthItems[month].forEach((i) => {
-			if (!(i.date.getDate() === e.date.getDate() && i.date.getMonth() === e.date.getMonth()))
-				i.selected = false
+		items.forEach((i) => {
+			if (!compareDates(i.date, e.date)) i.selected = false
 		})
-		monthItems = monthItems
+		items = items
 	}
 
-	function deselectAll(i: number | undefined) {
-		if (i != displayedMonth && i != undefined) return
+	function deselectAll(clickedMonth: number | undefined) {
+		if (clickedMonth != displayedMonth && clickedMonth != undefined) return
+
 		days.forEach((m) => m.forEach((d) => (d.selected = false)))
-		monthItems.forEach((m) => m.forEach((i) => (i.selected = false)))
-		;(days = days), (monthItems = monthItems)
+		items.forEach((i) => (i.selected = false))
+		;(days = days), (items = items) // trigger update
 	}
 
-	function next() {
-		displayedMonth++
-		if (displayedMonth == 12) {
-			year++
-			displayedMonth = 0
-		}
-	}
-
-	function prev() {
-		displayedMonth--
-		if (displayedMonth == -1) {
-			year--
-			displayedMonth = 11
-		}
-	}
-
-	onMount(() => {
-		initContent(year)
+	calendarData.onUpdated(() => {
+		const rawEvents = calendarData.get(0)!.events
+		items = rawEvents.map((e) => {
+			return {
+				title: e.name.short,
+				className: e.category.calendarClass,
+				date: e.date,
+				len: 1,
+				id: e.id,
+			} as Item
+		})
 	})
+
+	initDays(year)
 </script>
 
 <div class="calendar-container {$$props.class} rounded-lg shadow-lg w-full" class:dark={$darkTheme}>
@@ -191,7 +129,8 @@
 		<div class="calendar-header rounded-t-lg bg-violet-100 py-5 px-0 text-center">
 			<h1 class="text-xl flex justify-center items-center">
 				{#if displayedMonth > 0}
-					<button class="mr-2 text-gray-700 dark:text-gray-200" on:click={() => prev()}>&lt;</button
+					<button class="mr-2 text-gray-700 dark:text-gray-200" on:click={() => displayedMonth--}
+						>&lt;</button
 					>
 				{/if}
 				<span class="mx-2">
@@ -199,15 +138,19 @@
 					{year}
 				</span>
 				{#if displayedMonth < 11}
-					<button class="ml-2 text-gray-700 dark:text-gray-200" on:click={() => next()}>&gt;</button
+					<button class="ml-2 text-gray-700 dark:text-gray-200" on:click={() => displayedMonth++}
+						>&gt;</button
 					>
 				{/if}
 			</h1>
 		</div>
 	{/if}
 
-	<div class="calendars" style="--curr-rows: {(days[displayedMonth]?.length ?? 0) / 7}">
-		<div class="calendar-grid rounded-b-lg" class:dark={$darkTheme}>
+	<div
+		class="calendars rounded-b-lg"
+		style="--curr-rows: {(days[displayedMonth]?.length ?? 0) / 7}"
+	>
+		<div class="calendar-grid" class:dark={$darkTheme}>
 			{#each usedHeaders as header}
 				<span class="day-name" class:dark={$darkTheme}>{header}</span>
 			{/each}
@@ -220,7 +163,7 @@
 				>
 					<CalendarDisplay
 						days={days[i] ?? []}
-						items={monthItems[i] ?? []}
+						{items}
 						{usedHeaders}
 						on:dayClick={(e) => dayClick(e.detail, i)}
 						on:itemClick={(e) => itemClick(e.detail, i)}
