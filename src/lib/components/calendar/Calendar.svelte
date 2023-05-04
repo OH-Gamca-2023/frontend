@@ -249,14 +249,14 @@
 		position: relative;
 		width: 100%;
 		overflow: hidden;
-		height: calc(120px * var(--curr-rows) + 50px);
+		height: calc(150px * var(--curr-rows) + 50px);
 		transition: height 0.5s ease-in-out;
 
 		.calendar-wrapper {
 			position: absolute;
 			top: 50px;
 			width: 100%;
-			height: calc(120px * var(--rows));
+			height: calc(150px * var(--rows));
 
 			grid-row: 2/7;
 			grid-column: 1/8;
@@ -274,9 +274,9 @@
 				opacity: 1;
 			}
 
-			@media (max-width: 890px) {
+			@media (max-width: 1100px) {
 				top: 0;
-				height: calc(120px * var(--rows) + 50px);
+				height: calc(150px * var(--rows) + 50px);
 
 				&.active {
 					top: -50px;
@@ -309,7 +309,7 @@
 			color: #f36974;
 		}
 
-		@media (max-width: 890px) {
+		@media (max-width: 1100px) {
 			display: none;
 		}
 

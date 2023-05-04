@@ -8,6 +8,20 @@
 	export let items: Item[] = []
 	export let usedHeaders: string[] = []
 
+	$: perDayItems = days.map((day) =>
+		items.filter(
+			(item) =>
+				item.date.getDate() == day.date.getDate() && item.date.getMonth() == day.date.getMonth(),
+		),
+	)
+	$: dayPositions = days.map((day) => {
+		let dayIndex = days.indexOf(day)
+		let row = Math.floor(dayIndex / 7) + 1
+		let column = (dayIndex % 7) + 1
+		return { row, column }
+	})
+	$: lastRow = Math.ceil(days.length / 7)
+
 	let dispatch = createEventDispatcher()
 </script>
 
@@ -19,13 +33,15 @@
 	{#each usedHeaders as header}
 		<span class="day-name" class:dark={$darkTheme}>{header}</span>
 	{/each}
-	{#each days as day}
+	{#each days as day, index}
 		<span
 			class="day"
 			class:day-disabled={!day.enabled}
 			class:day-today={day.today}
 			class:day-selected={day.selected}
 			class:dark={$darkTheme}
+			class:last-row={dayPositions[index].row == lastRow}
+			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};"
 			on:click={() => dispatch('dayClick', day)}
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
 		>
@@ -33,23 +49,30 @@
 		</span>
 	{/each}
 
-	{#each items as item}
+	{#each days as day, index}
 		<section
-			on:click={() => dispatch('itemClick', item)}
-			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
-			class="task {item.className}"
-			class:task-selected={item.selected}
-			class:task-disabled={!item.enabled}
-			class:dark={$darkTheme}
-			style="--column: {item.startCol};      
-                    --row: {item.startRow};  
-                    align-self: {item.isBottom ? 'end' : 'center'};"
+			class="day-tasks"
+			class:cols-2={perDayItems[index].length > 3}
+			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};
+			--col-w: {perDayItems[index].length > 3 ? 'calc(50% - 5px)' : '100%'};"
 		>
-			{item.title}
-			<div class="task-overlay task-select-overlay">
-				{item.title}
-			</div>
-			<div class="task-overlay task-hover-overlay" />
+			{#each perDayItems[index] as item}
+				<section
+					on:click={() => dispatch('itemClick', item)}
+					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
+					class="task {item.className}"
+					class:task-selected={item.selected}
+					class:task-disabled={!item.enabled}
+					class:dark={$darkTheme}
+				>
+					{item.title}
+					<span class="task-text-cutoff" />
+					<div class="task-overlay task-select-overlay">
+						{item.title}
+					</div>
+					<div class="task-overlay task-hover-overlay" />
+				</section>
+			{/each}
 		</section>
 	{/each}
 </div>
@@ -64,6 +87,7 @@
 		&.dark {
 			color: #ccd3d8;
 			background-color: #374151;
+			border-color: rgba(255, 255, 255, 0.148);
 		}
 	}
 
@@ -78,7 +102,7 @@
 			color: #f36974;
 		}
 
-		@media (max-width: 890px) {
+		@media (max-width: 1100px) {
 			display: block;
 		}
 	}
@@ -156,7 +180,7 @@
 
 	.task--info {
 		border-left-color: #4786ff;
-		background: #dbe7ff;
+		background-color: #dbe7ff;
 		color: #0a5eff;
 
 		.task-select-overlay {
@@ -191,12 +215,12 @@
 	.calendar {
 		display: grid;
 		width: 100%;
-		grid-template-columns: repeat(7, minmax(120px, 1fr));
-		grid-auto-rows: 120px;
+		grid-template-columns: repeat(7, minmax(150px, 1fr));
+		grid-auto-rows: 150px;
 		grid-template-rows: 0;
 		overflow-x: overlay;
 
-		@media (max-width: 890px) {
+		@media (max-width: 1100px) {
 			grid-template-rows: 50px;
 		}
 	}
@@ -218,6 +242,10 @@
 			position: relative;
 		}
 
+		&.last-row {
+			border-bottom: 0;
+		}
+
 		&::before {
 			content: '';
 			position: absolute;
@@ -234,61 +262,8 @@
 			border-right: 0;
 		}
 
-		&:nth-of-type(n + 1):nth-of-type(-n + 7) {
-			grid-row: 1;
-		}
-
-		&:nth-of-type(n + 8):nth-of-type(-n + 14) {
-			grid-row: 2;
-		}
-
-		&:nth-of-type(n + 15):nth-of-type(-n + 21) {
-			grid-row: 3;
-		}
-
-		&:nth-of-type(n + 22):nth-of-type(-n + 28) {
-			grid-row: 4;
-		}
-
-		&:nth-of-type(n + 29):nth-of-type(-n + 35) {
-			grid-row: 5;
-		}
-
-		&:nth-of-type(n + 36):nth-of-type(-n + 42) {
-			grid-row: 6;
-		}
-
-		&:nth-of-type(n + 43):nth-of-type(-n + 49) {
-			grid-row: 7;
-		}
-
-		&:nth-of-type(7n + 1) {
-			grid-column: 1/1;
-		}
-
-		&:nth-of-type(7n + 2) {
-			grid-column: 2/2;
-		}
-
-		&:nth-of-type(7n + 3) {
-			grid-column: 3/3;
-		}
-
-		&:nth-of-type(7n + 4) {
-			grid-column: 4/4;
-		}
-
-		&:nth-of-type(7n + 5) {
-			grid-column: 5/5;
-		}
-
-		&:nth-of-type(7n + 6) {
-			grid-column: 6/6;
-		}
-
-		&:nth-of-type(7n + 7) {
-			grid-column: 7/7;
-		}
+		grid-column: var(--column);
+		grid-row: calc(var(--row) + 1);
 	}
 
 	.day-name {
@@ -305,25 +280,46 @@
 		user-select: none;
 	}
 
+	.day-tasks {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		align-items: center;
+		overflow: hidden;
+		padding: 40px 5px 0 5px;
+
+		grid-column: var(--column);
+		grid-row: calc(var(--row) + 1);
+
+		.task {
+			width: 100%;
+		}
+
+		&.cols-2 {
+			.task {
+				width: calc(50% - 5px);
+				font-size: 13px;
+				padding-left: 8px;
+			}
+		}
+	}
+
 	.task {
 		border-left-width: 3px;
-		padding: 8px 12px;
-		margin: 10px;
+		padding: 4px 10px;
 		border-left-style: solid;
 		font-size: 14px;
 		font-weight: bold;
 		position: relative;
 		cursor: pointer;
-		align-self: center;
 		z-index: 2;
 		border-radius: 15px;
-		margin-top: 15px;
+
+		margin: 3px 0;
 
 		white-space: nowrap;
 		overflow: hidden;
-
-		grid-column: var(--column);
-		grid-row: calc(var(--row) + 1);
 
 		.task-overlay {
 			all: inherit;
@@ -361,7 +357,7 @@
 			}
 
 			.task-select-overlay {
-				width: calc(100% + 3px);
+				width: calc(100% + 5px);
 				opacity: 1;
 				transition: width 0.5s ease-in-out, opacity 0.4s ease-in-out 0.1s;
 			}
