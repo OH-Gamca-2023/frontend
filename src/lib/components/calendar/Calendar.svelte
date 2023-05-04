@@ -4,6 +4,7 @@
 	import { dayNames, monthNames } from './consts'
 	import { calendarData } from './data'
 	import { darkTheme } from '$lib/data/prefs'
+	import { onMount } from 'svelte'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -179,6 +180,10 @@
 			displayedMonth = 11
 		}
 	}
+
+	onMount(() => {
+		initContent(year)
+	})
 </script>
 
 <div class="calendar-container {$$props.class} rounded-lg shadow-lg w-full" class:dark={$darkTheme}>
