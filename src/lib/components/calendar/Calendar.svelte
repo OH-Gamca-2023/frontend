@@ -6,6 +6,7 @@
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
 	import { compareDates } from './utils'
+	import { toast } from '$lib/utils/toasts'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -21,6 +22,8 @@
 	let days: Day[][] = []
 
 	let items: Item[] = []
+
+	let error: string | undefined
 
 	function initMonthDays(month: number, year: number) {
 		days[month] = []
@@ -108,8 +111,14 @@
 		;(days = days), (items = items) // trigger update
 	}
 
-	calendarData.onUpdated(() => {
-		const rawEvents = calendarData.get(0)!.events
+	function parseEvents() {
+		const rawEvents = calendarData.get(0)?.events
+		if (!rawEvents && calendarData.isLoaded) {
+			console.error('No events found')
+			toast({ type: 'error', title: 'Nepodarilo sa spracovať udalosti', duration: 7500 })
+			error = 'Nepodarilo sa spracovať udalosti'
+			return
+		} else if (!rawEvents) return
 		items = rawEvents.map((e) => {
 			return {
 				title: e.name.short,
@@ -119,7 +128,15 @@
 				id: e.id,
 			} as Item
 		})
+		error = undefined
+	}
+	calendarData.onUpdated(parseEvents)
+	calendarData.onLoadError(() => {
+		console.error('Failed to load calendar data')
+		toast({ type: 'error', title: 'Nepodarilo sa načítať udalosti', duration: 7500 })
+		error = 'Nepodarilo sa načítať udalosti'
 	})
+	onMount(parseEvents)
 
 	initDays(year)
 </script>
@@ -143,6 +160,9 @@
 					>
 				{/if}
 			</h1>
+			{#if error}
+				<p class="text-red-500 text-sm">{error}</p>
+			{/if}
 		</div>
 	{/if}
 
