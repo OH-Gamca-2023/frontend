@@ -165,7 +165,6 @@ async function processCheckResult() {
 		})
 		nextCheck = 10000
 	} else if (lastCheck.status === '11') {
-		reconnectListeners.forEach((listener) => listener())
 
 		// Internet and server are online
 		errorToast?.remove()
@@ -175,12 +174,14 @@ async function processCheckResult() {
 				type: 'success',
 				duration: 5000,
 			})
+			reconnectListeners.forEach((listener) => listener())
 		} else if (previousCheck && !previousCheck.server) {
 			toast({
 				title: 'Pripojenie k serveru bolo obnovené',
 				type: 'success',
 				duration: 5000,
 			})
+			reconnectListeners.forEach((listener) => listener())
 		}
 		consecutiveFailures = -1
 
