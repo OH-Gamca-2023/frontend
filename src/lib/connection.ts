@@ -165,7 +165,6 @@ async function processCheckResult() {
 		})
 		nextCheck = 10000
 	} else if (lastCheck.status === '11') {
-
 		// Internet and server are online
 		errorToast?.remove()
 		if (previousCheck && !previousCheck.internet) {

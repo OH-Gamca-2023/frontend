@@ -68,10 +68,9 @@ export class LoadableModel<T> {
 			console.debug(`[model ${this.apiUrl}] loading`)
 			this.load()
 		}
-		
 
 		addReconnectListener(() => {
-			// Attempt to reload the model when the connection is re-established 
+			// Attempt to reload the model when the connection is re-established
 			console.debug(`[model ${this.apiUrl}] connection re-established, updating`)
 			this.load(true)
 		})
@@ -109,7 +108,7 @@ export class LoadableModel<T> {
 		const error = (e: any) => {
 			if (!force) {
 				this.triggerLoadError()
-				
+
 				if (e) console.error(e)
 				throw new Error('Error loading data for model ' + this.apiUrl)
 			} else {

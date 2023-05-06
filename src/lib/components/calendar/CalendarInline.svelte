@@ -5,7 +5,6 @@
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
 	import { filterItems, initMonthDays } from './utils'
-	import { toast } from '$lib/utils/toasts'
 	import clickOutside from '$lib/utils/clickOutside'
 
 	export let showHeader = true

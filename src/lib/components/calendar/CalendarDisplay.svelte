@@ -17,7 +17,6 @@
 		let column = (dayIndex % 7) + 1
 		return { row, column }
 	})
-	$: lastRow = Math.ceil(days.length / 7)
 
 	let dispatch = createEventDispatcher()
 </script>
