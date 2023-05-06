@@ -1,5 +1,4 @@
 import staticAdapter from '@sveltejs/adapter-static'
-import vercelAdapter from '@sveltejs/adapter-vercel'
 import { vitePreprocess } from '@sveltejs/kit/vite'
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -9,7 +8,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: getAdapter(),
+		adapter: staticAdapter(),
 		serviceWorker: {
 			register: process.env.NODE_ENV === 'development' ? false : true,
 		},
@@ -23,11 +22,3 @@ const config = {
 }
 
 export default config
-
-function getAdapter() {
-	if (process.env.VERCEL) {
-		return vercelAdapter()
-	} else {
-		return staticAdapter()
-	}
-}
