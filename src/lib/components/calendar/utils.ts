@@ -11,7 +11,7 @@ export function initMonthDays(month: number, year: number) {
 	const days = [] as Day[]
 	const monthAbbrev = monthNames[month].shortName
 
-	const firstDay = new Date(year, month, 1).getDay() - 1 // 0 - 6
+	const firstDay = (new Date(year, month, 1).getDay() + 6) % 7 // 0 - 6
 
 	const daysInThisMonth = new Date(year, month + 1, 0).getDate() // 28 - 31
 	const daysInLastMonth = new Date(year, month, 0).getDate() // 28 - 31
