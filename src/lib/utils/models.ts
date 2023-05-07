@@ -1,8 +1,9 @@
 import { getApiHost } from '$lib/api/data'
 import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
+import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
 
-export class LoadableModel<T> {
+export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 	public isLoaded = false
 
 	private loadRan = false
@@ -13,7 +14,7 @@ export class LoadableModel<T> {
 
 	protected loadListeners: (() => void)[] = []
 	protected loadErrorListeners: (() => void)[] = []
-	protected updateListeners: (() => void)[] = []
+	protected subscribers: Subscriber<{ [key: string]: T }>[] = []
 
 	private data: Map<string, T> = new Map()
 
@@ -21,7 +22,7 @@ export class LoadableModel<T> {
 		protected apiUrl: string,
 		protected parser: (data: unknown) => T,
 		protected cache = false,
-		protected dependencies: LoadableModel<unknown>[] = [],
+		protected dependencies: LoadableModel<any>[] = [],
 		protected list = true,
 	) {
 		if (!browser) return
@@ -155,25 +156,17 @@ export class LoadableModel<T> {
 		}
 	}
 
-	public get(id: string | number): T | undefined {
+	protected get(id: string | number): T | undefined {
 		if (!this.list) id = 0
 		return this.data.get(id.toString())
 	}
 
-	public getAll(): T[] {
-		return Array.from(this.data.values())
+	protected getAll(): { [key: string]: T; } {
+		return Object.fromEntries(this.data)
 	}
 
 	public get size(): number {
 		return this.data.size
-	}
-
-	public get isEmpty(): boolean {
-		return this.data.size === 0
-	}
-
-	public get isNotEmpty(): boolean {
-		return this.data.size > 0
 	}
 
 	public onLoaded(listener: () => void) {
@@ -187,8 +180,15 @@ export class LoadableModel<T> {
 		this.loadErrorListeners.push(listener)
 	}
 
-	public onUpdated(listener: () => void) {
-		this.updateListeners.push(listener)
+	public subscribe(run: Subscriber<{ [key: string]: T; }>, invalidate?: ((value?: { [key: string]: T; } | undefined) => void) | undefined): Unsubscriber {
+		this.subscribers.push(run)
+		run(this.getAll())
+
+		return () => {
+			const index = this.subscribers.indexOf(run)
+			if (index > -1) this.subscribers.splice(index, 1)
+			invalidate?.(this.getAll())
+		}
 	}
 
 	public triggerLoadError() {
@@ -207,7 +207,7 @@ export class LoadableModel<T> {
 	}
 
 	public triggerUpdated() {
-		this.updateListeners.forEach((listener) => listener())
+		this.subscribers.forEach((subscriber) => subscriber(this.getAll()))
 	}
 
 	public async reload() {

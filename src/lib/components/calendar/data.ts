@@ -1,6 +1,7 @@
 import { categories } from '$lib/disciplines'
 import { grades as gradesModel } from '$lib/state'
 import { LoadableModel } from '$lib/utils/models'
+import { get } from 'svelte/store'
 import type { CalendarData, CalendarEvent, CalendarProps } from './types'
 
 export const calendarData = new LoadableModel<CalendarData>(
@@ -15,8 +16,8 @@ export const calendarData = new LoadableModel<CalendarData>(
 			return {
 				...rest,
 				date: new Date(date),
-				category: categories.get(category),
-				grades: grades.map((grade: string) => gradesModel.get(grade)),
+				category: get(categories)[category],
+				grades: grades.map((grade: number) => get(gradesModel)[grade]),
 			} as CalendarEvent
 		})
 

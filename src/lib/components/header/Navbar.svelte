@@ -13,6 +13,8 @@
 	let sidebarOpen = false
 
 	$: categoriesOpen = sidebarOpen && false
+
+	$: categoriesIterable = Object.values($categories)
 </script>
 
 <svelte:window on:resize={() => window.innerWidth > 860 && (sidebarOpen = false)} />
@@ -77,7 +79,7 @@
 								style="top: -1px"
 								transition:slide={{ duration: 500 }}
 							>
-								{#each categories.getAll() as category}
+								{#each categoriesIterable as category}
 									<a
 										href={`/news?category=${category.id}`}
 										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
@@ -260,7 +262,7 @@
 							class="pt-2 px-8 divide-y
 							divide-gray-300 dark:divide-gray-700"
 						>
-							{#each categories.getAll() as category}
+							{#each categoriesIterable as category}
 								<a
 									href={`/category/${category.id}`}
 									class="flex flex-row p-1 pr-0"

@@ -42,12 +42,14 @@
 	}
 
 	function parseEvents() {
-		const rawEvents = calendarData.get(0)?.events
+		const rawEvents = $calendarData[0]?.events
+
 		if (!rawEvents && calendarData.isLoaded) {
 			console.error('No events found for inline calendar')
 			error = 'Nepodarilo sa spracovať udalosti'
 			return
 		} else if (!rawEvents) return
+
 		items = rawEvents.map((e) => {
 			return {
 				title: e.name.short,
@@ -59,7 +61,8 @@
 		})
 		error = undefined
 	}
-	calendarData.onUpdated(parseEvents)
+	$: $calendarData && parseEvents()
+
 	calendarData.onLoadError(() => {
 		console.error('Failed to load inline calendar data')
 		error = 'Nepodarilo sa načítať udalosti'
