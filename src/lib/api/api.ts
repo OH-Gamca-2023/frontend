@@ -4,6 +4,7 @@ import { get } from 'svelte/store'
 import { getApiHost } from './data'
 import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from './types'
 import { toast } from '$lib/utils/toasts'
+import { maxRequestTime } from '$lib/data/settings'
 
 function internalApiRequest(
 	url: string,
@@ -30,11 +31,31 @@ function internalApiRequest(
 	if (!url.startsWith('/')) url = '/' + url
 	if (!url.endsWith('/')) url += '/'
 
-	return fetch(getApiHost() + url, {
-		method,
-		headers,
-		body: typeof body === 'object' ? JSON.stringify(body) : body,
-	})
+	const promises = [
+		fetch(getApiHost() + url, {
+			method,
+			headers,
+			body: typeof body === 'object' ? JSON.stringify(body) : body,
+		}),
+	]
+
+	if (maxRequestTime > 0)
+		promises.push(
+			new Promise((resolve, reject) =>
+				setTimeout(() => {
+					console.warn(
+						'Request to ' + url + ' took longer than ' + maxRequestTime + 'ms, terminating...',
+					)
+					resolve(new Response(JSON.stringify({
+						error_code: 'timeout',
+						error_message: 'Request took longer than ' + maxRequestTime + 'ms',
+						internal: true,
+					}), { status: 408 }))
+				}, maxRequestTime),
+			),
+		)
+
+	return Promise.race(promises)
 }
 
 /**
@@ -58,7 +79,7 @@ export async function makeApiRequest<T>(
 				if (response.status == 401) {
 					setTimeout(async () => {
 						const state = (await import('../state/state')).userState
-						if(!get(state).loggedIn) return
+						if (!get(state).loggedIn) return
 						await state.fetchUser()
 						if (!get(state).loggedIn) {
 							toast({
