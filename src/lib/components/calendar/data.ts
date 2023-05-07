@@ -1,4 +1,4 @@
-import { categories } from '$lib/disciplines'
+import { categories } from '$lib/posts'
 import { grades as gradesModel } from '$lib/state'
 import { LoadableModel } from '$lib/utils/models'
 import { get } from 'svelte/store'
@@ -29,5 +29,5 @@ export const calendarData = new LoadableModel<CalendarData>(
 	},
 	true,
 	[gradesModel, categories],
-	false,
+	'single'
 )
