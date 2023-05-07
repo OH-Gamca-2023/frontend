@@ -1,7 +1,9 @@
 import { browser } from '$app/environment'
 import { getAccessToken } from '$lib/state/token'
+import { get } from 'svelte/store'
 import { getApiHost } from './data'
 import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from './types'
+import { toast } from '$lib/utils/toasts'
 
 function internalApiRequest(
 	url: string,
@@ -53,6 +55,20 @@ export async function makeApiRequest<T>(
 				const data = await response.json()
 				return { status: response.status, data, error: false } as SuccessResponse<T>
 			} else {
+				if (response.status == 401) {
+					setTimeout(async () => {
+						const state = (await import('../state/state')).userState
+						if(!get(state).loggedIn) return
+						await state.fetchUser()
+						if (!get(state).loggedIn) {
+							toast({
+								title: 'Boli ste odhlásený',
+								type: 'error',
+								duration: 5000,
+							})
+						}
+					}) // Run login check independently from the request
+				}
 				const data = await response.json()
 				return {
 					status: response.status,
