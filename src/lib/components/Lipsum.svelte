@@ -19,5 +19,6 @@
 </script>
 
 <div id="lipsum" class="lipsum">
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html processed}
 </div>

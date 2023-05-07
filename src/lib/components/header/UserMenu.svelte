@@ -9,9 +9,14 @@
 </script>
 
 <script lang="ts">
-	import Icon from '@iconify/svelte'
+	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
 	import Spinner from '$lib/components/Spinner.svelte'
+	import { slide } from 'svelte/transition'
+
+	let userMenuOpen = false
+
+	$: !$userState.loggedIn && (userMenuOpen = false)
 </script>
 
 {#if $userState.loading}
@@ -19,8 +24,16 @@
 		<Spinner class="h-12 w-12 p-2" />
 	</div>
 {:else if $userState.loggedIn}
-	<div id="user-menu" class="flex flex-row items-center justify-center">
-		<a href="/auth/profile" class="flex flex-row items-center justify-center">
+	<div id="user-menu" class="flex flex-row items-center justify-center relative">
+		<div
+			class="flex flex-row items-center justify-center cursor-pointer"
+			on:click={() => (userMenuOpen = !userMenuOpen)}
+			on:keypress={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					userMenuOpen = !userMenuOpen
+				}
+			}}
+		>
 			<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
 			<div id="user-data" class="flex flex-col items-start justify-center mr-2 ml-2">
 				<div id="user-name" class="text-sm font-medium">
@@ -30,7 +43,7 @@
 					{userRoleDict[$userState.user?.type ?? 'unknown'][0]}
 				</div>
 			</div>
-		</a>
+		</div>
 		<a
 			id="logout"
 			href="/auth/logout"
@@ -39,6 +52,48 @@
 		>
 			<Icon icon="carbon:logout" class="h-6 w-6 ml-2" />
 		</a>
+		<div class="absolute -bottom-3 left-0 right-0 z-10">
+			{#if userMenuOpen && $userState.loggedIn}
+				<div
+					class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
+						from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
+						bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
+					style="top: -3px"
+					transition:slide={{ duration: 500 }}
+				>
+					<a
+						href={`/auth/profile/`}
+						class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"
+						on:click={() => (userMenuOpen = false)}
+					>
+						<Icon icon="carbon:user-profile" class="h-6 w-6" />
+						<span class="ml-2 text-sm font-medium">Profil</span>
+					</a>
+					{#if $userState.user?.type === 'organizer' || $userState.user?.type === 'admin'}
+						<a
+							href={`/admin/`}
+							class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"
+							on:click={() => (userMenuOpen = false)}
+						>
+							<div class="flex flex-row items-center justify-center">
+								<Icon icon="carbon:settings" class="h-6 w-6" />
+							</div>
+							<span class="text-sm font-medium text-right">Organizátorské rozhranie</span>
+						</a>
+					{/if}
+					{#if $userState.user?.type === 'admin'}
+						<a
+							href={`/docker/`}
+							class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"
+							on:click={() => (userMenuOpen = false)}
+						>
+							<Icon icon="teenyicons:docker-outline" class="h-6 w-6" />
+							<span class="text-sm font-medium">Docker</span>
+						</a>
+					{/if}
+				</div>
+			{/if}
+		</div>
 	</div>
 {:else}
 	<a id="login" href="/auth/login" class="flex flex-row items-center justify-center cursor-pointer">

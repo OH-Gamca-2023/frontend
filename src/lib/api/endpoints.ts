@@ -54,13 +54,13 @@ getUserPermissions.requiresAuth = true
 
 /**
  * Update the currently logged in user.
- * Before updating data, the server checks whether user has permission to update they're own details.
+ * Before updating data, the server checks whether user has permission to update their own details.
  *
- * @param user The new user details
+ * @param changes The new user details
  * @returns the updated user details
  * @throws 400 error if the new user details are invalid
  * @throws 401 error if not logged in
- * @throws 403 error if user doesn't have permission to update they're own details
+ * @throws 403 error if user doesn't have permission to update their own details
  * @throws 409 error if the new user details conflict with existing data
  */
 export async function setUserDetails(changes: Partial<User>) {
@@ -74,14 +74,14 @@ setUserDetails.requiresAuth = true
 
 /**
  * Update user password.
- * Before updating password, the server checks whether user has permission to update they're own password.
+ * Before updating password, the server checks whether user has permission to update their own password.
  *
  * @param oldPassword The old password (might be empty if user has no password set yet)
  * @param newPassword The new password
  * @returns 204 No Content
  * @throws 400 error if old password is incorrect
  * @throws 401 error if not logged in
- * @throws 403 error if user doesn't have permission to update they're own password
+ * @throws 403 error if user doesn't have permission to update their own password
  * @throws 409 error if the new password fails to meet the password requirements
  */
 export async function setUserPassword(oldPassword: string | undefined, newPassword: string) {

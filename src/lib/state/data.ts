@@ -1,5 +1,5 @@
 import type { Clazz, Grade } from '$lib/types'
-import { LoadableModel } from '$lib/models'
+import { LoadableModel } from '$lib/utils/models'
 
 export const grades = new LoadableModel<Grade>(
 	'user/grades',

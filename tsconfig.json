@@ -9,7 +9,8 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"plugins": [{ "name": "vite-plugin-iso-import" }]
+		"plugins": [{ "name": "vite-plugin-iso-import" }],
+		"ignoreDeprecations": "5.0"
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//

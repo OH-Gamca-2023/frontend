@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { getUserDetails } from '$lib/api'
-	import { darkTheme } from '$lib/prefs'
+	import { darkTheme } from '$lib/data/prefs'
 	import { userState } from '$lib/state'
-	import { toast } from '$lib/toasts'
-	import Icon from '@iconify/svelte'
+	import { toast } from '$lib/utils/toasts'
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/api/data'
-	import { setAccessToken } from '$lib/state'
+	import { setAccessToken } from '$lib/state/token'
 	import { loginRequired } from '$lib/data/settings'
 	import { onMount } from 'svelte'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 
@@ -29,6 +29,7 @@
 				error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
 			}
 			loginPending = false
+			loginStatus = ''
 		} else if (response.status === 'success') {
 			try {
 				parseData(response)
@@ -36,11 +37,13 @@
 				console.error('Failed to parse login data', e)
 				error = 'Nastala chyba pri spracovaní údajov. Skúste to prosím znovu.'
 				loginPending = false
+				loginStatus = ''
 			}
 		} else {
 			console.error('Unknown login response', response)
 			error = 'Nastala chyba pri komunikácii so serverom. Skúste to prosím znovu.'
 			loginPending = false
+			loginStatus = ''
 		}
 	}
 
@@ -60,7 +63,9 @@
 
 		if (user.id != userToken.user) {
 			loginPending = false
+			loginStatus = ''
 			error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
+			console.error('User ID mismatch', user, userToken)
 			return
 		}
 
@@ -69,12 +74,16 @@
 		const serverStatus = await getUserDetails()
 		if (serverStatus.error) {
 			loginPending = false
+			loginStatus = ''
 			error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
+			console.error('Error getting user details', serverStatus)
 		} else {
 			const serverUser = serverStatus.data
 			if (!serverUser) {
 				loginPending = false
+				loginStatus = ''
 				error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
+				console.error('Received invalid user details', serverStatus)
 				return
 			}
 			if (serverUser.id == user.id) {

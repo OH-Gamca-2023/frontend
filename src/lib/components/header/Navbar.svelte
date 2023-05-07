@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getPref, darkTheme } from '$lib/prefs'
+	import { getPref, darkTheme } from '$lib/data/prefs'
 	import { categories } from '$lib/disciplines'
-	import Icon from '@iconify/svelte'
+	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
 	import Spinner from '../Spinner.svelte'
 	import Hamburger from './Hamburger.svelte'
@@ -13,6 +13,8 @@
 	let sidebarOpen = false
 
 	$: categoriesOpen = sidebarOpen && false
+
+	$: categoriesIterable = Object.values($categories)
 </script>
 
 <svelte:window on:resize={() => window.innerWidth > 860 && (sidebarOpen = false)} />
@@ -23,7 +25,7 @@
         dark:from-gray-800 dark:to-gray-900
         border-b border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200 pl-4 pr-4
-        shadow-md sticky top-0"
+        shadow-md sticky top-0 z-50"
 >
 	<div id="computer" class="hidden lmd:flex flex-row items-center justify-between flex-1 w-full">
 		<div id="left" class="flex flex-row items-center justify-start">
@@ -36,47 +38,51 @@
 				id="links"
 				class="flex flex-row justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-gray-300 dark:divide-gray-700 divide-x"
 			>
-				<a
-					href="/news"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="tabler:news" class="h-6 w-6" />
-					<span>Novinky</span>
-				</a>
-				<div
-					class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
-					on:click={() => (categoriesOpen = !categoriesOpen)}
-					on:keypress={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							categoriesOpen = !categoriesOpen
-						}
-					}}
-				>
-					<Icon icon="bxs:category-alt" class="h-6 w-6" />
-					<span>Kategórie</span>
-					{#await categories.load()}
-						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
-					{:then}
-						<Icon
-							icon="tabler:chevron-left"
-							class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
-								? '-rotate-90'
-								: ''}"
-						/>
-					{/await}
+				<div>
+					<a
+						href="/news"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="tabler:news" class="h-6 w-6" />
+						<span>Novinky</span>
+					</a>
+				</div>
+				<div class="relative">
+					<div
+						class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
+						on:click={() => (categoriesOpen = !categoriesOpen)}
+						on:keypress={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								categoriesOpen = !categoriesOpen
+							}
+						}}
+					>
+						<Icon icon="bxs:category-alt" class="h-6 w-6" />
+						<span>Kategórie</span>
+						{#await categories.load()}
+							<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+						{:then}
+							<Icon
+								icon="tabler:chevron-left"
+								class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
+									? '-rotate-90'
+									: ''}"
+							/>
+						{/await}
+					</div>
 					<div class="absolute -bottom-3 left-0 right-0">
 						{#if categoriesOpen}
 							<div
 								class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
-									from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
-									bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
+								from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
+								bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
 								style="top: -1px"
 								transition:slide={{ duration: 500 }}
 							>
-								{#each categories.getAll() as category}
+								{#each categoriesIterable as category}
 									<a
-										href={`/category/${category}`}
-										class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
+										href={`/news?category=${category.id}`}
+										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
 									>
 										<span>{category.name}</span>
 									</a>
@@ -85,27 +91,33 @@
 						{/if}
 					</div>
 				</div>
-				<a
-					href="/results"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
-					<span>Výsledky</span>
-				</a>
-				<a
-					href="/calendar"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
-					<span>Kalendár</span>
-				</a>
-				<a
-					href="/gallery"
-					class="flex flex-row space-x-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md p-1"
-				>
-					<Icon icon="tabler:photo" class="h-6 w-6" />
-					<span>Galéria</span>
-				</a>
+				<div>
+					<a
+						href="/results"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
+						<span>Výsledky</span>
+					</a>
+				</div>
+				<div>
+					<a
+						href="/calendar"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
+						<span>Kalendár</span>
+					</a>
+				</div>
+				<div>
+					<a
+						href="/gallery"
+						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+					>
+						<Icon icon="tabler:photo" class="h-6 w-6" />
+						<span>Galéria</span>
+					</a>
+				</div>
 			</div>
 		</div>
 		<div
@@ -250,7 +262,7 @@
 							class="pt-2 px-8 divide-y
 							divide-gray-300 dark:divide-gray-700"
 						>
-							{#each categories.getAll() as category}
+							{#each categoriesIterable as category}
 								<a
 									href={`/category/${category.id}`}
 									class="flex flex-row p-1 pr-0"

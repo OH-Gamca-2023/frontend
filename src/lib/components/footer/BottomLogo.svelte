@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { darkTheme } from '$lib/prefs'
+	import { darkTheme } from '$lib/data/prefs'
 	import Sponsors from '$lib/components/footer/Sponsors.svelte'
 </script>
 

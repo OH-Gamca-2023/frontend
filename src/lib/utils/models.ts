@@ -1,8 +1,9 @@
 import { getApiHost } from '$lib/api/data'
 import { browser } from '$app/environment'
-import { addReconnectListener } from './connection'
+import { addReconnectListener } from '../connection'
+import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
 
-export class LoadableModel<T> {
+export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 	public isLoaded = false
 
 	private loadRan = false
@@ -13,6 +14,7 @@ export class LoadableModel<T> {
 
 	protected loadListeners: (() => void)[] = []
 	protected loadErrorListeners: (() => void)[] = []
+	protected subscribers: Subscriber<{ [key: string]: T }>[] = []
 
 	private data: Map<string, T> = new Map()
 
@@ -20,7 +22,8 @@ export class LoadableModel<T> {
 		protected apiUrl: string,
 		protected parser: (data: unknown) => T,
 		protected cache = false,
-		protected dependencies: LoadableModel<unknown>[] = [],
+		protected dependencies: LoadableModel<any>[] = [],
+		protected list = true,
 	) {
 		if (!browser) return
 		if (cache && !dependencies.every((dep) => dep.cache)) {
@@ -28,7 +31,7 @@ export class LoadableModel<T> {
 		}
 
 		this.isCached = cache && localStorage.getItem('cache_' + this.apiUrl) !== null
-		
+
 		this.loadingPromise = new Promise((resolve) => (this.resolveLoadingPromise = resolve))
 
 		if (cache && this.isCached) {
@@ -66,6 +69,12 @@ export class LoadableModel<T> {
 			console.debug(`[model ${this.apiUrl}] loading`)
 			this.load()
 		}
+
+		addReconnectListener(() => {
+			// Attempt to reload the model when the connection is re-established
+			console.debug(`[model ${this.apiUrl}] connection re-established, updating`)
+			this.load(true)
+		})
 	}
 
 	/**
@@ -73,11 +82,14 @@ export class LoadableModel<T> {
 	 */
 	private loadFromCache() {
 		if (!browser) return
-		
+
 		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
-		for (const item of data) {
-			this.data.set(item.id.toString(), this.parser(item))
-		}
+		if (this.list) {
+			for (const item of data) {
+				this.data.set(item.id.toString(), this.parser(item))
+			}
+		} else this.data.set('0', this.parser(data))
+
 		this.triggerLoaded()
 		console.debug(`[model ${this.apiUrl}] loaded from cache`)
 	}
@@ -94,15 +106,11 @@ export class LoadableModel<T> {
 			this.loadRan = true
 		}
 
-		const error = () => {
+		const error = (e: any) => {
 			if (!force) {
 				this.triggerLoadError()
-	
-				addReconnectListener(() => {
-					// Attempt to reload the model when the connection is re-established (assuming that the connection was lost)
-					this.load()
-				})
-	
+
+				if (e) console.error(e)
 				throw new Error('Error loading data for model ' + this.apiUrl)
 			} else {
 				console.debug(`[model ${this.apiUrl}] suppressing load error`)
@@ -114,31 +122,32 @@ export class LoadableModel<T> {
 			let url = this.apiUrl
 
 			if (!url.startsWith('/')) url = '/' + url
-			if (!url.endsWith('/')) url += '/'
+			if (!url.endsWith('/') && !url.includes('.')) url += '/'
 
-			const response = await fetch(getApiHost() + url, {method: 'GET'})
-	
+			const response = await fetch(getApiHost() + url, { method: 'GET' })
+
 			if (response.status)
 				if (response.ok) {
 					const data = await response.json()
 					respData = data
 					this.data.clear()
-					for (const item of data) {
-						this.data.set(item.id.toString(), this.parser(item))
-					}
+					if (this.list) {
+						for (const item of data) {
+							this.data.set(item.id.toString(), this.parser(item))
+						}
+					} else this.data.set('0', this.parser(data))
 				} else {
-					error()
+					error(undefined)
 					return
 				}
 		} catch (e) {
-			error()
+			error(e)
 			return
 		}
 
 		this.isLoaded = true
-		if (!force) {
-			this.triggerLoaded()
-		}
+		if (!force) this.triggerLoaded()
+		else this.triggerUpdated()
 		console.debug(`[model ${this.apiUrl}] loaded`)
 
 		if (this.cache && respData) {
@@ -147,24 +156,17 @@ export class LoadableModel<T> {
 		}
 	}
 
-	public get(id: string | number): T | undefined {
+	protected get(id: string | number): T | undefined {
+		if (!this.list) id = 0
 		return this.data.get(id.toString())
 	}
 
-	public getAll(): T[] {
-		return Array.from(this.data.values())
+	protected getAll(): { [key: string]: T; } {
+		return Object.fromEntries(this.data)
 	}
 
 	public get size(): number {
 		return this.data.size
-	}
-
-	public get isEmpty(): boolean {
-		return this.data.size === 0
-	}
-
-	public get isNotEmpty(): boolean {
-		return this.data.size > 0
 	}
 
 	public onLoaded(listener: () => void) {
@@ -178,6 +180,17 @@ export class LoadableModel<T> {
 		this.loadErrorListeners.push(listener)
 	}
 
+	public subscribe(run: Subscriber<{ [key: string]: T; }>, invalidate?: ((value?: { [key: string]: T; } | undefined) => void) | undefined): Unsubscriber {
+		this.subscribers.push(run)
+		run(this.getAll())
+
+		return () => {
+			const index = this.subscribers.indexOf(run)
+			if (index > -1) this.subscribers.splice(index, 1)
+			invalidate?.(this.getAll())
+		}
+	}
+
 	public triggerLoadError() {
 		this.loadErrorListeners.forEach((listener) => listener())
 	}
@@ -189,5 +202,15 @@ export class LoadableModel<T> {
 		if (this.resolveLoadingPromise) {
 			this.resolveLoadingPromise()
 		}
+
+		this.triggerUpdated()
+	}
+
+	public triggerUpdated() {
+		this.subscribers.forEach((subscriber) => subscriber(this.getAll()))
+	}
+
+	public async reload() {
+		this.load(true)
 	}
 }

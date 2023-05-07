@@ -3,9 +3,9 @@
 	import { userState } from '$lib/state'
 	import { onMount } from 'svelte'
 	import { userRoleDict } from '$lib/components/header/UserMenu.svelte'
-	import Icon from '@iconify/svelte'
+	import Icon from '$lib/components/Icon.svelte'
 	import { getUserPermissions, setUserDetails, setUserPassword, type ErrorResponse } from '$lib/api'
-	import { toast } from '$lib/toasts'
+	import { toast } from '$lib/utils/toasts'
 	import type { User } from '$lib/types'
 
 	let title = 'Profil'
