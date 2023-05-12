@@ -3,6 +3,12 @@ import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
 
+export type ModelParser<T> = (data: unknown) => T
+export type ModelType = 'list' | 'partial' | 'single'
+// 'list' - there are multiple data items, each with an id
+// 'partial' - like 'list', but the data present is only a subset of the total data
+// 'single' - there is a single data item, with id 0
+
 export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 	public isLoaded = false
 
@@ -16,14 +22,14 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 	protected loadErrorListeners: (() => void)[] = []
 	protected subscribers: Subscriber<{ [key: string]: T }>[] = []
 
-	private data: Map<string, T> = new Map()
+	protected data: Map<string, T> = new Map()
 
 	constructor(
 		protected apiUrl: string,
-		protected parser: (data: unknown) => T,
+		protected parser: ModelParser<T>,
 		protected cache = false,
 		protected dependencies: LoadableModel<any>[] = [],
-		protected list = true,
+		protected type: ModelType = 'list',
 	) {
 		if (!browser) return
 		if (cache && !dependencies.every((dep) => dep.cache)) {
@@ -84,7 +90,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 		if (!browser) return
 
 		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
-		if (this.list) {
+
+		if (this.type !== 'partial') this.data.clear()
+		if (this.type === 'list' || this.type === 'partial') {
 			for (const item of data) {
 				this.data.set(item.id.toString(), this.parser(item))
 			}
@@ -130,8 +138,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 				if (response.ok) {
 					const data = await response.json()
 					respData = data
-					this.data.clear()
-					if (this.list) {
+
+					if (this.type !== 'partial') this.data.clear()
+					if (this.type === 'list' || this.type === 'partial') {
 						for (const item of data) {
 							this.data.set(item.id.toString(), this.parser(item))
 						}
@@ -157,11 +166,11 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 	}
 
 	protected get(id: string | number): T | undefined {
-		if (!this.list) id = 0
+		if (this.type === 'single') id = '0'
 		return this.data.get(id.toString())
 	}
 
-	protected getAll(): { [key: string]: T; } {
+	protected getAll(): { [key: string]: T } {
 		return Object.fromEntries(this.data)
 	}
 
@@ -180,7 +189,10 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 		this.loadErrorListeners.push(listener)
 	}
 
-	public subscribe(run: Subscriber<{ [key: string]: T; }>, invalidate?: ((value?: { [key: string]: T; } | undefined) => void) | undefined): Unsubscriber {
+	public subscribe(
+		run: Subscriber<{ [key: string]: T }>,
+		invalidate?: ((value?: { [key: string]: T } | undefined) => void) | undefined,
+	): Unsubscriber {
 		this.subscribers.push(run)
 		run(this.getAll())
 
@@ -212,5 +224,32 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 
 	public async reload() {
 		this.load(true)
+	}
+}
+
+export class PartialModel<T> extends LoadableModel<T> {
+	constructor(
+		protected apiUrl: string,
+		protected parser: ModelParser<T>,
+		protected cache = false,
+		protected dependencies: LoadableModel<any>[] = [],
+	) {
+		super(apiUrl, parser, cache, dependencies, 'partial')
+	}
+
+	public get(id: string | number): T | undefined {
+		return this.data.get(id.toString())
+	}
+
+	public getAll(): { [key: string]: T } {
+		return Object.fromEntries(this.data)
+	}
+
+	public loadSingle(id: string) {
+		// empty
+	}
+
+	public loadMultiple() {
+		throw new Error('Method not implemented')
 	}
 }
