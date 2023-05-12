@@ -159,10 +159,17 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 		else this.triggerUpdated()
 		console.debug(`[model ${this.apiUrl}] loaded`)
 
-		if (this.cache && respData) {
-			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(respData))
-			console.debug(`[model ${this.apiUrl}] cached`)
-		}
+		this.saveToCache()
+	}
+
+	protected saveToCache() {
+		if (!browser) return
+		if (!this.cache) return
+
+		const data = JSON.stringify(this.data)
+
+		localStorage.setItem('cache_' + this.apiUrl, data)
+		console.debug(`[model ${this.apiUrl}] cached`)
 	}
 
 	public get(id: string | number): T | undefined {
@@ -237,8 +244,42 @@ export class PartialModel<T> extends LoadableModel<T> {
 		super(apiUrl, parser, cache, dependencies, 'partial')
 	}
 
-	public loadSingle(id: string) {
-		// empty
+	public async loadSingle(id: string) {
+		if (!browser) return
+
+		const error = (e: any) => {
+			console.warn(`[partial m. ${this.apiUrl}] single object load error:`, e)
+			return
+		}
+		let respData: unknown
+		try {
+			let url = this.apiUrl
+
+			if (!url.startsWith('/')) url = '/' + url
+			if (!url.endsWith('/') && !url.includes('.')) url += '/'
+			url += id + '/'
+
+			const response = await fetch(getApiHost() + url, { method: 'GET' })
+
+			if (response.status)
+				if (response.ok) {
+					const data = await response.json()
+					respData = data
+
+					this.data.set(id.toString(), this.parser(data))
+				} else {
+					error(undefined)
+					return
+				}
+		} catch (e) {
+			error(e)
+			return
+		}
+
+		this.triggerUpdated()
+		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id}`)
+
+		this.saveToCache()
 	}
 
 	public loadMultiple() {
