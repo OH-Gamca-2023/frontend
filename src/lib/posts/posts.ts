@@ -1,7 +1,6 @@
 import { clazzes, grades } from '$lib/state'
 import type { Discipline, Post, User } from '$lib/types'
 import { PartialModel } from '$lib/utils/models'
-import { get } from 'svelte/store'
 import { categories, tags } from './data'
 import { disciplines } from './disciplines'
 
@@ -15,7 +14,7 @@ class PostModel extends PartialModel<Post> {
 				const author: Partial<User> = {
 					id: rawPost.author.id,
 					username: rawPost.author.username,
-					clazz: get(clazzes)[rawPost.author.clazz],
+					clazz: clazzes.get(rawPost.author.clazz),
 					type: rawPost.author.type,
 				}
 
@@ -27,8 +26,8 @@ class PostModel extends PartialModel<Post> {
 					content: rawPost.content,
 					author: author,
 					date: rawPost.date,
-					affected_grades: rawPost.affected_grades.map((grade: any) => get(grades)[grade.id]),
-					tags: rawPost.tags.map((tag: any) => get(tags)[tag.id]),
+					affected_grades: rawPost.affected_grades.map((id: any) => grades.get(id)),
+					tags: rawPost.tags.map((id: any) => tags.get(id)),
 					disable_comments: rawPost.disable_comments,
 
 					get related_disciplines() {

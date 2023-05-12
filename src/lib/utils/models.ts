@@ -165,12 +165,12 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 		}
 	}
 
-	protected get(id: string | number): T | undefined {
+	public get(id: string | number): T | undefined {
 		if (this.type === 'single') id = '0'
 		return this.data.get(id.toString())
 	}
 
-	protected getAll(): { [key: string]: T } {
+	public getAll(): { [key: string]: T } {
 		return Object.fromEntries(this.data)
 	}
 
@@ -235,14 +235,6 @@ export class PartialModel<T> extends LoadableModel<T> {
 		protected dependencies: LoadableModel<any>[] = [],
 	) {
 		super(apiUrl, parser, cache, dependencies, 'partial')
-	}
-
-	public get(id: string | number): T | undefined {
-		return this.data.get(id.toString())
-	}
-
-	public getAll(): { [key: string]: T } {
-		return Object.fromEntries(this.data)
 	}
 
 	public loadSingle(id: string) {

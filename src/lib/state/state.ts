@@ -1,5 +1,5 @@
 import { getUserDetails, invalidateAccessToken, type ErrorResponse } from '$lib/api'
-import { get, type Readable, type Subscriber } from 'svelte/store'
+import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
 import { clazzes } from './data'
 import { getAccessToken, setAccessToken } from './token'
@@ -66,7 +66,7 @@ class InternalUserState implements Readable<UserState> {
 			const rawUser = response.data!
 			const user = {
 				...rawUser,
-				clazz: get(clazzes)[rawUser.clazz as any]!,
+				clazz: clazzes.get(rawUser.clazz as any)!
 			}
 			this.state = {
 				user,
