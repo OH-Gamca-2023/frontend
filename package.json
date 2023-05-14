@@ -17,6 +17,8 @@
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.15.9",
 		"@types/cookie": "^0.5.1",
+		"@types/node": "^20.1.4",
+		"@types/prismjs": "^1.26.0",
 		"@typescript-eslint/eslint-plugin": "^5.59.1",
 		"@typescript-eslint/parser": "^5.59.1",
 		"autoprefixer": "^10.4.14",
@@ -39,6 +41,9 @@
 		"@sveltejs/adapter-static": "^2.0.1",
 		"buffer": "^6.0.3",
 		"eslint-plugin-svelte": "^2.27.2",
+		"prism-svelte": "^0.5.0",
+		"prismjs": "^1.29.0",
+		"svelte-exmarkdown": "^2.0.0",
 		"svelte-toasts": "^1.1.2",
 		"vite-plugin-iso-import": "^1.0.0"
 	}
