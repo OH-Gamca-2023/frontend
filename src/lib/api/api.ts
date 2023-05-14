@@ -43,9 +43,6 @@ function internalApiRequest(
 		promises.push(
 			new Promise((resolve, reject) =>
 				setTimeout(() => {
-					console.warn(
-						'Request to ' + url + ' took longer than ' + maxRequestTime + 'ms, terminating...',
-					)
 					resolve(new Response(JSON.stringify({
 						error_code: 'timeout',
 						error_message: 'Request took longer than ' + maxRequestTime + 'ms',
