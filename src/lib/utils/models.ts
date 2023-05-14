@@ -9,7 +9,7 @@ export type ModelType = 'list' | 'partial' | 'single'
 // 'partial' - like 'list', but the data present is only a subset of the total data
 // 'single' - there is a single data item, with id 0
 
-export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
+export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromServer: boolean } }> {
 	public isLoaded = false
 
 	private loadRan = false
@@ -20,9 +20,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 
 	protected loadListeners: (() => void)[] = []
 	protected loadErrorListeners: (() => void)[] = []
-	protected subscribers: Subscriber<{ [key: string]: T }>[] = []
+	protected subscribers: Subscriber<{ [key: string]: T & { fromServer: boolean } }>[] = []
 
-	protected data: Map<string, T> = new Map()
+	protected data: Map<string, T & { fromServer: boolean }> = new Map()
 
 	constructor(
 		protected apiUrl: string,
@@ -93,9 +93,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 			if (this.type !== 'partial') this.data.clear()
 			if (this.type === 'list' || this.type === 'partial') {
 				for (const item of data) {
-					this.data.set(item.id.toString(), this.parser(item))
+					this.data.set(item.id.toString(), {...this.parser(item), fromServer: false})
 				}
-			} else this.data.set('0', this.parser(data))
+			} else this.data.set('0', {...this.parser(data), fromServer: false})
 
 			this.triggerLoaded()
 			console.debug(`[model ${this.apiUrl}] loaded from cache`)
@@ -146,9 +146,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 					if (this.type !== 'partial') this.data.clear()
 					if (this.type === 'list' || this.type === 'partial') {
 						for (const item of data) {
-							this.data.set(item.id.toString(), this.parser(item))
+							this.data.set(item.id.toString(), { ...this.parser(item), fromServer: true })
 						}
-					} else this.data.set('0', this.parser(data))
+					} else this.data.set('0', { ...this.parser(data), fromServer: true })
 				} else {
 					error(undefined)
 					return
