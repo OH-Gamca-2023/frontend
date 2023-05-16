@@ -66,7 +66,7 @@ class InternalUserState implements Readable<UserState> {
 			const rawUser = response.data!
 			const user = {
 				...rawUser,
-				clazz: clazzes.get(rawUser.clazz as any)!
+				clazz: clazzes.get(rawUser.clazz as any)!,
 			}
 			this.state = {
 				user,

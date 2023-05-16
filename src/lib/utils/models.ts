@@ -93,9 +93,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			if (this.type !== 'partial') this.data.clear()
 			if (this.type === 'list' || this.type === 'partial') {
 				for (const item of data) {
-					this.data.set(item.id.toString(), {...this.parser(item), fromServer: false})
+					this.data.set(item.id.toString(), { ...this.parser(item), fromServer: false })
 				}
-			} else this.data.set('0', {...this.parser(data), fromServer: false})
+			} else this.data.set('0', { ...this.parser(data), fromServer: false })
 
 			this.triggerLoaded()
 			console.debug(`[model ${this.apiUrl}] loaded from cache`)
@@ -186,10 +186,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 				if (this.type === 'list' || this.type === 'partial') {
 					for (const item of respData) {
 						if (currentKeys.includes(item.id)) {
-							Object.assign(
-								currentCacheData[currentKeys.indexOf(item.id)],
-								item,
-							)
+							Object.assign(currentCacheData[currentKeys.indexOf(item.id)], item)
 						} else {
 							currentCacheData.push(item)
 						}

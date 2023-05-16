@@ -35,33 +35,3 @@
 		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
 	{/if}
 </div>
-
-<style lang="scss">
-	.markdoawn {
-		--text-color: #333;
-		--link-color: #4183c4;
-
-		--heading-color: #000;
-		--h1-line-color: #ddd;
-		--h2-line-color: #eee;
-		--sub-heading-color: #777;
-
-		--code-bg-color: #f8f8f8;
-		--code-border-color: #ddd;
-		--code-text-color: #333;
-
-		&.dark {
-			--text-color: #fff;
-			--link-color: #4183c4;
-
-			--heading-color: #fff;
-			--h1-line-color: #ddd;
-			--h2-line-color: #eee;
-			--sub-heading-color: #777;
-
-			--code-bg-color: #333;
-			--code-border-color: #555;
-			--code-text-color: #fff;
-		}
-	}
-</style>

@@ -9,11 +9,11 @@ export type PostFilter = {
 }
 
 export const filterKeys = {
-    category: 'number[]',
-    tags: 'number[]',
-    discipline: 'string[]',
-    author: 'number',
-    search: 'string',
-    offset: 'number',
-    limit: 'number'
+	category: 'number[]',
+	tags: 'number[]',
+	discipline: 'string[]',
+	author: 'number',
+	search: 'string',
+	offset: 'number',
+	limit: 'number',
 }

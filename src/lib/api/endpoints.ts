@@ -109,7 +109,7 @@ logout.requiresAuth = true
 
 /**
  * Log out from all devices.
- * 
+ *
  * @returns Server response: 204 No Content if successful and 401 error if not logged in
  * @throws 401 error if not logged in
  */
