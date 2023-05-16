@@ -9,6 +9,11 @@
 	$: lang = String(properties.class).match(/language-(\w+)/)?.[1]
 	let child: HastNode
 	$: child = children[0]
+
+	export let type: string
+	export let tagName: string
+	export let position: any
+	export let __index: any
 </script>
 
 {#if lang == null || languages[lang] == null || child?.type !== 'text'}<code {...properties}

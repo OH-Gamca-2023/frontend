@@ -1,5 +1,5 @@
 <script lang="ts">
-	import NewsPage from './news/+page.svelte'
+	import PostList from '$lib/components/PostList.svelte'
 </script>
 
-<NewsPage />
+<PostList />
