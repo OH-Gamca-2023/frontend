@@ -4,9 +4,8 @@ export type PostFilter = {
 	discipline?: string[]
 	author?: number
 	search?: string
-	page?: number
-	max?: number
-	sort?: boolean
+	offset?: number
+	limit?: number
 }
 
 export const filterKeys = {
@@ -15,7 +14,6 @@ export const filterKeys = {
     discipline: 'string[]',
     author: 'number',
     search: 'string',
-    page: 'number',
-    max: 'number',
-    sort: 'boolean'
+    offset: 'number',
+    limit: 'number'
 }
