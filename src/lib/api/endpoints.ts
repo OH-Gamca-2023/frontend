@@ -102,7 +102,7 @@ setUserPassword.requiresAuth = true
  *
  * @returns Server response: 204 No Content if successful and 401 error if not logged in
  */
-export async function invalidateAccessToken() {
-	return makeApiRequest('auth/invalidate', 'DELETE', undefined, true)
+export async function logout() {
+	return makeApiRequest('auth/logout', 'POST', undefined, true)
 }
-invalidateAccessToken.requiresAuth = true
+logout.requiresAuth = true

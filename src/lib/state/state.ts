@@ -1,4 +1,4 @@
-import { getUserDetails, invalidateAccessToken, type ErrorResponse } from '$lib/api'
+import { getUserDetails, logout as logout, type ErrorResponse } from '$lib/api'
 import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
 import { clazzes } from './data'
@@ -93,10 +93,10 @@ class InternalUserState implements Readable<UserState> {
 		let error = false
 		if (!this.currentState.loggedIn) return
 		if (getAccessToken()) {
-			const resp = await invalidateAccessToken()
+			const resp = await logout()
 			if (resp.error) {
 				const { errorCode, errorMessage } = resp as ErrorResponse
-				console.error('Failed to invalidate token', errorCode, errorMessage)
+				console.error('Failed to log out', errorCode, errorMessage)
 				error = true
 			}
 		} else {

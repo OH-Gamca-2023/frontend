@@ -10,6 +10,7 @@
 	import { loginRequired } from '$lib/data/settings'
 	import { onMount } from 'svelte'
 	import Icon from '$lib/components/Icon.svelte'
+	import type { User } from '$lib/types'
 
 	export let data: PageData
 
@@ -48,26 +49,14 @@
 	}
 
 	async function parseData(response: any) {
-		const rawUserToken = JSON.parse(response.user_token)[0]
+		const rawUserToken = JSON.parse(response.user_token)
 		const userToken = {
-			token: rawUserToken.pk,
-			...rawUserToken.fields,
+			token: rawUserToken.token,
+			expires: new Date(rawUserToken.expiry),
 		}
-		const rawUser = JSON.parse(response.logged_user)[0]
-		const user = {
-			id: rawUser.pk,
-			...rawUser.fields,
-		}
+		const user = JSON.parse(response.logged_user) as User
 
 		loginStatus = 'Overujem prihlásenie...'
-
-		if (user.id != userToken.user) {
-			loginPending = false
-			loginStatus = ''
-			error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
-			console.error('User ID mismatch', user, userToken)
-			return
-		}
 
 		setAccessToken(userToken.token)
 
@@ -87,9 +76,7 @@
 				return
 			}
 			if (serverUser.id == user.id) {
-				if (userToken.user == user.id) {
-					setAccessToken(userToken.token)
-				}
+				setAccessToken(userToken.token)
 				await userState.fetchUser()
 				loginPending = false
 				loginStatus = ''
