@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { postList } from '$lib/posts/posts'
 	import { highlightPlugin } from '$lib/prism'
+	import type { PostFilter } from '$lib/types'
 	import Markdown from 'svelte-exmarkdown'
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 
 	$: lastPosts = $postList.slice(-10).reverse()
+
+	export let filter: PostFilter = {}
 </script>
 
 <h2>Latest Posts</h2>
