@@ -7,6 +7,7 @@
 
 	$: lastPosts = $postList.slice(-10).reverse()
 
+	// eslint-disable-next-line svelte/valid-compile
 	export let filter: PostFilter = {}
 </script>
 

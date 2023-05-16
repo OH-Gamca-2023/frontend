@@ -1,8 +1,8 @@
-import type { Plugin } from 'svelte-exmarkdown';
-import Code from './Code.svelte';
+import type { Plugin } from 'svelte-exmarkdown'
+import Code from './Code.svelte'
 
 export const highlightPlugin: Plugin = {
 	renderer: {
-		'code': Code
-	}
-};
+		code: Code,
+	},
+}

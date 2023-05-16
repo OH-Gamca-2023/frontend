@@ -41,13 +41,18 @@ function internalApiRequest(
 
 	if (maxRequestTime > 0)
 		promises.push(
-			new Promise((resolve, reject) =>
+			new Promise((resolve) =>
 				setTimeout(() => {
-					resolve(new Response(JSON.stringify({
-						error_code: 'timeout',
-						error_message: 'Request took longer than ' + maxRequestTime + 'ms',
-						internal: true,
-					}), { status: 408 }))
+					resolve(
+						new Response(
+							JSON.stringify({
+								error_code: 'timeout',
+								error_message: 'Request took longer than ' + maxRequestTime + 'ms',
+								internal: true,
+							}),
+							{ status: 408 },
+						),
+					)
 				}, maxRequestTime),
 			),
 		)

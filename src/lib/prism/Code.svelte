@@ -1,4 +1,6 @@
 <script lang="ts">
+	/* eslint-disable svelte/valid-compile */
+
 	import type { HastNode } from 'svelte-exmarkdown/types'
 	import Children from 'svelte-exmarkdown/renderer/Children.svelte'
 	import { highlight, languages } from './prism'

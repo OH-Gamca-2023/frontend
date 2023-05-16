@@ -12,19 +12,21 @@ class PostModel extends PartialModel<Post> {
 			(data) => {
 				const rawPost = data as any
 
-				const author: Partial<User> = rawPost.author ? {
-					id: rawPost.author.id,
-					username: rawPost.author.username,
-					first_name: rawPost.author.first_name,
-					last_name: rawPost.author.last_name,
-					type: rawPost.author.type,
-				} : {
-					id: -1,
-					username: 'admin',
-					first_name: 'Administrátor',
-					last_name: '',
-					type: 'admin',
-				}
+				const author: Partial<User> = rawPost.author
+					? {
+							id: rawPost.author.id,
+							username: rawPost.author.username,
+							first_name: rawPost.author.first_name,
+							last_name: rawPost.author.last_name,
+							type: rawPost.author.type,
+					  }
+					: {
+							id: -1,
+							username: 'admin',
+							first_name: 'Administrátor',
+							last_name: '',
+							type: 'admin',
+					  }
 
 				rawPost.related_disciplines.forEach((id: any) => disciplines.load(id))
 
@@ -61,4 +63,4 @@ class PostModel extends PartialModel<Post> {
 
 export const posts = new PostModel()
 
-export const postList =  posts.postList
+export const postList = posts.postList
