@@ -1,4 +1,4 @@
-import { getUserDetails, logout as logout, type ErrorResponse } from '$lib/api'
+import { getUserDetails, logout, type ErrorResponse, logoutAll } from '$lib/api'
 import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
 import { clazzes } from './data'
@@ -110,6 +110,20 @@ class InternalUserState implements Readable<UserState> {
 			loading: false,
 		}
 		return !error
+	}
+
+	async logoutAllDevices() {
+		if (!this.currentState.loggedIn) return
+		if (getAccessToken()) {
+			const resp = await logoutAll()
+			if (resp.error) {
+				const { errorCode, errorMessage } = resp as ErrorResponse
+				console.error('Failed to log out all devices', errorCode, errorMessage)
+				return false
+			}
+		}
+		await this.fetchUser()
+		return true
 	}
 }
 
