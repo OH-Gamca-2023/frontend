@@ -11,19 +11,7 @@ type Check = {
 	response: {
 		status: string
 		time: string
-		token: {
-			present: boolean
-			found?: boolean
-			valid?: boolean
-			expires?: string
-			expired?: boolean
-			user?: {
-				id: number
-				username: string
-				email: string
-				type: 'student' | 'teacher' | 'alumni' | 'organizer' | 'admin'
-			}
-		}
+		authenticated: boolean
 	}
 }
 
@@ -37,9 +25,7 @@ const lastCheck = {
 	response: {
 		status: 'error',
 		time: '',
-		token: {
-			present: false,
-		},
+		authenticated: false,
 	},
 } as Check
 
@@ -76,9 +62,7 @@ async function runCheck() {
 		lastCheck.response = {
 			status: 'error',
 			time: '',
-			token: {
-				present: false,
-			},
+			authenticated: false,
 		}
 	}
 	lastCheck.internet = navigator.onLine
@@ -148,11 +132,11 @@ async function processCheckResult() {
 					message: 'Stránka nemusí fungovať správne',
 					type: 'error',
 				})
-				nextCheck = 10000
+				nextCheck = 20000
 			} else {
 				nextCheck = 2000
 			}
-			if (consecutiveFailures > 3) nextCheck = 10000
+			if (consecutiveFailures > 3) nextCheck = 20000
 		}
 	} else if (lastCheck.status === '10') {
 		// Internet is offline, server is online, how did this happen?
@@ -163,7 +147,7 @@ async function processCheckResult() {
 			type: 'warning',
 			duration: 5000,
 		})
-		nextCheck = 10000
+		nextCheck = 20000
 	} else if (lastCheck.status === '11') {
 		// Internet and server are online
 		errorToast?.remove()
@@ -185,23 +169,20 @@ async function processCheckResult() {
 		consecutiveFailures = -1
 
 		if (getAccessToken()) {
-			if (!lastCheck.response.token.present) nextCheck = 10000
-			else {
-				const token_response = lastCheck.response.token
-				if (!token_response.valid || token_response.expired || !token_response.found) {
-					// User was logged out
-					const state = (await import('./state/state')).userState
-					await state.fetchUser()
-					if (get(state).loggedIn) {
-						nextCheck = 10000
-					} else {
-						toast({
-							title: 'Boli ste odhlásený',
-							type: 'error',
-							duration: 5000,
-						})
-					}
+			if (!lastCheck.response.authenticated) {
+				console.log('Status check returned unauthenticated, validating...')
+				// User was probably logged out
+				const state = (await import('./state/state')).userState
+				await state.fetchUser()
+				if (!get(state).loggedIn) {
+					toast({
+						title: 'Boli ste odhlásený',
+						type: 'error',
+						duration: 5000,
+					})
 				}
+				// Execute next status check earlier, just to check everything is fine
+				nextCheck = 10000
 			}
 		}
 	}

@@ -7,6 +7,7 @@
 	import { getUserPermissions, setUserDetails, setUserPassword, type ErrorResponse } from '$lib/api'
 	import { toast } from '$lib/utils/toasts'
 	import type { User } from '$lib/types'
+	import { goto } from '$app/navigation'
 
 	let title = 'Profil'
 	let permissionsLoaded = false
@@ -203,6 +204,26 @@
 
 		changingPassword = false
 	}
+
+	let loggingOutAll = false
+	async function logoutAll() {
+		loggingOutAll = true
+		await userState.loaded
+		if ($userState.loggedIn) {
+			const resp = await userState.logoutAllDevices()
+			if (!resp) {
+				errorToast('Nepodarilo sa odhlásiť zo všetkých zariadení')
+				await userState.fetchUser()
+			} else {
+				toast({
+					title: 'Boli ste odhlásený zo všetkých zariadení',
+					type: 'success',
+					duration: 3000,
+				})
+				goto('/auth/login')
+			}
+		}
+	}
 </script>
 
 <svelte:head>
@@ -219,7 +240,9 @@
 {:then}
 	{#if $userState.loggedIn}
 		<div class="pb-4 flex" />
-		<div class="flex flex-col text-gray-800 dark:text-gray-200">
+		<div
+			class="flex flex-col text-gray-800 dark:text-gray-200 divide-y divide-gray-300 dark:divide-gray-600"
+		>
 			<div class="flex flex-row items-center justify-center pb-2">
 				<Icon
 					icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]}
@@ -236,7 +259,7 @@
 					</div>
 				</div>
 			</div>
-			<form>
+			<form style="border-top: none;" class="pb-4">
 				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Meno </span>
@@ -428,6 +451,23 @@
 					{/if}
 				</div>
 			</form>
+			<div class="flex flex-col items-center justify-center pt-3">
+				<span class="text-lg font-bold pb-3"> Odhlásiť sa zo všetkých zariadení </span>
+				<button
+					class="flex flex-row items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ml-2
+					disabled:bg-red-400 disabled:hover:bg-red-400 dark:disabled:bg-red-700 dark:disabled:hover:bg-red-700"
+					on:click={logoutAll}
+					disabled={loggingOutAll}
+				>
+					{#if loggingOutAll}
+						<Spinner class="w-4 h-4 mr-2" />
+						Odhlasujem...
+					{:else}
+						<Icon icon="material:logout" class="w-6 h-6 mr-2" />
+						Odhlásiť
+					{/if}
+				</button>
+			</div>
 		</div>
 	{:else}
 		<h3 class="text-gray-800 dark:text-gray-200 pb-4">Neprihlásený</h3>

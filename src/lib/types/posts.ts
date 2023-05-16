@@ -5,7 +5,7 @@ export interface Post {
 	id: number
 	title: string
 	content: string
-	author: User
+	author: Partial<User>
 	date: number // Unix timestamp
 
 	related_disciplines: Discipline[]
@@ -19,7 +19,7 @@ export interface Post {
 export interface Comment {
 	id: number
 	post: Post
-	author: User
+	author: Partial<User>
 	content: string
 	date: number // Unix timestamp
 

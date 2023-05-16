@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getPref, darkTheme } from '$lib/data/prefs'
-	import { categories } from '$lib/disciplines'
+	import { categories } from '$lib/posts'
 	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
 	import Spinner from '../Spinner.svelte'
@@ -57,10 +57,10 @@
 							}
 						}}
 					>
-						<Icon icon="bxs:category-alt" class="h-6 w-6" />
+						<Icon icon="iconamoon:category" class="h-6 w-6" />
 						<span>Kategórie</span>
 						{#await categories.load()}
-							<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+							<Spinner class="h-6 w-6 opacity-50" style="margin-left: 0.5rem;" />
 						{:then}
 							<Icon
 								icon="tabler:chevron-left"
@@ -81,7 +81,7 @@
 							>
 								{#each categoriesIterable as category}
 									<a
-										href={`/news?category=${category.id}`}
+										href={`/news/category/${category.id}`}
 										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
 									>
 										<span>{category.name}</span>

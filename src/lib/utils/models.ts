@@ -3,7 +3,13 @@ import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
 
-export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
+export type ModelParser<T> = (data: unknown) => T
+export type ModelType = 'list' | 'partial' | 'single'
+// 'list' - there are multiple data items, each with an id
+// 'partial' - like 'list', but the data present is only a subset of the total data
+// 'single' - there is a single data item, with id 0
+
+export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromServer: boolean } }> {
 	public isLoaded = false
 
 	private loadRan = false
@@ -14,16 +20,16 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 
 	protected loadListeners: (() => void)[] = []
 	protected loadErrorListeners: (() => void)[] = []
-	protected subscribers: Subscriber<{ [key: string]: T }>[] = []
+	protected subscribers: Subscriber<{ [key: string]: T & { fromServer: boolean } }>[] = []
 
-	private data: Map<string, T> = new Map()
+	protected data: Map<string, T & { fromServer: boolean }> = new Map()
 
 	constructor(
 		protected apiUrl: string,
-		protected parser: (data: unknown) => T,
+		protected parser: ModelParser<T>,
 		protected cache = false,
 		protected dependencies: LoadableModel<any>[] = [],
-		protected list = true,
+		protected type: ModelType = 'list',
 	) {
 		if (!browser) return
 		if (cache && !dependencies.every((dep) => dep.cache)) {
@@ -40,8 +46,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 					console.debug(
 						`[model ${this.apiUrl}] all dependencies loaded or cached, loading from cache`,
 					)
-					this.loadFromCache()
-					this.load(true)
+
+					// If loading from cache succeeds, force parameter will be true (meaning load listeners will not be triggered)
+					this.load(this.loadFromCache())
 				} else {
 					console.debug(
 						`[model ${this.apiUrl}] some dependencies not loaded or cached, waiting for dependencies`,
@@ -49,14 +56,12 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 					;(async () => {
 						await Promise.all(dependencies.map((dep) => dep.load()))
 						console.debug(`[model ${this.apiUrl}] all dependencies loaded, loading from cache`)
-						this.loadFromCache()
-						this.load(true)
+						this.load(this.loadFromCache())
 					})()
 				}
 			} else {
 				console.debug(`[model ${this.apiUrl}] loading from cache`)
-				this.loadFromCache()
-				this.load(true)
+				this.load(this.loadFromCache())
 			}
 		} else if (dependencies.length > 0) {
 			console.debug(`[model ${this.apiUrl}] waiting for dependencies`)
@@ -80,18 +85,25 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 	/**
 	 * Attempts to load the model from the cache
 	 */
-	private loadFromCache() {
-		if (!browser) return
+	private loadFromCache(): boolean {
+		if (!browser) return false
+		try {
+			const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
 
-		const data = JSON.parse(localStorage.getItem('cache_' + this.apiUrl)!)
-		if (this.list) {
-			for (const item of data) {
-				this.data.set(item.id.toString(), this.parser(item))
-			}
-		} else this.data.set('0', this.parser(data))
+			if (this.type !== 'partial') this.data.clear()
+			if (this.type === 'list' || this.type === 'partial') {
+				for (const item of data) {
+					this.data.set(item.id.toString(), {...this.parser(item), fromServer: false})
+				}
+			} else this.data.set('0', {...this.parser(data), fromServer: false})
 
-		this.triggerLoaded()
-		console.debug(`[model ${this.apiUrl}] loaded from cache`)
+			this.triggerLoaded()
+			console.debug(`[model ${this.apiUrl}] loaded from cache`)
+			return true
+		} catch (e) {
+			console.debug(`[model ${this.apiUrl}] error loading from cache\n`, e)
+			return false
+		}
 	}
 
 	/**
@@ -130,12 +142,13 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 				if (response.ok) {
 					const data = await response.json()
 					respData = data
-					this.data.clear()
-					if (this.list) {
+
+					if (this.type !== 'partial') this.data.clear()
+					if (this.type === 'list' || this.type === 'partial') {
 						for (const item of data) {
-							this.data.set(item.id.toString(), this.parser(item))
+							this.data.set(item.id.toString(), { ...this.parser(item), fromServer: true })
 						}
-					} else this.data.set('0', this.parser(data))
+					} else this.data.set('0', { ...this.parser(data), fromServer: true })
 				} else {
 					error(undefined)
 					return
@@ -148,20 +161,64 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 		this.isLoaded = true
 		if (!force) this.triggerLoaded()
 		else this.triggerUpdated()
-		console.debug(`[model ${this.apiUrl}] loaded`)
+		console.debug(`[model ${this.apiUrl}] loaded from API`)
 
-		if (this.cache && respData) {
+		this.saveToCache(respData)
+	}
+
+	protected saveToCache(respData: any) {
+		if (!browser) return
+		if (!this.cache) return
+
+		if (this.type == 'single') {
 			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(respData))
-			console.debug(`[model ${this.apiUrl}] cached`)
+			console.debug(`[model ${this.apiUrl}] (single) saved to cache`)
+			return
+		}
+
+		try {
+			if (!Array.isArray(respData)) respData = [respData]
+
+			const currentCache = localStorage.getItem('cache_' + this.apiUrl)
+			if (currentCache) {
+				const currentCacheData = JSON.parse(currentCache)
+				const currentKeys = currentCacheData.map((i: any) => i.id)
+				if (this.type === 'list' || this.type === 'partial') {
+					for (const item of respData) {
+						if (currentKeys.includes(item.id)) {
+							Object.assign(
+								currentCacheData[currentKeys.indexOf(item.id)],
+								item,
+							)
+						} else {
+							currentCacheData.push(item)
+						}
+					}
+				} else {
+					Object.assign(currentCacheData, respData)
+				}
+				localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(currentCacheData))
+			} else {
+				localStorage.setItem(
+					'cache_' + this.apiUrl,
+					JSON.stringify(Array.isArray(respData) ? respData : [respData]),
+				)
+			}
+			console.debug(`[model ${this.apiUrl}] saved to cache`)
+		} catch (e) {
+			console.debug(`[model ${this.apiUrl}] error saving to cache\n`, e)
+			// Cache is probably corrupted, clear it. Will be automatically regenerated on next load
+			console.debug(`[model ${this.apiUrl}] clearing cache`)
+			localStorage.removeItem('cache_' + this.apiUrl)
 		}
 	}
 
-	protected get(id: string | number): T | undefined {
-		if (!this.list) id = 0
+	public get(id: string | number): T | undefined {
+		if (this.type === 'single') id = '0'
 		return this.data.get(id.toString())
 	}
 
-	protected getAll(): { [key: string]: T; } {
+	public getAll(): { [key: string]: T } {
 		return Object.fromEntries(this.data)
 	}
 
@@ -180,7 +237,10 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 		this.loadErrorListeners.push(listener)
 	}
 
-	public subscribe(run: Subscriber<{ [key: string]: T; }>, invalidate?: ((value?: { [key: string]: T; } | undefined) => void) | undefined): Unsubscriber {
+	public subscribe(
+		run: Subscriber<{ [key: string]: T }>,
+		invalidate?: ((value?: { [key: string]: T } | undefined) => void) | undefined,
+	): Unsubscriber {
 		this.subscribers.push(run)
 		run(this.getAll())
 
@@ -212,5 +272,58 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T }> {
 
 	public async reload() {
 		this.load(true)
+	}
+}
+
+export class PartialModel<T> extends LoadableModel<T> {
+	constructor(
+		protected apiUrl: string,
+		protected parser: ModelParser<T>,
+		protected cache = false,
+		protected dependencies: LoadableModel<any>[] = [],
+	) {
+		super(apiUrl, parser, cache, dependencies, 'partial')
+	}
+
+	public async loadSingle(id: string) {
+		if (!browser) return
+
+		const error = (e: any) => {
+			console.warn(`[partial m. ${this.apiUrl}] single object load error:`, e)
+			return
+		}
+		let respData: unknown
+		try {
+			let url = this.apiUrl
+
+			if (!url.startsWith('/')) url = '/' + url
+			if (!url.endsWith('/') && !url.includes('.')) url += '/'
+			url += id + '/'
+
+			const response = await fetch(getApiHost() + url, { method: 'GET' })
+
+			if (response.status)
+				if (response.ok) {
+					const data = await response.json()
+					respData = data
+
+					this.data.set(id.toString(), this.parser(data))
+				} else {
+					error(undefined)
+					return
+				}
+		} catch (e) {
+			error(e)
+			return
+		}
+
+		this.triggerUpdated()
+		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id}`)
+
+		this.saveToCache(respData)
+	}
+
+	public loadMultiple() {
+		throw new Error('Method not implemented')
 	}
 }

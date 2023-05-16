@@ -1,5 +1,5 @@
-import { getUserDetails, invalidateAccessToken, type ErrorResponse } from '$lib/api'
-import { get, type Readable, type Subscriber } from 'svelte/store'
+import { getUserDetails, logout, type ErrorResponse, logoutAll } from '$lib/api'
+import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from './types'
 import { clazzes } from './data'
 import { getAccessToken, setAccessToken } from './token'
@@ -66,7 +66,7 @@ class InternalUserState implements Readable<UserState> {
 			const rawUser = response.data!
 			const user = {
 				...rawUser,
-				clazz: get(clazzes)[rawUser.clazz as any]!,
+				clazz: clazzes.get(rawUser.clazz as any)!
 			}
 			this.state = {
 				user,
@@ -93,10 +93,10 @@ class InternalUserState implements Readable<UserState> {
 		let error = false
 		if (!this.currentState.loggedIn) return
 		if (getAccessToken()) {
-			const resp = await invalidateAccessToken()
+			const resp = await logout()
 			if (resp.error) {
 				const { errorCode, errorMessage } = resp as ErrorResponse
-				console.error('Failed to invalidate token', errorCode, errorMessage)
+				console.error('Failed to log out', errorCode, errorMessage)
 				error = true
 			}
 		} else {
@@ -110,6 +110,20 @@ class InternalUserState implements Readable<UserState> {
 			loading: false,
 		}
 		return !error
+	}
+
+	async logoutAllDevices() {
+		if (!this.currentState.loggedIn) return
+		if (getAccessToken()) {
+			const resp = await logoutAll()
+			if (resp.error) {
+				const { errorCode, errorMessage } = resp as ErrorResponse
+				console.error('Failed to log out all devices', errorCode, errorMessage)
+				return false
+			}
+		}
+		await this.fetchUser()
+		return true
 	}
 }
 

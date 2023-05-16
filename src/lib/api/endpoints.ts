@@ -97,12 +97,22 @@ setUserPassword.requiresAuth = true
 // AUTH ENDPOINTS
 
 /**
- * Invalidate the current access token.
- * This will log the user out.
+ * Log the user out.
  *
  * @returns Server response: 204 No Content if successful and 401 error if not logged in
+ * @throws 401 error if not logged in
  */
-export async function invalidateAccessToken() {
-	return makeApiRequest('auth/invalidate', 'DELETE', undefined, true)
+export async function logout() {
+	return makeApiRequest('auth/logout', 'POST', undefined, true)
 }
-invalidateAccessToken.requiresAuth = true
+logout.requiresAuth = true
+
+/**
+ * Log out from all devices.
+ * 
+ * @returns Server response: 204 No Content if successful and 401 error if not logged in
+ * @throws 401 error if not logged in
+ */
+export async function logoutAll() {
+	return makeApiRequest('auth/logoutall', 'POST', undefined, true)
+}

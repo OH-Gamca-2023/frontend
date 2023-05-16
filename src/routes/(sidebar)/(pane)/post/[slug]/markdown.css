@@ -1,0 +1,617 @@
+/** * Forced light theme version */
+.markdown * {
+    --background-body: #fff;
+    --background: #efefef;
+    --background-alt: #f7f7f7;
+    --selection: #9e9e9e;
+    --text-main: #363636;
+    --text-bright: #000;
+    --text-muted: #70777f;
+    --links: #0076d1;
+    --focus: #0096bfab;
+    --border: #dbdbdb;
+    --code: #000;
+    --animation-duration: 0.1s;
+    --button-base: #d0cfcf;
+    --button-hover: #9b9b9b;
+    --scrollbar-thumb: #aaa;
+    --scrollbar-thumb-hover: var(--button-hover);
+    --form-placeholder: #949494;
+    --form-text: #1d1d1d;
+    --variable: #39a33c;
+    --highlight: #ff0;
+    --select-arrow: url("data:image/svg+xml;charset=utf-8,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' height='62.5' width='116.9' fill='%23161f27'%3E %3Cpath d='M115.3,1.6 C113.7,0 111.1,0 109.5,1.6 L58.5,52.7 L7.4,1.6 C5.8,0 3.2,0 1.6,1.6 C0,3.2 0,5.8 1.6,7.4 L55.5,61.3 C56.3,62.1 57.3,62.5 58.4,62.5 C59.4,62.5 60.5,62.1 61.3,61.3 L115.2,7.4 C116.9,5.8 116.9,3.2 115.3,1.6Z'/%3E %3C/svg%3E");
+}
+
+.markdown.dark * {
+    --background-body: #334155;
+    --background: #212a36;
+    --background-alt: #1b2a38;
+    --selection: #1c76c5;
+    --text-main: #dbdbdb;
+    --text-bright: #fff;
+    --text-muted: #a9b1ba;
+    --links: #41adff;
+    --focus: #0096bfab;
+    --border: #526980;
+    --code: #ffbe85;
+    --animation-duration: 0.1s;
+    --button-base: #0c151c;
+    --button-hover: #040a0f;
+    --scrollbar-thumb: var(--button-hover);
+    --scrollbar-thumb-hover: #000;
+    --form-placeholder: #a9a9a9;
+    --form-text: #fff;
+    --variable: #d941e2;
+    --highlight: #efdb43;
+    --select-arrow: url("data:image/svg+xml;charset=utf-8,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' height='62.5' width='116.9' fill='%23efefef'%3E %3Cpath d='M115.3,1.6 C113.7,0 111.1,0 109.5,1.6 L58.5,52.7 L7.4,1.6 C5.8,0 3.2,0 1.6,1.6 C0,3.2 0,5.8 1.6,7.4 L55.5,61.3 C56.3,62.1 57.3,62.5 58.4,62.5 C59.4,62.5 60.5,62.1 61.3,61.3 L115.2,7.4 C116.9,5.8 116.9,3.2 115.3,1.6Z'/%3E %3C/svg%3E");
+}
+
+.markdown {
+    scrollbar-color: var(--scrollbar-thumb) var(--background-body);
+    scrollbar-width: thin;
+}
+.markdown {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+    line-height: 1.4;
+    margin: 20px auto;
+    padding: 0 10px;
+    word-wrap: break-word;
+    color: var(--text-main);
+    background: var(--background-body);
+    text-rendering: optimizeLegibility;
+}
+.markdown button {
+    transition: background-color var(--animation-duration) linear, border-color var(--animation-duration) linear, color var(--animation-duration) linear, box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+}
+.markdown input {
+    transition: background-color var(--animation-duration) linear, border-color var(--animation-duration) linear, color var(--animation-duration) linear, box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+}
+.markdown textarea {
+    transition: background-color var(--animation-duration) linear, border-color var(--animation-duration) linear, color var(--animation-duration) linear, box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+}
+.markdown h1 {
+    font-size: 2.2em;
+    margin-top: 0;
+}
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+    margin-bottom: 12px;
+    margin-top: 24px;
+}
+.markdown h1 {
+    color: var(--text-bright);
+}
+.markdown h2 {
+    color: var(--text-bright);
+}
+.markdown h3 {
+    color: var(--text-bright);
+}
+.markdown h4 {
+    color: var(--text-bright);
+}
+.markdown h5 {
+    color: var(--text-bright);
+}
+.markdown h6 {
+    color: var(--text-bright);
+}
+.markdown strong {
+    color: var(--text-bright);
+}
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6, .markdown b, .markdown strong, .markdown th {
+    font-weight: 600;
+}
+.markdown q::before {
+    content: none;
+}
+.markdown q::after {
+    content: none;
+}
+.markdown blockquote {
+    border-left: 4px solid var(--focus);
+    margin: 1.5em 0;
+    padding: 0.5em 1em;
+    font-style: italic;
+}
+.markdown q {
+    border-left: 4px solid var(--focus);
+    margin: 1.5em 0;
+    padding: 0.5em 1em;
+    font-style: italic;
+}
+.markdown blockquote > footer {
+    font-style: normal;
+    border: 0;
+}
+.markdown blockquote cite {
+    font-style: normal;
+}
+.markdown address {
+    font-style: normal;
+}
+.markdown a[href^='mailto\:']::before {
+    content: '📧 ';
+}
+.markdown a[href^='tel\:']::before {
+    content: '📞 ';
+}
+.markdown a[href^='sms\:']::before {
+    content: '💬 ';
+}
+.markdown mark {
+    background-color: var(--highlight);
+    border-radius: 2px;
+    padding: 0 2px 0 2px;
+    color: #000;
+}
+.markdown a > code, .markdown a > strong {
+    color: inherit;
+}
+.markdown button, .markdown select, .markdown input[type='submit'], .markdown input[type='reset'], .markdown input[type='button'], .markdown input[type='checkbox'], .markdown input[type='range'], .markdown input[type='radio'] {
+    cursor: pointer;
+}
+.markdown input, .markdown select {
+    display: block;
+}
+.markdown [type='checkbox'], .markdown [type='radio'] {
+    display: initial;
+}
+.markdown input {
+    color: var(--form-text);
+    background-color: var(--background);
+    font-family: inherit;
+    font-size: inherit;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+}
+.markdown button {
+    color: var(--form-text);
+    background-color: var(--background);
+    font-family: inherit;
+    font-size: inherit;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+}
+.markdown textarea {
+    color: var(--form-text);
+    background-color: var(--background);
+    font-family: inherit;
+    font-size: inherit;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+}
+.markdown select {
+    color: var(--form-text);
+    background-color: var(--background);
+    font-family: inherit;
+    font-size: inherit;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+}
+.markdown button {
+    background-color: var(--button-base);
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.markdown input[type='submit'] {
+    background-color: var(--button-base);
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.markdown input[type='reset'] {
+    background-color: var(--button-base);
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.markdown input[type='button'] {
+    background-color: var(--button-base);
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.markdown button:hover {
+    background: var(--button-hover);
+}
+.markdown input[type='submit']:hover {
+    background: var(--button-hover);
+}
+.markdown input[type='reset']:hover {
+    background: var(--button-hover);
+}
+.markdown input[type='button']:hover {
+    background: var(--button-hover);
+}
+.markdown input[type='color'] {
+    min-height: 2rem;
+    padding: 8px;
+    cursor: pointer;
+}
+.markdown input[type='checkbox'], .markdown input[type='radio'] {
+    height: 1em;
+    width: 1em;
+}
+.markdown input[type='radio'] {
+    border-radius: 100%;
+}
+.markdown input {
+    vertical-align: top;
+}
+.markdown label {
+    vertical-align: middle;
+    margin-bottom: 4px;
+    display: inline-block;
+}
+.markdown input:not([type='checkbox']):not([type='radio']), .markdown input[type='range'], .markdown select, .markdown button, .markdown textarea {
+    -webkit-appearance: none;
+}
+.markdown textarea {
+    display: block;
+    margin-right: 0;
+    box-sizing: border-box;
+    resize: vertical;
+}
+.markdown textarea:not([cols]) {
+    width: 100%;
+}
+.markdown textarea:not([rows]) {
+    min-height: 40px;
+    height: 140px;
+}
+.markdown select {
+    background: var(--background) var(--select-arrow) calc(100% - 12px) 50% / 12px no-repeat;
+    padding-right: 35px;
+}
+.markdown select::-ms-expand {
+    display: none;
+}
+.markdown select[multiple] {
+    padding-right: 10px;
+    background-image: none;
+    overflow-y: auto;
+}
+.markdown input:focus {
+    box-shadow: 0 0 0 2px var(--focus);
+}
+.markdown select:focus {
+    box-shadow: 0 0 0 2px var(--focus);
+}
+.markdown button:focus {
+    box-shadow: 0 0 0 2px var(--focus);
+}
+.markdown textarea:focus {
+    box-shadow: 0 0 0 2px var(--focus);
+}
+.markdown input[type='checkbox']:active, .markdown input[type='radio']:active, .markdown input[type='submit']:active, .markdown input[type='reset']:active, .markdown input[type='button']:active, .markdown input[type='range']:active, .markdown button:active {
+    transform: translateY(2px);
+}
+.markdown input:disabled, .markdown select:disabled, .markdown button:disabled, .markdown textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.markdown ::-moz-placeholder {
+    color: var(--form-placeholder);
+}
+.markdown :-ms-input-placeholder {
+    color: var(--form-placeholder);
+}
+.markdown ::-ms-input-placeholder {
+    color: var(--form-placeholder);
+}
+.markdown ::placeholder {
+    color: var(--form-placeholder);
+}
+.markdown fieldset {
+    border: 1px var(--focus) solid;
+    border-radius: 6px;
+    margin: 0;
+    margin-bottom: 12px;
+    padding: 10px;
+}
+.markdown legend {
+    font-size: 0.9em;
+    font-weight: 600;
+}
+.markdown input[type='range'] {
+    margin: 10px 0;
+    padding: 10px 0;
+    background: transparent;
+}
+.markdown input[type='range']:focus {
+    outline: none;
+}
+.markdown input[type='range']::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 9.5px;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+    background: var(--background);
+    border-radius: 3px;
+}
+.markdown input[type='range']::-webkit-slider-thumb {
+    box-shadow: 0 1px 1px #000, 0 0 1px #0d0d0d;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: var(--border);
+    -webkit-appearance: none;
+    margin-top: -7px;
+}
+.markdown input[type='range']:focus::-webkit-slider-runnable-track {
+    background: var(--background);
+}
+.markdown input[type='range']::-moz-range-track {
+    width: 100%;
+    height: 9.5px;
+    -moz-transition: 0.2s;
+    transition: 0.2s;
+    background: var(--background);
+    border-radius: 3px;
+}
+.markdown input[type='range']::-moz-range-thumb {
+    box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: var(--border);
+}
+.markdown input[type='range']::-ms-track {
+    width: 100%;
+    height: 9.5px;
+    background: transparent;
+    border-color: transparent;
+    border-width: 16px 0;
+    color: transparent;
+}
+.markdown input[type='range']::-ms-fill-lower {
+    background: var(--background);
+    border: 0.2px solid #010101;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+}
+.markdown input[type='range']::-ms-fill-upper {
+    background: var(--background);
+    border: 0.2px solid #010101;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+}
+.markdown input[type='range']::-ms-thumb {
+    box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+    border: 1px solid #000;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: var(--border);
+}
+.markdown input[type='range']:focus::-ms-fill-lower {
+    background: var(--background);
+}
+.markdown input[type='range']:focus::-ms-fill-upper {
+    background: var(--background);
+}
+.markdown a {
+    text-decoration: none;
+    color: var(--links);
+}
+.markdown a:hover {
+    text-decoration: underline;
+}
+.markdown code {
+    background: var(--background);
+    color: var(--code);
+    padding: 2.5px 5px;
+    border-radius: 6px;
+    font-size: 1em;
+}
+.markdown samp {
+    background: var(--background);
+    color: var(--code);
+    padding: 2.5px 5px;
+    border-radius: 6px;
+    font-size: 1em;
+}
+.markdown time {
+    background: var(--background);
+    color: var(--code);
+    padding: 2.5px 5px;
+    border-radius: 6px;
+    font-size: 1em;
+}
+.markdown pre > code {
+    padding: 10px;
+    display: block;
+    overflow-x: auto;
+}
+.markdown var {
+    color: var(--variable);
+    font-style: normal;
+    font-family: monospace;
+}
+.markdown kbd {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-main);
+    padding: 2px 4px 2px 4px;
+}
+.markdown img, .markdown video {
+    max-width: 100%;
+    height: auto;
+}
+.markdown hr {
+    border: none;
+    border-top: 1px solid var(--border);
+}
+.markdown table {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    width: 100%;
+    table-layout: fixed;
+}
+.markdown table caption {
+    text-align: left;
+}
+.markdown td, .markdown th {
+    padding: 6px;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+.markdown thead {
+    border-bottom: 1px solid var(--border);
+}
+.markdown tfoot {
+    border-top: 1px solid var(--border);
+}
+.markdown tbody tr:nth-child(even) {
+    background-color: var(--background);
+}
+.markdown tbody tr:nth-child(even) button {
+    background-color: var(--background-alt);
+}
+.markdown tbody tr:nth-child(even) button:hover {
+    background-color: var(--background-body);
+}
+.markdown ::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+.markdown ::-webkit-scrollbar-track {
+    background: var(--background);
+    border-radius: 6px;
+}
+.markdown ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 6px;
+}
+.markdown ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+.markdown ::-moz-selection {
+    background-color: var(--selection);
+    color: var(--text-bright);
+}
+.markdown ::selection {
+    background-color: var(--selection);
+    color: var(--text-bright);
+}
+.markdown details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: var(--background-alt);
+    padding: 10px 10px 0;
+    margin: 1em 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.markdown details[open] {
+    padding: 10px;
+}
+.markdown details > :last-child {
+    margin-bottom: 0;
+}
+.markdown details[open] summary {
+    margin-bottom: 10px;
+}
+.markdown summary {
+    display: list-item;
+    background-color: var(--background);
+    padding: 10px;
+    margin: -10px -10px 0;
+    cursor: pointer;
+    outline: none;
+}
+.markdown summary:hover, .markdown summary:focus {
+    text-decoration: underline;
+}
+.markdown details > :not(summary) {
+    margin-top: 0;
+}
+.markdown summary::-webkit-details-marker {
+    color: var(--text-main);
+}
+.markdown dialog {
+    background-color: var(--background-alt);
+    color: var(--text-main);
+    border: none;
+    border-radius: 6px;
+    border-color: var(--border);
+    padding: 10px 30px;
+}
+.markdown dialog > header:first-child {
+    background-color: var(--background);
+    border-radius: 6px 6px 0 0;
+    margin: -10px -30px 10px;
+    padding: 10px;
+    text-align: center;
+}
+.markdown dialog::-webkit-backdrop {
+    background: #000 9c;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+.markdown dialog::backdrop {
+    background: #000 9c;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+.markdown footer {
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    color: var(--text-muted);
+}
+.markdown body > footer {
+    margin-top: 40px;
+}
+@media print {
+    .markdown body, .markdown pre, .markdown code, .markdown summary, .markdown details, .markdown button, .markdown input, .markdown textarea {
+        background-color: #fff;
+   }
+    .markdown button, .markdown input, .markdown textarea {
+        border: 1px solid #000;
+   }
+    .markdown body, .markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6, .markdown pre, .markdown code, .markdown button, .markdown input, .markdown textarea, .markdown footer, .markdown summary, .markdown strong {
+        color: #000;
+   }
+    .markdown summary::marker {
+        color: #000;
+   }
+    .markdown summary::-webkit-details-marker {
+        color: #000;
+   }
+    .markdown tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+   }
+    .markdown a {
+        color: #00f;
+        text-decoration: underline;
+   }
+}
+
+.markdown ul {
+    list-style: disc;
+    margin: 16px 0;
+    padding: 0 0 0 40px;
+}
+
+.markdown ol {
+    list-style: decimal;
+    margin: 16px 0;
+    padding: 0 0 0 40px;
+}

@@ -1,3 +1,4 @@
+import type { Post } from './posts'
 import type { Clazz, Grade } from './users'
 
 export interface Tag {
@@ -12,20 +13,26 @@ export interface Category {
 }
 
 export interface Discipline {
-	id: number
+	id: string
 	name: string
-	description: string
+	short_name: string
+	details: string
 	tags: Tag[]
 
 	date: string
 	time: string
 	location: string
+	volatile_date: boolean
 
-	grades: Grade[]
 	category: Category
+	target_grades: Grade[]
 
 	date_published: boolean
 	description_published: boolean
+	results_published: boolean
+
+	details_post: Post
+	results_post: Post
 }
 
 export interface Results {
