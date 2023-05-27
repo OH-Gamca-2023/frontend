@@ -2,11 +2,13 @@ import { getApiHost } from '$lib/api/data'
 import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
+import { getAccessToken } from '$lib/state/token'
 
 export type ModelParser<T> = (data: unknown) => T
 export type ModelType = 'list' | 'partial' | 'single'
 // 'list' - there are multiple data items, each with an id
 // 'partial' - like 'list', but the data present is only a subset of the total data
+// 			 - partial models are assumed to be paginated
 // 'single' - there is a single data item, with id 0
 
 export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromServer: boolean } }> {
@@ -30,6 +32,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		protected cache = false,
 		protected dependencies: LoadableModel<any>[] = [],
 		protected type: ModelType = 'list',
+		protected auth = false,
+		protected mutable = false,
 	) {
 		if (!browser) return
 		if (cache && !dependencies.every((dep) => dep.cache)) {
@@ -136,7 +140,14 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			if (!url.startsWith('/')) url = '/' + url
 			if (!url.endsWith('/') && !url.includes('.')) url += '/'
 
-			const response = await fetch(getApiHost() + url, { method: 'GET' })
+			let headers = {}
+			if (this.auth && getAccessToken()) {
+				headers = {
+					'Authorization': 'Bearer ' + getAccessToken(),
+				}
+			}
+
+			const response = await fetch(getApiHost() + url, { method: 'GET', headers })
 
 			if (response.status)
 				if (response.ok) {
@@ -144,6 +155,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 					respData = data
 
 					if (this.type !== 'partial') this.data.clear()
+					else respData = respData.results
 					if (this.type === 'list' || this.type === 'partial') {
 						for (const item of data) {
 							this.data.set(item.id.toString(), { ...this.parser(item), fromServer: true })
@@ -217,6 +229,13 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 
 	public getAll(): { [key: string]: T } {
 		return Object.fromEntries(this.data)
+	}
+
+	public set(id: string | number, value: T, fromServer = false) {
+		if(!this.mutable) throw new Error('Model is not mutable')
+		if (this.type === 'single') id = '0'
+		this.data.set(id.toString(), { ...value, fromServer })
+		this.triggerUpdated()
 	}
 
 	public get size(): number {

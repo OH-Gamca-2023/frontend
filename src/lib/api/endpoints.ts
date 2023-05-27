@@ -1,5 +1,5 @@
 import { userState } from '$lib/state'
-import type { User } from '$lib/types'
+import type { Submission, User } from '$lib/types'
 import { makeApiRequest } from './api'
 
 /**
@@ -115,4 +115,18 @@ logout.requiresAuth = true
  */
 export async function logoutAll() {
 	return makeApiRequest('auth/logoutall', 'POST', undefined, true)
+}
+
+
+// CIPHER ENDPOINTS
+
+/**
+ * Get submissions for a cipher from users class.
+ * 
+ * @param id The cipher ID
+ * @returns the submissions
+ * @throws 401 error if not logged in
+ */
+export async function getCipherSubmissions(id: number) {
+	return makeApiRequest<Submission[]>(`ciphers/${id}/submissions`, 'GET', undefined, true)
 }

@@ -111,11 +111,11 @@
 				</div>
 				<div>
 					<a
-						href="/gallery"
+						href="/ciphers"
 						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
 					>
-						<Icon icon="tabler:photo" class="h-6 w-6" />
-						<span>Galéria</span>
+						<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
+						<span>Šifrovačka</span>
 					</a>
 				</div>
 			</div>
