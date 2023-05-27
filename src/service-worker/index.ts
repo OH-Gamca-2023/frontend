@@ -45,7 +45,7 @@ sw.addEventListener('fetch', (event) => {
 	if (event.request.method !== 'GET') return
 
 	// Ignore requests for certain paths
-	if (IGNORED_PATHS.some((path) => event.request.url.includes(path))) return
+	if (IGNORED_PATHS.some((path) => event.request.url.includes(path)) || event.request.url.includes("?")) return
 
 	async function respond() {
 		const url = new URL(event.request.url)
