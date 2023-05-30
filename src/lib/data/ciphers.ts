@@ -10,6 +10,7 @@ export const ciphers = new LoadableModel<Cipher>("ciphers", (raw) => {
         id: rawData.id,
         start: new Date(rawData.start),
         started: rawData.started,
+        submission_delay: rawData.submission_delay,
         hint_visible: rawData.hint_visible,
         end: new Date(rawData.end),
         has_ended: rawData.has_ended,
@@ -38,13 +39,13 @@ export const ciphers = new LoadableModel<Cipher>("ciphers", (raw) => {
         base.hint = rawData.hint_text
     }
 
-    if (base.started) loadSubmissions(base)
+    if (base.started) loadCipherSubmissions(base)
 
     return base
 
 }, false, [clazzes, grades], 'list', true, true)
 
-async function loadSubmissions(cipher: Cipher) {
+export async function loadCipherSubmissions(cipher: Cipher) {
     const submissions = await getCipherSubmissions(cipher.id)
     if (submissions.error) {
         console.error((submissions as ErrorResponse).errorCode, (submissions as ErrorResponse).errorMessage)
@@ -55,6 +56,12 @@ async function loadSubmissions(cipher: Cipher) {
         return
     }
 
-    cipher.submissions = submissions.data
+    cipher.submissions = submissions.data.map((raw) => {
+        return {
+            ...raw,
+            time: new Date(raw.time),
+        }
+    })
+    cipher.submissions.sort((a, b) => b.time.getTime() - a.time.getTime())
     ciphers.set(cipher.id, cipher)
 }

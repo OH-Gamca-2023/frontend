@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { userState } from '$lib/state'
 	import type { Cipher } from '$lib/types'
-	import timeAgo from '$lib/types/timeago'
+	import timeAgo from '$lib/utils/timeago'
 
 	export let cipher: Cipher
+	export let solvingIndividually = false
 
 	$: hintPublishTime = timeAgo.format(new Date(cipher.hint_publish_time ?? 0))
 	$: hintPublishText = cipher.hint_publish_time
@@ -61,7 +62,13 @@
 	</div>
 	<div class="flex flex-col text-right">
 		{#if $userState.loggedIn && userClass}
-			<span class="text-sm text-gray-500 dark:text-gray-400 pb-2">Trieda: {userClass?.name}</span>
+			<span class="text-sm text-gray-500 dark:text-gray-400 pb-2">
+				{#if solvingIndividually}
+					Individuálne: {$userState.user?.username}
+				{:else}
+					Trieda: {userClass?.name}
+				{/if}
+			</span>
 			<div class="flex-1">
 				{#if classData?.solved}
 					<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>

@@ -121,6 +121,16 @@ export async function logoutAll() {
 // CIPHER ENDPOINTS
 
 /**
+ * Get cipher details.
+ * 
+ * @param id The cipher ID
+ * @returns the cipher details
+ */
+export async function getCipherDetails(id: number) {
+	return makeApiRequest<any>('ciphers/' + id, 'GET', undefined, false)
+}
+
+/**
  * Get submissions for a cipher from users class.
  * 
  * @param id The cipher ID
@@ -129,4 +139,18 @@ export async function logoutAll() {
  */
 export async function getCipherSubmissions(id: number) {
 	return makeApiRequest<Submission[]>(`ciphers/${id}/submissions`, 'GET', undefined, true)
+}
+
+/**
+ * Submit a solution for a cipher.
+ * 
+ * @param id The cipher ID
+ * @param solution The solution
+ * @returns the submission if successful
+ * @throws 401 error if not logged in
+ * @throws 400 error if the solution is invalid in any way
+ * @throws 429 error if the user can't submit yet
+ */
+export async function submitCipherSolution(id: number, solution: string) {
+	return makeApiRequest<Submission>(`ciphers/${id}/submissions`, 'POST', { answer: solution }, true)
 }

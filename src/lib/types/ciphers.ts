@@ -6,6 +6,8 @@ export interface Cipher {
 	start: Date
 	started: boolean
 
+	submission_delay: number // Seconds
+
 	name?: string
 	task_file?: string // URL
 	hint?: string

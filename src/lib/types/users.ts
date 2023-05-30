@@ -1,6 +1,8 @@
 export interface Grade {
 	id: number
 	name: string
+	competing: boolean
+	cipher_competing: boolean
 }
 
 export interface Clazz {

@@ -1,6 +1,8 @@
 <script lang="ts">
+	import Icon from '$lib/components/Icon.svelte'
 	import CipherListObject from '$lib/components/ciphers/CipherListObject.svelte'
 	import { ciphers } from '$lib/data/ciphers'
+	import { userState } from '$lib/state'
 
 	$: listCiphers = Object.values($ciphers)
 		.sort((a, b) => {
@@ -17,10 +19,40 @@
 			return a.id - b.id
 		})
 		.filter((cipher) => cipher.started) // only show started ciphers
+
+	$: solvingIndividually =
+		($userState.loggedIn && $userState.user && !$userState.user.clazz.grade.cipher_competing) ??
+		false
 </script>
 
 <div class="flex flex-col space-y-2 w-full">
-	{#each listCiphers as cipher}
-		<CipherListObject {cipher} />
-	{/each}
+	{#await ciphers.load()}
+		<div class="flex flex-row justify-center items-center space-x-2">
+			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
+			<span class="text-xl font-bold">Načítavam šifry...</span>
+		</div>
+	{:then _}
+		{#if listCiphers.length === 0}
+			<div class="flex flex-row justify-center items-center space-x-2">
+				<Icon icon="mdi:stop-remove-outline" class="w-10 h-10" />
+				<span class="text-xl font-bold">Žiadne šifry aktuálne nie sú dostupné.</span>
+			</div>
+		{:else}
+			{#if $userState.loggedIn && $userState.user}
+				{#if !$userState.user.clazz.grade.cipher_competing}
+					<div class="flex flex-row justify-center items-center space-x-2">
+						<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
+						<div class="flex flex-col">
+							<span class="text-xl font-bold">Tvoja trieda sa nezúčastuje tejto šifrovačky.</span>
+							<span class="text-sm">Stále však môžeš riešiť šifry individuálne.</span>
+						</div>
+					</div>
+				{/if}
+			{/if}
+
+			{#each listCiphers as cipher}
+				<CipherListObject {cipher} {solvingIndividually} />
+			{/each}
+		{/if}
+	{/await}
 </div>
