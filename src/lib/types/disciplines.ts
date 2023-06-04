@@ -1,10 +1,4 @@
-import type { Post } from './posts'
-import type { Clazz, Grade } from './users'
-
-export interface Tag {
-	id: number
-	name: string
-}
+import type { Clazz, Grade, User } from './users'
 
 export interface Category {
 	id: number
@@ -17,7 +11,6 @@ export interface Discipline {
 	name: string
 	short_name: string
 	details: string
-	tags: Tag[]
 
 	date: string
 	time: string
@@ -31,12 +24,16 @@ export interface Discipline {
 	description_published: boolean
 	results_published: boolean
 
-	details_post: Post
-	results_post: Post
+	// Only available for organisers and teachers 
+	primary_organiser?: Partial<User>
+	organisers?: Partial<User>[]
+	teacher_supervisors?: Partial<User>[]
 }
 
 export interface Results {
 	id: number
+	name: string
+	grades: Grade[]
 	discipline: Discipline
 
 	placements: { clazz: Clazz; place: number }[]

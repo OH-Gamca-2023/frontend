@@ -3,6 +3,9 @@ export interface Grade {
 	name: string
 	competing: boolean
 	cipher_competing: boolean
+
+	is_organiser: boolean
+	is_teacher: boolean
 }
 
 export interface Clazz {
@@ -18,6 +21,7 @@ export interface User {
 	email: string
 	first_name: string
 	last_name: string
+	phone_number: string
 	clazz: Clazz
 	microsoft_user: string
 	type: 'student' | 'teacher' | 'organizer' | 'admin'
