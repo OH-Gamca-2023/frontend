@@ -17,10 +17,7 @@ export interface ApiResponse<T = void> {
 
 export interface ErrorResponse extends ApiResponse {
 	error: true
-	errorCode: string
-	errorMessage: string
-	internal: boolean
-	data?: never
+	data?: any
 }
 
 export interface SuccessResponse<T> extends ApiResponse<T> {
