@@ -302,8 +302,9 @@ export class PartialModel<T> extends LoadableModel<T> {
 		protected parser: ModelParser<T>,
 		protected cache = false,
 		protected dependencies: LoadableModel<any>[] = [],
+		protected auth = false,
 	) {
-		super(apiUrl, parser, cache, dependencies, 'partial')
+		super(apiUrl, parser, cache, dependencies, 'partial', auth)
 	}
 
 	public async loadSingle(id: string) {
@@ -323,7 +324,14 @@ export class PartialModel<T> extends LoadableModel<T> {
 			if (!url.endsWith('/') && !url.includes('.')) url += '/'
 			url += id + '/'
 
-			const response = await fetch(getApiHost() + url, { method: 'GET' })
+			let headers = {}
+			if (this.auth && getAccessToken()) {
+				headers = {
+					'Authorization': 'Bearer ' + getAccessToken(),
+				}
+			}
+
+			const response = await fetch(getApiHost() + url, { method: 'GET', headers })
 
 			if (response.status)
 				if (response.ok) {
