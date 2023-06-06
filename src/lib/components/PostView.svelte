@@ -12,11 +12,6 @@
 	if (!post) posts.loadSingle(id)
 </script>
 
-<svelte:head>
-	<link rel="stylesheet" href="/markdown-dark.css" />
-	<link rel="stylesheet" href="/markdown-light.css" />
-</svelte:head>
-
 <div class="w-full flex flex-col">
 	{#if post}
 		<div id="info" class="flex flex-row justify-between items-center">

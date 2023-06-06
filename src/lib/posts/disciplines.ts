@@ -12,12 +12,8 @@ class DisciplineModel extends PartialModel<Discipline> {
 			(data) => {
 				const rawDiscipline = data as any
 
-				if (rawDiscipline.primary_organiser) {
-					setRawUser(rawDiscipline.primary_organiser)
-				}
-
-				if (rawDiscipline.organisers && rawDiscipline.organisers.length > 0) {
-					rawDiscipline.organisers.forEach((organiser: any) => {
+				if (rawDiscipline.primary_organisers && rawDiscipline.primary_organisers.length > 0) {
+					rawDiscipline.primary_organisers.forEach((organiser: any) => {
 						setRawUser(organiser)
 					})
 				}
@@ -41,20 +37,23 @@ class DisciplineModel extends PartialModel<Discipline> {
 					location: rawDiscipline.location,
 					volatile_date: rawDiscipline.volatile_date,
 
-					category: get(categories)[rawDiscipline.category.id],
-					target_grades: rawDiscipline.target_grades.map((grade: any) => get(grades)[grade.id]),
+					get category() {
+						return get(categories)[rawDiscipline.category]
+					},
+					get target_grades() {
+						return rawDiscipline.target_grades.map((grade: any) => get(grades)[grade.id])
+					},
 
 					date_published: rawDiscipline.date_published,
 					description_published: rawDiscipline.description_published,
 					results_published: rawDiscipline.results_published,
 
-					get primary_organiser() {
-						return rawDiscipline.primary_organiser ? getUser(rawDiscipline.primary_organiser.id) : undefined
-					},
-					get organisers() {
-						return rawDiscipline.organisers.map((organiser: any) => getUser(organiser.id))
+					get primary_organisers() {
+						if (!rawDiscipline.primary_organisers) return []
+						return rawDiscipline.primary_organisers.map((organiser: any) => getUser(organiser.id))
 					},
 					get teacher_supervisors() {
+						if (!rawDiscipline.teacher_supervisors) return []
 						return rawDiscipline.teacher_supervisors.map((teacher: any) => getUser(teacher.id))
 					}
 

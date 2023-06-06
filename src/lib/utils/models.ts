@@ -15,7 +15,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 	public isLoaded = false
 
 	private loadRan = false
-	private loadingPromise: Promise<void> | undefined = undefined
+	protected dependencyLoadingPromise: Promise<void[]> | undefined = undefined
+	protected loadingPromise: Promise<void> | undefined = undefined
 	private resolveLoadingPromise: (() => void) | undefined = undefined
 
 	public isCached = false
@@ -47,6 +48,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		if (cache && this.isCached) {
 			if (dependencies.length > 0) {
 				if (dependencies.every((dep) => dep.isLoaded)) {
+					this.dependencyLoadingPromise = Promise.resolve([])
 					console.debug(
 						`[model ${this.apiUrl}] all dependencies loaded or cached, loading from cache`,
 					)
@@ -58,7 +60,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 						`[model ${this.apiUrl}] some dependencies not loaded or cached, waiting for dependencies`,
 					)
 					;(async () => {
-						await Promise.all(dependencies.map((dep) => dep.load()))
+						this.dependencyLoadingPromise = Promise.all(dependencies.map((dep) => dep.load()))
+						await this.dependencyLoadingPromise
 						console.debug(`[model ${this.apiUrl}] all dependencies loaded, loading from cache`)
 						this.load(this.loadFromCache())
 					})()
@@ -70,7 +73,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		} else if (dependencies.length > 0) {
 			console.debug(`[model ${this.apiUrl}] waiting for dependencies`)
 			;(async () => {
-				await Promise.all(dependencies.map((dep) => dep.load()))
+				this.dependencyLoadingPromise = Promise.all(dependencies.map((dep) => dep.load()))
+				await this.dependencyLoadingPromise
 				console.debug(`[model ${this.apiUrl}] all dependencies loaded, loading`)
 				await this.load()
 			})()
@@ -133,7 +137,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 				return
 			}
 		}
-		let respData: unknown
+		let respData: any
 		try {
 			let url = this.apiUrl
 
@@ -223,12 +227,12 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		}
 	}
 
-	public get(id: string | number): T | undefined {
+	public get(id: string | number): T & { fromServer: boolean } | undefined {
 		if (this.type === 'single') id = '0'
 		return this.data.get(id.toString())
 	}
 
-	public getAll(): { [key: string]: T } {
+	public getAll(): { [key: string]: T & { fromServer: boolean } } {
 		return Object.fromEntries(this.data)
 	}
 
@@ -255,8 +259,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 	}
 
 	public subscribe(
-		run: Subscriber<{ [key: string]: T }>,
-		invalidate?: ((value?: { [key: string]: T } | undefined) => void) | undefined,
+		run: Subscriber<{ [key: string]: T & { fromServer: boolean } }>,
+		invalidate?: ((value?: { [key: string]: T & { fromServer: boolean } } | undefined) => void) | undefined,
 	): Unsubscriber {
 		this.subscribers.push(run)
 		run(this.getAll())
@@ -304,6 +308,8 @@ export class PartialModel<T> extends LoadableModel<T> {
 
 	public async loadSingle(id: string) {
 		if (!browser) return
+		await this.dependencyLoadingPromise
+		await this.loadingPromise
 
 		const error = (e: any) => {
 			console.warn(`[partial m. ${this.apiUrl}] single object load error:`, e)
@@ -324,7 +330,7 @@ export class PartialModel<T> extends LoadableModel<T> {
 					const data = await response.json()
 					respData = data
 
-					this.data.set(id.toString(), this.parser(data))
+					this.data.set(id.toString(), { ...this.parser(data), fromServer: true })
 				} else {
 					error(undefined)
 					return

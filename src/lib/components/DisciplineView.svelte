@@ -15,23 +15,20 @@
 	let view = 'overview' as 'overview' | 'people' | 'results'
 </script>
 
-<svelte:head>
-	<link rel="stylesheet" href="/markdown-dark.css" />
-	<link rel="stylesheet" href="/markdown-light.css" />
-</svelte:head>
-
 <div class="w-full flex flex-col">
 	{#if discipline}
 		<div class="flex flex-row justify-center items-center">
 			<div class="flex flex-col">
 				<span class="text-2xl font-bold">{discipline.name}</span>
-				<div class="flex flex-row">
+				<div class="flex flex-row pt-2 justify-center space-y-3">
 					{#if discipline.category}
 						<div class="ampule {discipline.category.calendarClass}" class:dark={$darkTheme}>
+							<span class="dot" />
 							<span class="text-sm font-bold">{discipline.category.name}</span>
 						</div>
 					{:else}
-						<div class="task--danger ampule" class:dark={$darkTheme}>
+						<div class="ampule" class:dark={$darkTheme}>
+							<span class="dot" />
 							<span class="text-sm font-bold">Chyba</span>
 						</div>
 					{/if}
@@ -45,42 +42,56 @@
 
 <style lang="scss">
 	.ampule {
-		height: 2rem;
-		border: 2px solid;
-		padding: 3px;
-		border-radius: 2rem;
+		height: 1.5rem;
+		padding: 5px 8px 5px 5px;
+		border-radius: 15rem;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+
+		background: hsl(0, 0%, 84%);
+		color: hsl(0, 0%, 31%);
+
+		.dot {
+			width: 12px;
+			height: 12px;
+			margin: 0px 4px 0px 3px;
+			border-radius: 50%;
+
+			background: hsl(0, 0%, 13%);
+		}
 
 		&.task--warning {
-			border-color: #fdb44d;
-			&::before {
-				background: #fef0db;
+			background: hsl(35, 98%, 90%);
+			.dot {
+				background: hsl(35, 95%, 53%);
 			}
-			color: #fc9b10;
+			color: hsl(35, 98%, 40%);
 		}
 
 		&.task--danger {
-			border-color: #fa607e;
-			&::before {
-				background: #ffd4dd;
+			background: hsl(348, 98%, 90%);
+			.dot {
+				background: hsl(348, 95%, 53%);
 			}
-			color: #f8254e;
+			color: hsl(348, 98%, 40%);
 		}
 
 		&.task--info {
-			border-color: #4786ff;
-			&::before {
-				background: #dbe7ff;
+			background: hsl(220, 98%, 90%);
+			.dot {
+				background: hsl(220, 95%, 53%);
 			}
-			color: #0a5eff;
+			color: hsl(220, 98%, 40%);
 		}
 
 		&.task--success {
-			border-color: #5cb85c;
-
-			&::before {
-				background: #ccffcc;
+			background: hsl(120, 70%, 90%);
+			.dot {
+				background: hsl(120, 70%, 53%);
 			}
-			color: #3c763d;
+			color: hsl(120, 70%, 40%);
 		}
 	}
 </style>
