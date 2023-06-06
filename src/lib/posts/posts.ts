@@ -49,14 +49,14 @@ class PostModel extends PartialModel<Post> {
 					},
 				}
 			},
-			true,
+			false,
 			[tags, categories, grades, clazzes],
 		)
 	}
 
 	public get postList() {
 		return derived(this, ($posts) => {
-			return Object.values($posts).sort((a, b) => b.date - a.date)
+			return Object.values($posts).sort((a, b) => b.date.getTime() - a.date.getTime())
 		})
 	}
 }

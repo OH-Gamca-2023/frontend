@@ -13,7 +13,7 @@
 			: 'Nápoveda bude zverejnená'
 		: 'Nápoveda nebude zverejnená'
 	$: endTime = timeAgo.format(new Date(cipher.end)).split(' ').splice(1).join(' ')
-	$: endText = cipher.has_ended ? 'Skončila' : 'Na vyriešenie zostávajú'
+	$: endText = cipher.has_ended ? 'Skončila pred' : 'Na vyriešenie zostávajú'
 
 	$: userClass = $userState.loggedIn ? $userState.user!.clazz : undefined
 	$: classData = $userState.loggedIn ? cipher.classes.get(userClass!) : undefined

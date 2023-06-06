@@ -151,12 +151,13 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 
 			if (response.status)
 				if (response.ok) {
-					const data = await response.json()
+					let data = await response.json()
 					respData = data
 
 					if (this.type !== 'partial') this.data.clear()
 					else respData = respData.results
 					if (this.type === 'list' || this.type === 'partial') {
+						if (this.type === 'partial') data = data.results
 						for (const item of data) {
 							this.data.set(item.id.toString(), { ...this.parser(item), fromServer: true })
 						}
