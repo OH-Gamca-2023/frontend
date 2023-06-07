@@ -20,9 +20,14 @@
 		})
 		.filter((cipher) => cipher.started) // only show started ciphers
 
-	$: solvingIndividually =
-		($userState.loggedIn && $userState.user && !$userState.user.clazz.grade.cipher_competing) ??
-		false
+	$: solving =
+		$userState.loggedIn && $userState.user
+			? $userState.user.clazz.grade.cipher_competing
+				? 'class'
+				: $userState.user.individual_cipher_solving
+				? 'individual'
+				: 'none'
+			: 'none'
 </script>
 
 <div class="flex flex-col space-y-2 w-full">
@@ -44,14 +49,16 @@
 						<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 						<div class="flex flex-col">
 							<span class="text-xl font-bold">Tvoja trieda sa nezúčastuje tejto šifrovačky.</span>
-							<span class="text-sm">Stále však môžeš riešiť šifry individuálne.</span>
+							{#if solving === 'individual'}
+								<span class="text-sm">Stále však môžeš riešiť šifry individuálne.</span>
+							{/if}
 						</div>
 					</div>
 				{/if}
 			{/if}
 
 			{#each listCiphers as cipher}
-				<CipherListObject {cipher} {solvingIndividually} />
+				<CipherListObject {cipher} {solving} />
 			{/each}
 		{/if}
 	{/await}

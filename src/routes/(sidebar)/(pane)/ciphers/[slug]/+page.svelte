@@ -18,16 +18,21 @@
 
 	$: userClass = $userState.loggedIn ? $userState.user!.clazz : undefined
 	$: classData = $userState.loggedIn ? cipher?.classes.get(userClass!) : undefined
-	$: solvingIndividually =
-		($userState.loggedIn && $userState.user && !$userState.user.clazz.grade.cipher_competing) ??
-		false
+	$: solving =
+		$userState.loggedIn && $userState.user
+			? $userState.user.clazz.grade.cipher_competing
+				? 'class'
+				: $userState.user.individual_cipher_solving
+				? 'individual'
+				: 'none'
+			: 'none'
 
 	$: solved = cipher?.submissions.some((s) => s.correct)
 	$: nextSubmitTime =
 		!cipher || cipher.submissions.length === 0
 			? 0
 			: cipher.submissions[0].time.getTime() +
-			  1000 * cipher.submission_delay * (solvingIndividually ? 2 : 1)
+			  1000 * cipher.submission_delay * (solving == 'individual' ? 2 : 1)
 	$: canSubmit =
 		!solved &&
 		(!cipher ? false : cipher.submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
@@ -87,7 +92,9 @@
 					<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 					<div class="flex flex-col">
 						<span class="text-xl font-bold">Tvoja trieda sa nezúčastuje tejto šifrovačky.</span>
-						<span class="text-sm">Stále však môžeš riešiť šifry individuálne.</span>
+						{#if solving === 'individual'}
+							<span class="text-sm">Stále však môžeš riešiť šifry individuálne.</span>
+						{/if}
 					</div>
 				</div>
 			{/if}
@@ -219,17 +226,21 @@
 					{#if $userState.loggedIn && userClass}
 						<div class="flex flex-col">
 							<span class="text-md text-gray-700 dark:text-gray-200">
-								{#if solvingIndividually}
+								{#if solving == 'individual'}
 									Riešiš individuálne:
-								{:else}
+								{:else if solving == 'class'}
 									Riešiš za triedu:
+								{:else}
+									Individuálne riešenie:
 								{/if}
 							</span>
 							<span class="text-xl font-bold">
-								{#if solvingIndividually}
+								{#if solving == 'individual'}
 									{$userState.user?.username}
-								{:else}
+								{:else if solving == 'class'}
 									{userClass.name}
+								{:else}
+									Nemáš povolené
 								{/if}
 							</span>
 						</div>
@@ -247,102 +258,104 @@
 							{/if}
 						</div>
 						<div class="flex flex-col justify-center text-center">
-							<span class="text-2xl font-bold">Odoslané riešenia</span>
-							<div
-								class="flex flex-col rounded-md border border-gray-300 dark:border-gray-500 mt-5"
-							>
+							{#if solving != 'none'}
+								<span class="text-2xl font-bold">Odoslané riešenia</span>
 								<div
-									class="flex flex-row justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
-									 border-b border-gray-300 dark:border-gray-500 rounded-t-md"
+									class="flex flex-col rounded-md border border-gray-300 dark:border-gray-500 mt-5"
 								>
-									<span class="text-lg font-bold basis-2/5 text-left">Riešenie</span>
-									<span class="text-lg font-bold">Po&nbsp;nápovede</span>
-									<span class="text-md font-bold basis-2/5 text-right">Dátum a čas</span>
-								</div>
-								{#each cipher.submissions as submission, i}
 									<div
-										class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
-										 border-b border-gray-300 dark:border-gray-500"
-										class:bg-green-500={submission.correct}
-										class:bg-red-500={!submission.correct}
-										class:rounded-b-md={i === cipher.submissions.length - 1}
+										class="flex flex-row justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
+									 border-b border-gray-300 dark:border-gray-500 rounded-t-md"
 									>
-										<span class="text-lg font-bold basis-2/5 text-left">{submission.answer}</span>
-										<span class="text-lg font-bold">
-											{#if submission.after_hint}
-												<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
-											{:else}
-												<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-gray-500" />
-											{/if}
-										</span>
-										<span class="text-md font-bold basis-2/5 text-right">
-											<span class="pr-2"
-												>{String(submission.time.getDate()).padStart(2, '0')}. {String(
-													submission.time.getMonth() + 1,
-												).padStart(2, '0')}.</span
-											>
-											<span
-												>{String(submission.time.getHours()).padStart(2, '0')}:{String(
-													submission.time.getMinutes(),
-												).padStart(2, '0')}</span
-											>
-										</span>
+										<span class="text-lg font-bold basis-2/5 text-left">Riešenie</span>
+										<span class="text-lg font-bold">Po&nbsp;nápovede</span>
+										<span class="text-md font-bold basis-2/5 text-right">Dátum a čas</span>
 									</div>
-								{:else}
-									<div
-										class="flex flex-row justify-between items-center bg-opacity-40 p-2
+									{#each cipher.submissions as submission, i}
+										<div
+											class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
 										 border-b border-gray-300 dark:border-gray-500"
-									>
-										<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
-									</div>
-								{/each}
-							</div>
-							<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
-							<form>
-								<label for="answer" class="text-md font-bold text-red-500 dark:text-red-400">
-									{#if !canSubmit && solved}
-										Nemôžete odoslať ďalšie riešenie,<br />keďže ste už šifru vyriešili.
-									{:else if !canSubmit && nextSubmitTime}
-										{#key $subSeconds}
-											Ďalšie riešenie môžete odoslať {String(
-												timeAgo.format(nextSubmitTime),
-											).replace('teraz', 'o menej ako minútu')}.
-										{/key}
-									{:else if !canSubmit}
-										Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste prosím
-										obnoviť stránku.<br />
-										<i class="text-sm text-gray-500 dark:text-gray-400"
-											>Ak sa chyba nevyrieši, kontaktujte administrátora.</i
+											class:bg-green-500={submission.correct}
+											class:bg-red-500={!submission.correct}
+											class:rounded-b-md={i === cipher.submissions.length - 1}
 										>
-									{/if}
-								</label>
-								<div class="flex flex-row w-full pt-2">
-									<input
-										type="text"
-										id="answer"
-										name="answer"
-										class="flex-1 rounded-l-md border border-gray-300 dark:border-gray-500 p-2
+											<span class="text-lg font-bold basis-2/5 text-left">{submission.answer}</span>
+											<span class="text-lg font-bold">
+												{#if submission.after_hint}
+													<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
+												{:else}
+													<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-gray-500" />
+												{/if}
+											</span>
+											<span class="text-md font-bold basis-2/5 text-right">
+												<span class="pr-2"
+													>{String(submission.time.getDate()).padStart(2, '0')}. {String(
+														submission.time.getMonth() + 1,
+													).padStart(2, '0')}.</span
+												>
+												<span
+													>{String(submission.time.getHours()).padStart(2, '0')}:{String(
+														submission.time.getMinutes(),
+													).padStart(2, '0')}</span
+												>
+											</span>
+										</div>
+									{:else}
+										<div
+											class="flex flex-row justify-between items-center bg-opacity-40 p-2
+										 border-b border-gray-300 dark:border-gray-500"
+										>
+											<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
+										</div>
+									{/each}
+								</div>
+								<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
+								<form>
+									<label for="answer" class="text-md font-bold text-red-500 dark:text-red-400">
+										{#if !canSubmit && solved}
+											Nemôžete odoslať ďalšie riešenie,<br />keďže ste už šifru vyriešili.
+										{:else if !canSubmit && nextSubmitTime}
+											{#key $subSeconds}
+												Ďalšie riešenie môžete odoslať {String(
+													timeAgo.format(nextSubmitTime),
+												).replace('teraz', 'o menej ako minútu')}.
+											{/key}
+										{:else if !canSubmit}
+											Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste prosím
+											obnoviť stránku.<br />
+											<i class="text-sm text-gray-500 dark:text-gray-400"
+												>Ak sa chyba nevyrieši, kontaktujte administrátora.</i
+											>
+										{/if}
+									</label>
+									<div class="flex flex-row w-full pt-2">
+										<input
+											type="text"
+											id="answer"
+											name="answer"
+											class="flex-1 rounded-l-md border border-gray-300 dark:border-gray-500 p-2
 										 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
 										 text-gray-700"
-										placeholder="Zadajte riešenie"
-										autocomplete="off"
-										autocorrect="off"
-										autocapitalize="off"
-										spellcheck="false"
-										bind:value={answer}
-									/>
-									<button
-										type="submit"
-										class="flex-none rounded-r-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500
+											placeholder="Zadajte riešenie"
+											autocomplete="off"
+											autocorrect="off"
+											autocapitalize="off"
+											spellcheck="false"
+											bind:value={answer}
+										/>
+										<button
+											type="submit"
+											class="flex-none rounded-r-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500
 										 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed
 										 transition-all duration-200 ease-in-out disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700"
-										on:click|preventDefault={submitAnswer}
-										disabled={!canSubmit || submitting || !answer}
-									>
-										Odoslať
-									</button>
-								</div>
-							</form>
+											on:click|preventDefault={submitAnswer}
+											disabled={!canSubmit || submitting || !answer}
+										>
+											Odoslať
+										</button>
+									</div>
+								</form>
+							{/if}
 						</div>
 					{:else if $userState.loggedIn}
 						<span class="text-red-500 dark:text-red-400">Nastala chyba pri spracovaní údajov.</span>

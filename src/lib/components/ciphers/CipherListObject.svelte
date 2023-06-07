@@ -4,7 +4,7 @@
 	import timeAgo from '$lib/utils/timeago'
 
 	export let cipher: Cipher
-	export let solvingIndividually = false
+	export let solving = 'none'
 
 	$: hintPublishTime = timeAgo.format(new Date(cipher.hint_publish_time ?? 0))
 	$: hintPublishText = cipher.hint_publish_time
@@ -63,25 +63,33 @@
 	<div class="flex flex-col text-right">
 		{#if $userState.loggedIn && userClass}
 			<span class="text-sm text-gray-500 dark:text-gray-400 pb-2">
-				{#if solvingIndividually}
-					Individuálne: {$userState.user?.username}
-				{:else}
+				{#if solving == 'class'}
 					Trieda: {userClass?.name}
+				{:else}
+					Individuálne: {$userState.user?.username}
 				{/if}
 			</span>
-			<div class="flex-1">
-				{#if classData?.solved}
-					<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>
-					{#if classData.after_hint}
-						<span class="text-md text-yellow-500 dark:text-yellow-400">(po nápovede)</span>
+			{#if solving == 'none'}
+				<div class="flex-1">
+					<span class="text-gray-500 dark:text-gray-400 text-md font-bold"
+						>Individuálne riešenie<br />nemáš povolené</span
+					>
+				</div>
+			{:else}
+				<div class="flex-1">
+					{#if classData?.solved}
+						<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>
+						{#if classData.after_hint}
+							<span class="text-md text-yellow-500 dark:text-yellow-400">(po nápovede)</span>
+						{/if}
+					{:else}
+						<span class="text-red-500 dark:text-red-500 text-lg font-bold">Nevyriešené</span>
 					{/if}
-				{:else}
-					<span class="text-red-500 dark:text-red-500 text-lg font-bold">Nevyriešené</span>
-				{/if}
-			</div>
-			<span class="text-sm text-gray-700 dark:text-gray-200"
-				>Počet pokusov: {classData?.attempts ?? 'N/A'}</span
-			>
+				</div>
+				<span class="text-sm text-gray-700 dark:text-gray-200"
+					>Počet pokusov: {classData?.attempts ?? 'N/A'}</span
+				>
+			{/if}
 		{:else if $userState.loggedIn}
 			<span class="text-red-500 dark:text-red-400">Nastala chyba pri spracovaní údajov.</span>
 		{:else}
