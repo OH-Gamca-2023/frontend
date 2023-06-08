@@ -31,10 +31,10 @@
 				<div class="flex flex-row justify-center">
 					<span
 						class="rounded-full w-3 h-3 bg-gradient-to-tr"
-						class:from-green-500={cipher.started}
-						class:to-green-400={cipher.started}
-						class:from-yellow-500={cipher.hint_visible}
-						class:to-yellow-400={cipher.hint_visible}
+						class:from-green-500={cipher.started && !cipher.hint_visible && !cipher.has_ended}
+						class:to-green-400={cipher.started && !cipher.hint_visible && !cipher.has_ended}
+						class:from-yellow-500={cipher.hint_visible && !cipher.has_ended}
+						class:to-yellow-400={cipher.hint_visible && !cipher.has_ended}
 						class:from-red-500={cipher.has_ended}
 						class:to-red-400={cipher.has_ended}
 					/>

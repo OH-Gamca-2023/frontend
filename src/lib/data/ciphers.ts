@@ -14,8 +14,12 @@ export const ciphers = new LoadableModel<Cipher>("ciphers", (raw) => {
         hint_visible: rawData.hint_visible,
         end: new Date(rawData.end),
         has_ended: rawData.has_ended,
-        classes: new Map(),
         submissions: [],
+        data: {
+            solved: rawData.data.solved,
+            after_hint: rawData.data.after_hint,
+            attempts: rawData.data.attempts,
+        }
     } as Cipher
 
     if (rawData.hint_publish_time) {

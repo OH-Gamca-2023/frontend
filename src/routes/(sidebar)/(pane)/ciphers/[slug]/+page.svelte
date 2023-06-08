@@ -11,9 +11,9 @@
 	import { subSeconds } from '$lib/data/timer'
 	import CipherTask from '$lib/components/ciphers/CipherTask.svelte'
 
-	export let pageData: PageData
+	export let data: PageData
 
-	$: id = pageData.cipherId
+	$: id = data.cipherId
 	$: cipher = ($ciphers[id] ?? null) as Cipher | null
 
 	$: userClass = $userState.loggedIn ? $userState.user!.clazz : undefined
@@ -25,7 +25,7 @@
 				? 'individual'
 				: 'none'
 			: 'none'
-	$: data = cipher && $userState.loggedIn && solving !== 'none' ? cipher.data : undefined
+	$: statusData = cipher && $userState.loggedIn && solving !== 'none' ? cipher.data : undefined
 
 	$: solved = cipher?.submissions.some((s) => s.correct)
 	$: nextSubmitTime =
@@ -113,8 +113,8 @@
 				<span class="text-xl font-bold">Nepodarilo sa nájsť šifru.</span>
 			</div>
 		{:else}
-			<div class="flex flex-col space-y-5 lg:flex-row lg:spece-y-0">
-				<div class="flex flex-col space-y-5 basis-1/5">
+			<div class="flex flex-col space-y-5 md:flex-row flex-wrap">
+				<div class="flex flex-col space-y-5 basis-1/2 2xl:basis-1/5 order-1 p-3">
 					<div class="flex flex-col space-y-2">
 						<span class="text-xl font-bold text-gray-500 dark:text-gray-400"
 							>Šifra číslo #{cipher.id}</span
@@ -219,10 +219,13 @@
 						</div>
 					{/if}
 				</div>
-				<div class="flex flex-col p-5 flex-1">
+				<div class="flex flex-col p-5 flex-1 order-4 2xl:order-2 basis-full 2xl:basis-2/5">
 					<CipherTask {cipher} />
 				</div>
-				<div class="flex flex-col space-y-5 basis-1/5 text-right">
+				<div
+					class="flex flex-col space-y-5 basis-1/2 2xl:basis-1/5 text-right order-3
+						   p-3 border-t border-gray-300 pt-4 mt-4 dark:border-gray-500 md:border-t-0 md:pt-3 md:mt-0"
+				>
 					{#if $userState.loggedIn && userClass}
 						<div class="flex flex-col">
 							<span class="text-md text-gray-700 dark:text-gray-200">
@@ -247,9 +250,9 @@
 						<div class="flex flex-col border-b border-gray-300 pb-4 mb-4 dark:border-gray-500">
 							<span class="text-lg text-gray-700 dark:text-gray-200">Stav:</span>
 
-							{#if data?.solved && !data?.after_hint}
+							{#if statusData?.solved && !statusData?.after_hint}
 								<span class="text-green-500 dark:text-green-400 text-xl font-bold">Vyriešené</span>
-							{:else if data?.solved && data?.after_hint}
+							{:else if statusData?.solved && statusData?.after_hint}
 								<span class="text-xl font-bold text-yellow-500 dark:text-yellow-400"
 									>Vyriešené po nápovede</span
 								>
@@ -265,7 +268,7 @@
 								>
 									<div
 										class="flex flex-row justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
-									 border-b border-gray-300 dark:border-gray-500 rounded-t-md"
+											border-b border-gray-300 dark:border-gray-500 rounded-t-md"
 									>
 										<span class="text-lg font-bold basis-2/5 text-left">Riešenie</span>
 										<span class="text-lg font-bold">Po&nbsp;nápovede</span>
@@ -274,7 +277,7 @@
 									{#each cipher.submissions as submission, i}
 										<div
 											class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
-										 border-b border-gray-300 dark:border-gray-500"
+												border-b border-gray-300 dark:border-gray-500"
 											class:bg-green-500={submission.correct}
 											class:bg-red-500={!submission.correct}
 											class:rounded-b-md={i === cipher.submissions.length - 1}
@@ -303,7 +306,7 @@
 									{:else}
 										<div
 											class="flex flex-row justify-between items-center bg-opacity-40 p-2
-										 border-b border-gray-300 dark:border-gray-500"
+												border-b border-gray-300 dark:border-gray-500"
 										>
 											<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
 										</div>
@@ -338,8 +341,8 @@
 											id="answer"
 											name="answer"
 											class="flex-1 rounded-l-md border border-gray-300 dark:border-gray-500 p-2
-										 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-										 text-gray-700"
+												focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+												text-gray-700"
 											placeholder="Zadajte riešenie"
 											autocomplete="off"
 											autocorrect="off"
@@ -351,8 +354,8 @@
 										<button
 											type="submit"
 											class="flex-none rounded-r-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500
-										 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed
-										 transition-all duration-200 ease-in-out disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700"
+												px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed
+												transition-all duration-200 ease-in-out disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700"
 											on:click|preventDefault={submitAnswer}
 											disabled={!canSubmit ||
 												submitting ||
@@ -375,7 +378,7 @@
 						<a
 							href="/auth/login"
 							class="block p-2 mt-2 text-center bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-900
-							 rounded-md shadow-md">Prihlásiť sa</a
+									rounded-md shadow-md">Prihlásiť sa</a
 						>
 					{/if}
 				</div>
