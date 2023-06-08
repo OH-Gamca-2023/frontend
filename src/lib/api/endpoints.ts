@@ -29,7 +29,7 @@ getServerStatus.requiresAuth = false
  * @returns the user details
  * @throws 401 error if not logged in
  */
-export async function getUserDetails(id: string|undefined) {
+export async function getUserDetails(id: string | undefined) {
 	return makeApiRequest<User>(`user/${id ?? 'me'}`, 'GET', undefined, true)
 }
 getUserDetails.requiresAuth = true
@@ -117,12 +117,11 @@ export async function logoutAll() {
 	return makeApiRequest('auth/logoutall', 'POST', undefined, true)
 }
 
-
 // CIPHER ENDPOINTS
 
 /**
  * Get cipher details.
- * 
+ *
  * @param id The cipher ID
  * @returns the cipher details
  */
@@ -132,7 +131,7 @@ export async function getCipherDetails(id: number) {
 
 /**
  * Get submissions for a cipher from users class.
- * 
+ *
  * @param id The cipher ID
  * @returns the submissions
  * @throws 401 error if not logged in
@@ -143,7 +142,7 @@ export async function getCipherSubmissions(id: number) {
 
 /**
  * Submit a solution for a cipher.
- * 
+ *
  * @param id The cipher ID
  * @param solution The solution
  * @returns the submission if successful

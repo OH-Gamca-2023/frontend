@@ -24,7 +24,6 @@ class DisciplineModel extends PartialModel<Discipline> {
 					})
 				}
 
-
 				return {
 					id: rawDiscipline.id,
 
@@ -55,13 +54,12 @@ class DisciplineModel extends PartialModel<Discipline> {
 					get teacher_supervisors() {
 						if (!rawDiscipline.teacher_supervisors) return []
 						return rawDiscipline.teacher_supervisors.map((teacher: any) => getUser(teacher.id))
-					}
-
+					},
 				} as Discipline
 			},
 			false,
 			[tags, categories, grades],
-			true
+			true,
 		)
 	}
 }

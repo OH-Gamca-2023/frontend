@@ -147,7 +147,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			let headers = {}
 			if (this.auth && getAccessToken()) {
 				headers = {
-					'Authorization': 'Bearer ' + getAccessToken(),
+					Authorization: 'Bearer ' + getAccessToken(),
 				}
 			}
 
@@ -227,7 +227,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		}
 	}
 
-	public get(id: string | number): T & { fromServer: boolean } | undefined {
+	public get(id: string | number): (T & { fromServer: boolean }) | undefined {
 		if (this.type === 'single') id = '0'
 		return this.data.get(id.toString())
 	}
@@ -237,7 +237,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 	}
 
 	public set(id: string | number, value: T, fromServer = false) {
-		if(!this.mutable) throw new Error('Model is not mutable')
+		if (!this.mutable) throw new Error('Model is not mutable')
 		if (this.type === 'single') id = '0'
 		this.data.set(id.toString(), { ...value, fromServer })
 		this.triggerUpdated()
@@ -260,7 +260,9 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 
 	public subscribe(
 		run: Subscriber<{ [key: string]: T & { fromServer: boolean } }>,
-		invalidate?: ((value?: { [key: string]: T & { fromServer: boolean } } | undefined) => void) | undefined,
+		invalidate?:
+			| ((value?: { [key: string]: T & { fromServer: boolean } } | undefined) => void)
+			| undefined,
 	): Unsubscriber {
 		this.subscribers.push(run)
 		run(this.getAll())
@@ -327,7 +329,7 @@ export class PartialModel<T> extends LoadableModel<T> {
 			let headers = {}
 			if (this.auth && getAccessToken()) {
 				headers = {
-					'Authorization': 'Bearer ' + getAccessToken(),
+					Authorization: 'Bearer ' + getAccessToken(),
 				}
 			}
 

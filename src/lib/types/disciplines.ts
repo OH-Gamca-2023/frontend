@@ -24,7 +24,7 @@ export interface Discipline {
 	description_published: boolean
 	results_published: boolean
 
-	// Only available for organisers and teachers 
+	// Only available for organisers and teachers
 	primary_organisers?: Partial<User>[]
 	teacher_supervisors?: Partial<User>[]
 }

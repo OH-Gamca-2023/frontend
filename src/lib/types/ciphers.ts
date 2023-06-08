@@ -1,4 +1,4 @@
-import type { Clazz } from "./users"
+import type { Clazz } from './users'
 
 export interface Cipher {
 	id: number
@@ -31,7 +31,7 @@ export interface Submission {
 	clazz: Clazz
 	submitted_by: number // User ID, will not be translated to a user object for security reasons
 	answer: string
-	time: Date 
+	time: Date
 	after_hint: boolean
 	correct: boolean
 }

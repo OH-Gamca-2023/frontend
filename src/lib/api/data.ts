@@ -4,8 +4,7 @@ export function getApiHost() {
 	if (!browser) return '/api'
 
 	if (browser) {
-		if (localStorage.getItem('api_host') !== null)
-			return localStorage.getItem('api_host') as string
+		if (localStorage.getItem('api_host') !== null) return localStorage.getItem('api_host') as string
 	}
 
 	if (window.location.port === '5173' || window.location.port === '4173')

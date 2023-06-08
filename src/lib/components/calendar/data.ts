@@ -29,5 +29,5 @@ export const calendarData = new LoadableModel<CalendarData>(
 	true,
 	[gradesModel, categories],
 	'single',
-	true
+	true,
 )
