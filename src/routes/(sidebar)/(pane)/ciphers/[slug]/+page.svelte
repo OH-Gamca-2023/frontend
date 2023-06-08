@@ -11,13 +11,12 @@
 	import { subSeconds } from '$lib/data/timer'
 	import CipherTask from '$lib/components/ciphers/CipherTask.svelte'
 
-	export let data: PageData
+	export let pageData: PageData
 
-	$: id = data.cipherId
+	$: id = pageData.cipherId
 	$: cipher = ($ciphers[id] ?? null) as Cipher | null
 
 	$: userClass = $userState.loggedIn ? $userState.user!.clazz : undefined
-	$: classData = $userState.loggedIn ? cipher?.classes.get(userClass!) : undefined
 	$: solving =
 		$userState.loggedIn && $userState.user
 			? $userState.user.clazz.grade.cipher_competing
@@ -26,6 +25,7 @@
 				? 'individual'
 				: 'none'
 			: 'none'
+	$: data = cipher && $userState.loggedIn && solving !== 'none' ? cipher.data : undefined
 
 	$: solved = cipher?.submissions.some((s) => s.correct)
 	$: nextSubmitTime =
@@ -247,9 +247,9 @@
 						<div class="flex flex-col border-b border-gray-300 pb-4 mb-4 dark:border-gray-500">
 							<span class="text-lg text-gray-700 dark:text-gray-200">Stav:</span>
 
-							{#if classData?.solved && !classData?.after_hint}
+							{#if data?.solved && !data?.after_hint}
 								<span class="text-green-500 dark:text-green-400 text-xl font-bold">Vyriešené</span>
-							{:else if classData?.solved && classData?.after_hint}
+							{:else if data?.solved && data?.after_hint}
 								<span class="text-xl font-bold text-yellow-500 dark:text-yellow-400"
 									>Vyriešené po nápovede</span
 								>
@@ -320,6 +320,10 @@
 													timeAgo.format(nextSubmitTime),
 												).replace('teraz', 'o menej ako minútu')}.
 											{/key}
+										{:else if !cipher.started}
+											Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
+										{:else if cipher.has_ended}
+											Nemôžete odoslať riešenie, keďže šifra už skončila.
 										{:else if !canSubmit}
 											Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste prosím
 											obnoviť stránku.<br />
@@ -342,6 +346,7 @@
 											autocapitalize="off"
 											spellcheck="false"
 											bind:value={answer}
+											disabled={!cipher.started || cipher.has_ended}
 										/>
 										<button
 											type="submit"
@@ -349,7 +354,11 @@
 										 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed
 										 transition-all duration-200 ease-in-out disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700"
 											on:click|preventDefault={submitAnswer}
-											disabled={!canSubmit || submitting || !answer}
+											disabled={!canSubmit ||
+												submitting ||
+												!answer ||
+												!cipher.started ||
+												cipher.has_ended}
 										>
 											Odoslať
 										</button>

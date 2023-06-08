@@ -18,11 +18,11 @@ export interface Cipher {
 	end: Date
 	has_ended: boolean
 
-	classes: Map<Clazz, {
+	data: {
 		solved: boolean
 		after_hint: boolean
 		attempts: number
-	}>
+	}
 	submissions: Submission[]
 }
 

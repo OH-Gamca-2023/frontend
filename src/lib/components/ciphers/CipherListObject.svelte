@@ -16,7 +16,7 @@
 	$: endText = cipher.has_ended ? 'Skončila pred' : 'Na vyriešenie zostávajú'
 
 	$: userClass = $userState.loggedIn ? $userState.user!.clazz : undefined
-	$: classData = $userState.loggedIn ? cipher.classes.get(userClass!) : undefined
+	$: data = $userState.loggedIn && solving != 'none' ? cipher.data : undefined
 </script>
 
 <a
@@ -77,9 +77,9 @@
 				</div>
 			{:else}
 				<div class="flex-1">
-					{#if classData?.solved}
+					{#if data?.solved}
 						<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>
-						{#if classData.after_hint}
+						{#if data.after_hint}
 							<span class="text-md text-yellow-500 dark:text-yellow-400">(po nápovede)</span>
 						{/if}
 					{:else}
@@ -87,7 +87,7 @@
 					{/if}
 				</div>
 				<span class="text-sm text-gray-700 dark:text-gray-200"
-					>Počet pokusov: {classData?.attempts ?? 'N/A'}</span
+					>Počet pokusov: {data?.attempts ?? 'N/A'}</span
 				>
 			{/if}
 		{:else if $userState.loggedIn}
