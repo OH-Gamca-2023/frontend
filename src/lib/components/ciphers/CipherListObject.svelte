@@ -53,16 +53,20 @@
 				</div>
 			</div>
 			<div class="flex flex-col">
-				{#if cipher.hint_publish_time}
-					<span class="text-gray-600 dark:text-gray-300">{hintPublishText} {hintPublishTime}</span>
+				{#if cipher.hint_publish_time && !cipher.has_ended}
+					<span class="text-sm md:text-md text-gray-600 dark:text-gray-300"
+						>{hintPublishText} {hintPublishTime}</span
+					>
 				{/if}
-				<span class="text-gray-600 dark:text-gray-300">{endText} {endTime}</span>
+				<span class="text-sm md:text-md pt-1 text-gray-600 dark:text-gray-300"
+					>{endText} {endTime}</span
+				>
 			</div>
 		</div>
 	</div>
 	<div class="flex flex-col text-right">
 		{#if $userState.loggedIn && userClass}
-			<span class="text-sm text-gray-500 dark:text-gray-400 pb-2">
+			<span class="text-xs md:text-sm text-gray-500 dark:text-gray-400 pb-2 whitespace-nowrap">
 				{#if solving == 'class'}
 					Trieda: {userClass?.name}
 				{:else}
@@ -71,22 +75,30 @@
 			</span>
 			{#if solving == 'none'}
 				<div class="flex-1">
-					<span class="text-gray-500 dark:text-gray-400 text-md font-bold"
+					<span class="text-gray-500 dark:text-gray-400 text-sm md:text-md font-bold"
 						>Individuálne riešenie<br />nemáš povolené</span
 					>
 				</div>
 			{:else}
 				<div class="flex-1">
 					{#if data?.solved}
-						<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>
+						<span class="text-green-500 dark:text-green-400 text-md md:text-lg font-bold"
+							>Vyriešené</span
+						>
 						{#if data.after_hint}
-							<span class="text-md text-yellow-500 dark:text-yellow-400">(po nápovede)</span>
+							<br class="block md:hidden" />
+							<span
+								class="text-sm md:text-md text-yellow-500 dark:text-yellow-400 whitespace-nowrap"
+								>(po nápovede)</span
+							>
 						{/if}
 					{:else}
-						<span class="text-red-500 dark:text-red-500 text-lg font-bold">Nevyriešené</span>
+						<span class="text-red-500 dark:text-red-500 text-md md:text-lg font-bold"
+							>Nevyriešené</span
+						>
 					{/if}
 				</div>
-				<span class="text-sm text-gray-700 dark:text-gray-200"
+				<span class="text-xs md:text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
 					>Počet pokusov: {data?.attempts ?? 'N/A'}</span
 				>
 			{/if}
