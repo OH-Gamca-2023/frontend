@@ -13,7 +13,7 @@ const CACHE_NAME = `cache-${version}`
 // Create a list of all the files we want to cache
 const CACHE_FILES = [...build, ...files]
 
-const IGNORED_PATHS = ['/api', '/admin', '/docker', '/admin_static', '/robots.txt']
+const IGNORED_PATHS = ['/api', '/admin', '/docker', '/admin_static', '/robots.txt', '/uploads', '/staticfiles']
 
 // Install the service worker
 sw.addEventListener('install', (event) => {
