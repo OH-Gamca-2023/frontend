@@ -11,5 +11,4 @@
 	"eslint.run": "onType",
 	"eslint.lintTask.enable": true,
 	"eslint.packageManager": "npm",
-	"eslint.options": {}
 }
