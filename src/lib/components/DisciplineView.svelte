@@ -8,7 +8,7 @@
 	import type { Discipline } from '$lib/types'
 	import Icon from './Icon.svelte'
 	import { userState } from '$lib/state'
-	import { hasPermission } from '$lib/utils/permissions'
+	import { hasPermission } from '$lib/utils/user'
 
 	export let id: string
 
