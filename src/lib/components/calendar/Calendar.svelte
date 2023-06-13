@@ -88,6 +88,7 @@
 				date: e.date,
 				len: 1,
 				id: e.id,
+				event: e,
 			} as Item
 		})
 		error = undefined

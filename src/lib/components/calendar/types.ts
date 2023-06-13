@@ -19,6 +19,7 @@ export type Item = {
 	className: string
 	date: Date
 	id: string
+	event: CalendarEvent
 
 	selected?: boolean
 }
