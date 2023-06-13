@@ -307,7 +307,7 @@
 				<span>Kalendár</span>
 			</a>
 			<a
-				href="/gallery"
+				href="/ciphers"
 				class="flex flex-row space-x-1"
 				on:click={() => (sidebarOpen = !sidebarOpen)}
 				on:keypress={(e) => {
@@ -316,8 +316,8 @@
 					}
 				}}
 			>
-				<Icon icon="tabler:photo" class="h-6 w-6" />
-				<span>Galéria</span>
+				<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
+				<span>Šifrovačka</span>
 			</a>
 		</div>
 	{/if}
