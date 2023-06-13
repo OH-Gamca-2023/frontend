@@ -31,20 +31,19 @@ class DisciplineModel extends PartialModel<Discipline> {
 					short_name: rawDiscipline.short_name,
 					details: rawDiscipline.details,
 
-					date: rawDiscipline.date,
-					time: rawDiscipline.time,
+					date: rawDiscipline.date ? new Date(rawDiscipline.date) : null,
+					time: rawDiscipline.time ? new Date("1970-01-01T" + rawDiscipline.time) : null,
 					location: rawDiscipline.location,
-					volatile_date: rawDiscipline.volatile_date,
 
 					get category() {
 						return get(categories)[rawDiscipline.category]
 					},
 					get target_grades() {
-						return rawDiscipline.target_grades.map((grade: any) => get(grades)[grade.id])
+						return rawDiscipline.target_grades.map((grade: any) => get(grades)[grade])
 					},
 
 					date_published: rawDiscipline.date_published,
-					description_published: rawDiscipline.description_published,
+					details_published: rawDiscipline.details_published,
 					results_published: rawDiscipline.results_published,
 
 					get primary_organisers() {

@@ -12,16 +12,15 @@ export interface Discipline {
 	short_name: string
 	details: string
 
-	date: string
-	time: string
+	date: Date | null
+	time: Date | null
 	location: string
-	volatile_date: boolean
 
 	category: Category
 	target_grades: Grade[]
 
 	date_published: boolean
-	description_published: boolean
+	details_published: boolean
 	results_published: boolean
 
 	// Only available for organisers and teachers

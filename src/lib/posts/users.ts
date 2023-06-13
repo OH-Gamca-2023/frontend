@@ -5,8 +5,8 @@ import type { User } from '$lib/types'
 const cachedUsers = new Map<string, User>()
 
 export function getUser(id: string): User | undefined {
-	if (cachedUsers.has(id)) {
-		return cachedUsers.get(id)
+	if (cachedUsers.has(id.toString())) {
+		return cachedUsers.get(id.toString())
 	}
 }
 

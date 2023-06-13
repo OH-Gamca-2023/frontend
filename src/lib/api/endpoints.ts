@@ -29,7 +29,7 @@ getServerStatus.requiresAuth = false
  * @returns the user details
  * @throws 401 error if not logged in
  */
-export async function getUserDetails(id: string | undefined) {
+export async function getUserDetails(id?: string) {
 	return makeApiRequest<User>(`user/${id ?? 'me'}`, 'GET', undefined, true)
 }
 getUserDetails.requiresAuth = true
