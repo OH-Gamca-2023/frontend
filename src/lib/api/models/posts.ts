@@ -35,7 +35,7 @@ class PostModel extends PartialModel<Post> {
 					title: rawPost.title,
 					content: rawPost.content,
 					author: author,
-					date: rawPost.date,
+					date: new Date(rawPost.date),
 					affected_grades: rawPost.affected_grades.map((id: any) => grades.get(id)),
 					tags: rawPost.tags.map((id: any) => tags.get(id)),
 					disable_comments: rawPost.disable_comments,
