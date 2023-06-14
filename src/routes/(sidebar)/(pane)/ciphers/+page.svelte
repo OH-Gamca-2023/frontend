@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte'
 	import CipherListObject from '$lib/components/ciphers/CipherListObject.svelte'
-	import { ciphers } from '$lib/data/ciphers'
+	import { ciphers } from '$lib/api/models'
 	import { userState } from '$lib/state'
 
 	$: listCiphers = Object.values($ciphers)

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
-	import type { Day, Item } from './types'
+	import type { Day, Item } from '$lib/types'
 	import clickOutside from '$lib/utils/clickOutside'
 	import { darkTheme } from '$lib/data/prefs'
-	import { compareDates } from './utils'
-	import Event from './Event.svelte'
+	import { compareDates } from '$lib/utils/calendar'
+	import CalendarEvent from './CalendarEvent.svelte'
 	import { slide } from 'svelte/transition'
 
 	export let days: Day[] = []
@@ -43,7 +43,7 @@
 				{#each perDayItems[index] as item}
 					{#if item.selected}
 						<div class="details" transition:slide>
-							<Event {item} />
+							<CalendarEvent {item} />
 						</div>
 					{/if}
 				{/each}

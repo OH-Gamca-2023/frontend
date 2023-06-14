@@ -1,8 +1,8 @@
-import { clazzes, grades } from '$lib/state'
+import { clazzes, grades } from '$lib/api/models'
 import type { Discipline, Post, User } from '$lib/types'
 import { PartialModel } from '$lib/utils/models'
 import { derived } from 'svelte/store'
-import { categories, tags } from './data'
+import { categories, tags } from '$lib/api/models/generic'
 import { disciplines } from './disciplines'
 
 class PostModel extends PartialModel<Post> {

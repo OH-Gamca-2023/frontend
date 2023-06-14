@@ -1,7 +1,7 @@
 import { getUserDetails, logout, type ErrorResponse, logoutAll } from '$lib/api'
 import type { Readable, Subscriber } from 'svelte/store'
-import type { UserState } from './types'
-import { clazzes } from './data'
+import type { UserState } from '$lib/types'
+import { clazzes } from '$lib/api/models'
 import { getAccessToken, setAccessToken } from './token'
 
 class InternalUserState implements Readable<UserState> {

@@ -2,7 +2,7 @@
 	import { slide } from 'svelte/transition'
 	import type { Cipher } from '$lib/types/ciphers'
 	import Icon from '$lib/components/Icon.svelte'
-	import { ciphers, loadCipherSubmissions } from '$lib/data/ciphers'
+	import { ciphers, loadCipherSubmissions } from '$lib/api/models/ciphers'
 	import type { PageData } from './$types'
 	import { userState } from '$lib/state'
 	import timeAgo from '$lib/utils/timeago'

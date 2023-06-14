@@ -1,5 +1,5 @@
-import { monthNames } from './consts'
-import type { Day, Item } from './types'
+import { monthNames } from '$lib/components/calendar/consts'
+import type { Day, Item } from '$lib/types'
 
 export function compareDates(a: Date, b: Date): boolean {
 	// check if the dates are in the same month and are the same day

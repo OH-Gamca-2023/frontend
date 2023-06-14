@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getApiHost } from '$lib/api/data'
+	import { getApiHost } from '$lib/data/api'
 </script>
 
 <h1 class="text-2xl font-bold">Developer options</h1>
