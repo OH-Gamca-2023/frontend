@@ -1,17 +1,20 @@
 import { browser } from '$app/environment'
 import { derived, type Writable } from 'svelte/store'
+import { devMode } from './settings'
 
 interface Prefs {
 	theme: 'light' | 'dark'
+	devMode: boolean
 }
 
 // Default values for preferences
 const defaultValues: Prefs = {
 	theme: 'dark',
+	devMode: devMode.default,
 }
 
 // Preferences singleton
-const prefs = load()
+const prefValues = load()
 
 /**
  * Load preferences from local storage.
@@ -28,6 +31,7 @@ function load(): Prefs {
 	} catch (e) {
 		console.error('Failed to load prefs from local storage', e)
 	}
+	if(devMode.force !== null) prefs.devMode = devMode.force
 	return prefs
 }
 
@@ -38,23 +42,23 @@ class PrefWritable<K extends keyof Prefs> implements Writable<Prefs[K]> {
 
 	subscribe(run: (value: Prefs[K]) => void) {
 		this.subscribers.add(run)
-		run(prefs[this.key])
+		run(prefValues[this.key])
 		return () => this.subscribers.delete(run)
 	}
 
 	set(value: Prefs[K]) {
-		prefs[this.key] = value
-		save(prefs)
+		prefValues[this.key] = value
+		save(prefValues)
 		this.subscribers.forEach((run) => run(value))
 	}
 
 	update(fn: (value: Prefs[K]) => Prefs[K]) {
-		this.set(fn(prefs[this.key]))
+		this.set(fn(prefValues[this.key]))
 	}
 }
 
 const writables = Object.fromEntries(
-	Object.keys(prefs).map((key) => {
+	Object.keys(prefValues).map((key) => {
 		return [key, new PrefWritable(key as keyof Prefs)]
 	}),
 ) as { [K in keyof Prefs]: PrefWritable<K> }
@@ -68,20 +72,24 @@ function save(prefs: Prefs) {
 	localStorage.setItem('prefs', JSON.stringify(prefs))
 }
 
-export function getPref<K extends keyof Prefs>(key: K): Writable<Prefs[K]> {
-	return writables[key]
-}
-
 export function getPrefValue<K extends keyof Prefs>(key: K): Prefs[K] {
-	return prefs[key]
+	return prefValues[key]
 }
 
 export function setPrefValue<K extends keyof Prefs>(key: K, value: Prefs[K]) {
 	writables[key].set(value)
 }
 
+export const prefs = derived(Object.values(writables), (values) => {
+	return Object.fromEntries(
+		Object.keys(writables).map((key, i) => {
+			return [key, values[i]]
+		}),
+	) as any as Prefs
+})
+
 // Additional stores if any other logic is needed
 
-export const darkTheme = derived(getPref('theme'), ($theme) => {
+export const darkTheme = derived(writables.theme, ($theme) => {
 	return $theme === 'dark'
 })

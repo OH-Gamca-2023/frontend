@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { getPref, darkTheme } from '$lib/data/prefs'
+	import { darkTheme, setPrefValue } from '$lib/data/prefs'
 	import { categories } from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
 	import Spinner from '../Spinner.svelte'
 	import Hamburger from './Hamburger.svelte'
 	import UserMenu from './UserMenu.svelte'
-
-	const theme = getPref('theme')
 
 	let categoriesOpen = false
 	let sidebarOpen = false
@@ -131,10 +129,11 @@
 				id="dark-mode"
 				class="flex flex-col items-center justify-center cursor-pointer"
 				transition:fade
-				on:click={() => ($darkTheme ? ($theme = 'light') : ($theme = 'dark'))}
+				on:click={() =>
+					$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')}
 				on:keypress={(e) => {
 					if (e.key === 'Enter' || e.key === ' ') {
-						$darkTheme ? ($theme = 'light') : ($theme = 'dark')
+						$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')
 					}
 				}}
 			>
@@ -206,10 +205,11 @@
 					id="dark-mode"
 					class="flex flex-col items-center justify-center cursor-pointer"
 					transition:fade
-					on:click={() => ($darkTheme ? ($theme = 'light') : ($theme = 'dark'))}
+					on:click={() =>
+						$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
-							$darkTheme ? ($theme = 'light') : ($theme = 'dark')
+							$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')
 						}
 					}}
 				>

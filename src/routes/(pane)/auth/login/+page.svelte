@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { getUserDetails } from '$lib/api'
-	import { darkTheme } from '$lib/data/prefs'
+	import { darkTheme, prefs } from '$lib/data/prefs'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/utils/toasts'
 	import type { PageData } from './$types'
@@ -16,10 +16,12 @@
 
 	let loginPending = data.status !== 'none'
 	let loginStatus = ''
+	let statusDetails = ''
 	let error = ''
 
 	if (loginPending) {
 		loginStatus = 'Overujem údaje...'
+		statusDetails = 'Spracovávam odpoveď zo serveru'
 
 		const response = data.params
 		if (response.status === 'error') {
@@ -29,22 +31,19 @@
 			} else {
 				error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
 			}
-			loginPending = false
-			loginStatus = ''
+			;(loginPending = false), (loginStatus = ''), (statusDetails = '')
 		} else if (response.status === 'success') {
 			try {
 				parseData(response)
 			} catch (e) {
 				console.error('Failed to parse login data', e)
 				error = 'Nastala chyba pri spracovaní údajov. Skúste to prosím znovu.'
-				loginPending = false
-				loginStatus = ''
+				;(loginPending = false), (loginStatus = ''), (statusDetails = '')
 			}
 		} else {
 			console.error('Unknown login response', response)
 			error = 'Nastala chyba pri komunikácii so serverom. Skúste to prosím znovu.'
-			loginPending = false
-			loginStatus = ''
+			;(loginPending = false), (loginStatus = ''), (statusDetails = '')
 		}
 	}
 
@@ -57,29 +56,29 @@
 		const user = JSON.parse(response.logged_user) as User
 
 		loginStatus = 'Overujem prihlásenie...'
+		statusDetails = 'Zisťujem prihláseného používateľa'
 
 		setAccessToken(userToken.token)
 
 		const serverStatus = await getUserDetails()
 		if (serverStatus.error) {
-			loginPending = false
-			loginStatus = ''
+			;(loginPending = false), (loginStatus = ''), (statusDetails = '')
 			error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
 			console.error('Error getting user details', serverStatus)
 		} else {
 			const serverUser = serverStatus.data
 			if (!serverUser) {
-				loginPending = false
-				loginStatus = ''
+				;(loginPending = false), (loginStatus = ''), (statusDetails = '')
 				error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
 				console.error('Received invalid user details', serverStatus)
 				return
 			}
 			if (serverUser.id == user.id) {
 				setAccessToken(userToken.token)
+				statusDetails = 'Aktualizujem stav prihlásenia'
+
 				await userState.fetchUser()
-				loginPending = false
-				loginStatus = ''
+				;(loginPending = false), (loginStatus = ''), (statusDetails = '')
 				toast({
 					title: 'Prihlásenie úspešné',
 					type: 'success',
@@ -148,7 +147,12 @@
 		<div class="absolute w-full h-full flex flex-row items-center justify-center">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			{#if loginStatus}
-				<span class="ml-4">{loginStatus}</span>
+				<div class="ml-4 flex flex-col">
+					<span>{loginStatus}</span>
+					{#if $prefs.devMode}
+						<span class="text-xs text-gray-600 dark:text-gray-300">{statusDetails}</span>
+					{/if}
+				</div>
 			{/if}
 		</div>
 	{/if}
