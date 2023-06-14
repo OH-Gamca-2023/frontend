@@ -1,4 +1,4 @@
-import { getApiHost } from '$lib/api/data'
+import { getApiHost } from '$lib/data/api'
 import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
