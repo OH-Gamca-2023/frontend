@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { postList } from '$lib/posts/posts'
+	import { postList } from '$lib/api/models'
 	import { highlightPlugin } from '$lib/prism'
 	import type { PostFilter } from '$lib/types'
 	import Markdown from 'svelte-exmarkdown'

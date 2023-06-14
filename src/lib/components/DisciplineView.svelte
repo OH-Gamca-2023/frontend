@@ -1,14 +1,9 @@
 <script lang="ts">
-	import { disciplines } from '$lib/posts/disciplines'
+	import { disciplines } from '$lib/api/models'
 	import { darkTheme } from '$lib/data/prefs'
-	import { posts } from '$lib/posts/posts'
-	import { highlightPlugin } from '$lib/prism'
-	import Markdown from 'svelte-exmarkdown'
-	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 	import type { Discipline } from '$lib/types'
 	import Icon from './Icon.svelte'
 	import { userState } from '$lib/state'
-	import { hasPermission } from '$lib/utils/user'
 
 	export let id: string
 

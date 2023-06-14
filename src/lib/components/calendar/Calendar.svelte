@@ -2,7 +2,7 @@
 	import CalendarDisplay from './CalendarDisplay.svelte'
 	import type { Item, Day, Header } from '$lib/types'
 	import { dayNames, monthNames } from './consts'
-	import { calendarData } from '$lib/data/calendar'
+	import { calendarData } from '$lib/api/models'
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
 	import { compareDates, initMonthDays } from '$lib/utils/calendar'

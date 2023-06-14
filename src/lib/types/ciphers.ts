@@ -22,7 +22,7 @@ export interface Cipher {
 		solved: boolean
 		after_hint: boolean
 		attempts: number
-	}
+	} | null
 	submissions: Submission[]
 }
 

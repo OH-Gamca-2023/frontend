@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { darkTheme } from '$lib/data/prefs'
-	import { posts } from '$lib/posts/posts'
+	import { posts } from '$lib/api/models'
 	import { highlightPlugin } from '$lib/prism'
 	import Markdown from 'svelte-exmarkdown'
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
