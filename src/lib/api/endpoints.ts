@@ -1,6 +1,6 @@
 import { userState } from '$lib/state'
 import type { Submission, User } from '$lib/types'
-import { makeApiRequest } from './api'
+import { makeApiRequest } from './requests'
 
 /**
  * All API endpoints MUST have proper comments.

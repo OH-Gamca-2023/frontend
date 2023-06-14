@@ -1,8 +1,8 @@
 import { browser } from '$app/environment'
 import { getAccessToken } from '$lib/state/token'
 import { get } from 'svelte/store'
-import { getApiHost } from './data'
-import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from './types'
+import { getApiHost } from '$lib/data/api'
+import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from '$lib/types'
 import { toast } from '$lib/utils/toasts'
 import { maxRequestTime } from '$lib/data/settings'
 

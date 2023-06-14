@@ -1,14 +1,5 @@
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
-export type ApiEndpoint<T> = {
-	name: string
-	url: string
-	allowedMethods: RequestMethod[]
-	returnType: T
-	authRequired: boolean
-	body: boolean
-}
-
 export interface ApiResponse<T = void> {
 	status: number
 	error: boolean
