@@ -12,7 +12,7 @@ const config = {
 			fallback: 'fallback.html',
 		}),
 		serviceWorker: {
-			register: false // process.env.NODE_ENV === 'development' ? false : true,
+			register: process.env.NODE_ENV === 'development' ? false : true,
 		},
 	},
 

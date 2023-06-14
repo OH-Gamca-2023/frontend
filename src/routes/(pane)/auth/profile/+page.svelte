@@ -18,6 +18,7 @@
 		email: false,
 		username: false,
 		password: false,
+		phone_number: false,
 	}
 	let isSuperuser = false
 
@@ -30,6 +31,7 @@
 			lastName = $userState.user?.last_name ?? ''
 			email = $userState.user?.email ?? ''
 			username = $userState.user?.username ?? ''
+			phone = $userState.user?.phone_number ?? ''
 
 			const permRequest = await getUserPermissions()
 			if (!permRequest.error) {
@@ -52,6 +54,7 @@
 	let lastName = ''
 	let email = ''
 	let username = ''
+	let phone = ''
 
 	let savingProfile = false
 
@@ -111,11 +114,20 @@
 			}
 		}
 
+		if (phone !== $userState.user?.phone_number) {
+			if (!editPermissions.phone_number) {
+				errorToast('Nemáte oprávnenie zmeniť telefónne číslo')
+				return
+			} else {
+				changes.phone_number = phone
+			}
+		}
+
 		savingProfile = true
 
 		const resp = await setUserDetails(changes)
 		if (resp.error) {
-			errorToast('Nastala chyba pri ukladaní profilu')
+			errorToast('Nastala chyba pri ukladaní profilu', (resp as ErrorResponse).data!.error)
 		} else {
 			toast({
 				title: 'Profil bol úspešne uložený',
@@ -180,11 +192,11 @@
 			})
 		} else {
 			oldPassword = ''
-			const { status, errorCode, errorMessage } = resp as ErrorResponse
-			console.warn(`Error changing password: ${errorCode} (${status}) - ${errorMessage}`)
+			const { status, data } = resp as ErrorResponse
+			console.warn(`Error changing password: (${status}) - ${data}`)
 			switch (status) {
 				case 400:
-					errorToast(errorMessage)
+					errorToast(data!.error)
 					break
 				case 401:
 					errorToast('Nie ste prihlásený')
@@ -194,10 +206,10 @@
 					errorToast('Nemáte oprávnenie zmeniť heslo')
 					break
 				case 409:
-					errorToast(errorMessage)
+					errorToast(data!.error)
 					break
 				default:
-					errorToast('Nepodarilo sa zmeniť heslo:', errorMessage)
+					errorToast('Nepodarilo sa zmeniť heslo:', data!.error)
 					break
 			}
 		}
@@ -306,13 +318,13 @@
 				</div>
 				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
 					<div class="flex flex-col">
-						<span class="text-md font-medium pb-1"> Microsoft účet </span>
+						<span class="text-md font-medium pb-1"> Telefónne číslo </span>
 						<input
 							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed w-auto"
-							type="text"
-							autocomplete="off"
-							value={$userState.user?.microsoft_user ?? ''}
-							disabled
+							type="tel"
+							autocomplete="tel"
+							disabled={!editPermissions.phone_number}
+							bind:value={phone}
 						/>
 					</div>
 					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
@@ -323,6 +335,18 @@
 							autocomplete="off"
 							value={($userState.user?.clazz?.name ?? '') +
 								(' (' + $userState.user?.clazz?.grade?.name + ')' ?? '')}
+							disabled
+						/>
+					</div>
+				</div>
+				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+					<div class="flex flex-col">
+						<span class="text-md font-medium pb-1"> Microsoft účet </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							type="text"
+							autocomplete="off"
+							value={$userState.user?.microsoft_user ?? ''}
 							disabled
 						/>
 					</div>
@@ -391,10 +415,6 @@
 									Zadajte staré heslo, ak chcete zmeniť heslo.
 								{:else}
 									Ešte nemáte nastavené žiadne heslo.
-									{#if editPermissions.password}
-										<br />Bez nastaveného hesla sa neviete dostať<br />do organizátorského
-										rozhrania.
-									{/if}
 								{/if}
 							</span>
 						</div>

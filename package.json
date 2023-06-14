@@ -41,6 +41,7 @@
 		"@sveltejs/adapter-static": "^2.0.1",
 		"buffer": "^6.0.3",
 		"eslint-plugin-svelte": "^2.27.2",
+		"javascript-time-ago": "^2.5.9",
 		"prism-svelte": "^0.5.0",
 		"prismjs": "^1.29.0",
 		"svelte-exmarkdown": "^2.0.0",

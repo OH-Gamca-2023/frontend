@@ -2,18 +2,21 @@ import { getApiHost } from '$lib/api/data'
 import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
+import { getAccessToken } from '$lib/state/token'
 
 export type ModelParser<T> = (data: unknown) => T
 export type ModelType = 'list' | 'partial' | 'single'
 // 'list' - there are multiple data items, each with an id
 // 'partial' - like 'list', but the data present is only a subset of the total data
+// 			 - partial models are assumed to be paginated
 // 'single' - there is a single data item, with id 0
 
 export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromServer: boolean } }> {
 	public isLoaded = false
 
 	private loadRan = false
-	private loadingPromise: Promise<void> | undefined = undefined
+	protected dependencyLoadingPromise: Promise<void[]> | undefined = undefined
+	protected loadingPromise: Promise<void> | undefined = undefined
 	private resolveLoadingPromise: (() => void) | undefined = undefined
 
 	public isCached = false
@@ -30,6 +33,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		protected cache = false,
 		protected dependencies: LoadableModel<any>[] = [],
 		protected type: ModelType = 'list',
+		protected auth = false,
+		protected mutable = false,
 	) {
 		if (!browser) return
 		if (cache && !dependencies.every((dep) => dep.cache)) {
@@ -43,6 +48,7 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		if (cache && this.isCached) {
 			if (dependencies.length > 0) {
 				if (dependencies.every((dep) => dep.isLoaded)) {
+					this.dependencyLoadingPromise = Promise.resolve([])
 					console.debug(
 						`[model ${this.apiUrl}] all dependencies loaded or cached, loading from cache`,
 					)
@@ -54,7 +60,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 						`[model ${this.apiUrl}] some dependencies not loaded or cached, waiting for dependencies`,
 					)
 					;(async () => {
-						await Promise.all(dependencies.map((dep) => dep.load()))
+						this.dependencyLoadingPromise = Promise.all(dependencies.map((dep) => dep.load()))
+						await this.dependencyLoadingPromise
 						console.debug(`[model ${this.apiUrl}] all dependencies loaded, loading from cache`)
 						this.load(this.loadFromCache())
 					})()
@@ -66,7 +73,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		} else if (dependencies.length > 0) {
 			console.debug(`[model ${this.apiUrl}] waiting for dependencies`)
 			;(async () => {
-				await Promise.all(dependencies.map((dep) => dep.load()))
+				this.dependencyLoadingPromise = Promise.all(dependencies.map((dep) => dep.load()))
+				await this.dependencyLoadingPromise
 				console.debug(`[model ${this.apiUrl}] all dependencies loaded, loading`)
 				await this.load()
 			})()
@@ -129,22 +137,31 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 				return
 			}
 		}
-		let respData: unknown
+		let respData: any
 		try {
 			let url = this.apiUrl
 
 			if (!url.startsWith('/')) url = '/' + url
 			if (!url.endsWith('/') && !url.includes('.')) url += '/'
 
-			const response = await fetch(getApiHost() + url, { method: 'GET' })
+			let headers = {}
+			if (this.auth && getAccessToken()) {
+				headers = {
+					Authorization: 'Bearer ' + getAccessToken(),
+				}
+			}
+
+			const response = await fetch(getApiHost() + url, { method: 'GET', headers })
 
 			if (response.status)
 				if (response.ok) {
-					const data = await response.json()
+					let data = await response.json()
 					respData = data
 
 					if (this.type !== 'partial') this.data.clear()
+					else respData = respData.results
 					if (this.type === 'list' || this.type === 'partial') {
+						if (this.type === 'partial') data = data.results
 						for (const item of data) {
 							this.data.set(item.id.toString(), { ...this.parser(item), fromServer: true })
 						}
@@ -210,13 +227,20 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		}
 	}
 
-	public get(id: string | number): T | undefined {
+	public get(id: string | number): (T & { fromServer: boolean }) | undefined {
 		if (this.type === 'single') id = '0'
 		return this.data.get(id.toString())
 	}
 
-	public getAll(): { [key: string]: T } {
+	public getAll(): { [key: string]: T & { fromServer: boolean } } {
 		return Object.fromEntries(this.data)
+	}
+
+	public set(id: string | number, value: T, fromServer = false) {
+		if (!this.mutable) throw new Error('Model is not mutable')
+		if (this.type === 'single') id = '0'
+		this.data.set(id.toString(), { ...value, fromServer })
+		this.triggerUpdated()
 	}
 
 	public get size(): number {
@@ -235,8 +259,10 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 	}
 
 	public subscribe(
-		run: Subscriber<{ [key: string]: T }>,
-		invalidate?: ((value?: { [key: string]: T } | undefined) => void) | undefined,
+		run: Subscriber<{ [key: string]: T & { fromServer: boolean } }>,
+		invalidate?:
+			| ((value?: { [key: string]: T & { fromServer: boolean } } | undefined) => void)
+			| undefined,
 	): Unsubscriber {
 		this.subscribers.push(run)
 		run(this.getAll())
@@ -278,12 +304,15 @@ export class PartialModel<T> extends LoadableModel<T> {
 		protected parser: ModelParser<T>,
 		protected cache = false,
 		protected dependencies: LoadableModel<any>[] = [],
+		protected auth = false,
 	) {
-		super(apiUrl, parser, cache, dependencies, 'partial')
+		super(apiUrl, parser, cache, dependencies, 'partial', auth)
 	}
 
 	public async loadSingle(id: string) {
 		if (!browser) return
+		await this.dependencyLoadingPromise
+		await this.loadingPromise
 
 		const error = (e: any) => {
 			console.warn(`[partial m. ${this.apiUrl}] single object load error:`, e)
@@ -297,14 +326,21 @@ export class PartialModel<T> extends LoadableModel<T> {
 			if (!url.endsWith('/') && !url.includes('.')) url += '/'
 			url += id + '/'
 
-			const response = await fetch(getApiHost() + url, { method: 'GET' })
+			let headers = {}
+			if (this.auth && getAccessToken()) {
+				headers = {
+					Authorization: 'Bearer ' + getAccessToken(),
+				}
+			}
+
+			const response = await fetch(getApiHost() + url, { method: 'GET', headers })
 
 			if (response.status)
 				if (response.ok) {
 					const data = await response.json()
 					respData = data
 
-					this.data.set(id.toString(), this.parser(data))
+					this.data.set(id.toString(), { ...this.parser(data), fromServer: true })
 				} else {
 					error(undefined)
 					return

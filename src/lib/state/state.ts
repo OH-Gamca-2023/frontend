@@ -95,8 +95,7 @@ class InternalUserState implements Readable<UserState> {
 		if (getAccessToken()) {
 			const resp = await logout()
 			if (resp.error) {
-				const { errorCode, errorMessage } = resp as ErrorResponse
-				console.error('Failed to log out', errorCode, errorMessage)
+				console.error('Failed to log out', resp.status, (resp as ErrorResponse).data)
 				error = true
 			}
 		} else {
@@ -117,8 +116,7 @@ class InternalUserState implements Readable<UserState> {
 		if (getAccessToken()) {
 			const resp = await logoutAll()
 			if (resp.error) {
-				const { errorCode, errorMessage } = resp as ErrorResponse
-				console.error('Failed to log out all devices', errorCode, errorMessage)
+				console.error('Failed to log out all devices', resp.status, (resp as ErrorResponse).data)
 				return false
 			}
 		}

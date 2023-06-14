@@ -1,5 +1,5 @@
 import { userState } from '$lib/state'
-import type { User } from '$lib/types'
+import type { Submission, User } from '$lib/types'
 import { makeApiRequest } from './api'
 
 /**
@@ -29,8 +29,8 @@ getServerStatus.requiresAuth = false
  * @returns the user details
  * @throws 401 error if not logged in
  */
-export async function getUserDetails() {
-	return makeApiRequest<User>('user/me', 'GET', undefined, true)
+export async function getUserDetails(id?: string) {
+	return makeApiRequest<User>(`user/${id ?? 'me'}`, 'GET', undefined, true)
 }
 getUserDetails.requiresAuth = true
 
@@ -115,4 +115,41 @@ logout.requiresAuth = true
  */
 export async function logoutAll() {
 	return makeApiRequest('auth/logoutall', 'POST', undefined, true)
+}
+
+// CIPHER ENDPOINTS
+
+/**
+ * Get cipher details.
+ *
+ * @param id The cipher ID
+ * @returns the cipher details
+ */
+export async function getCipherDetails(id: number) {
+	return makeApiRequest<any>('ciphers/' + id, 'GET', undefined, false)
+}
+
+/**
+ * Get submissions for a cipher from users class.
+ *
+ * @param id The cipher ID
+ * @returns the submissions
+ * @throws 401 error if not logged in
+ */
+export async function getCipherSubmissions(id: number) {
+	return makeApiRequest<Submission[]>(`ciphers/${id}/submissions`, 'GET', undefined, true)
+}
+
+/**
+ * Submit a solution for a cipher.
+ *
+ * @param id The cipher ID
+ * @param solution The solution
+ * @returns the submission if successful
+ * @throws 401 error if not logged in
+ * @throws 400 error if the solution is invalid in any way
+ * @throws 429 error if the user can't submit yet
+ */
+export async function submitCipherSolution(id: number, solution: string) {
+	return makeApiRequest<Submission>(`ciphers/${id}/submissions`, 'POST', { answer: solution }, true)
 }

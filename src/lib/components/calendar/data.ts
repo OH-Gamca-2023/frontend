@@ -4,7 +4,7 @@ import { LoadableModel } from '$lib/utils/models'
 import type { CalendarData, CalendarEvent, CalendarProps } from './types'
 
 export const calendarData = new LoadableModel<CalendarData>(
-	'calendar/json.json',
+	'calendar/auto.json',
 	(data) => {
 		// split props and events
 		const { events, ...props } = data as any
@@ -29,4 +29,5 @@ export const calendarData = new LoadableModel<CalendarData>(
 	true,
 	[gradesModel, categories],
 	'single',
+	true,
 )

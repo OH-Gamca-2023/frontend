@@ -1,16 +1,37 @@
+import type { Clazz } from './users'
+
 export interface Cipher {
 	id: number
-	name: string
 
-	start: number // Unix timestamp
-	task_file: string // URL
-	visible: boolean
+	start: Date
+	started: boolean
 
-	hint: string | null
-	hint_type: 'file' | 'text' | null
-	hint_publish_time: number | null // Unix timestamp
+	submission_delay: number // Seconds
+
+	name?: string
+	task_file?: string // URL
+	hint?: string
+
+	hint_publish_time?: Date
 	hint_visible: boolean
 
-	end: number // Unix timestamp
+	end: Date
 	has_ended: boolean
+
+	data: {
+		solved: boolean
+		after_hint: boolean
+		attempts: number
+	}
+	submissions: Submission[]
+}
+
+export interface Submission {
+	id: number
+	clazz: Clazz
+	submitted_by: number // User ID, will not be translated to a user object for security reasons
+	answer: string
+	time: Date
+	after_hint: boolean
+	correct: boolean
 }

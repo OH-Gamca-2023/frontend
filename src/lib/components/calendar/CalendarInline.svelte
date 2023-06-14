@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte'
 	import { filterItems, initMonthDays } from './utils'
 	import clickOutside from '$lib/utils/clickOutside'
+	import Event from './Event.svelte'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -22,6 +23,13 @@
 
 	$: days = initMonthDays(displayedMonth, year)
 	$: perDayItems = filterItems(days, items)
+
+	$: selectedItems = days
+		.map((d, i) => {
+			if (!d.selected) return []
+			return perDayItems[i]
+		})
+		.flat()
 
 	let error: string | undefined
 
@@ -57,6 +65,7 @@
 				date: e.date,
 				len: 1,
 				id: e.id,
+				event: e,
 			} as Item
 		})
 		error = undefined
@@ -144,6 +153,14 @@
 			{/each}
 		</div>
 	</div>
+
+	{#if selectedItems.length > 0}
+		<div class="flex flex-row flex-wrap justify-around gap-3 pt-5">
+			{#each selectedItems as item}
+				<Event {item} />
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">

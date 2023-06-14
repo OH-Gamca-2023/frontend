@@ -4,6 +4,8 @@
 	import clickOutside from '$lib/utils/clickOutside'
 	import { darkTheme } from '$lib/data/prefs'
 	import { compareDates } from './utils'
+	import Event from './Event.svelte'
+	import { slide } from 'svelte/transition'
 
 	export let days: Day[] = []
 	export let items: Item[] = []
@@ -32,10 +34,20 @@
 			class:day-today={day.today}
 			class:day-selected={day.selected}
 			class:dark={$darkTheme}
+			class:row-1={dayPositions[index].row === 1}
 			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};"
 			on:click={() => dispatch('dayClick', day)}
 			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
 		>
+			<div class="details-wrapper">
+				{#each perDayItems[index] as item}
+					{#if item.selected}
+						<div class="details" transition:slide>
+							<Event {item} />
+						</div>
+					{/if}
+				{/each}
+			</div>
 			<span class="day-text">{day.name}</span>
 		</span>
 	{/each}
@@ -247,6 +259,34 @@
 
 		grid-column: var(--column);
 		grid-row: calc(var(--row) + 1);
+
+		.details-wrapper {
+			position: absolute;
+			left: 0;
+			margin: 0 8px;
+			right: 0;
+			top: 0;
+			z-index: 100;
+
+			.details {
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+			}
+		}
+
+		&.row-1 {
+			.details-wrapper {
+				top: unset;
+				bottom: -10px;
+
+				.details {
+					top: 0;
+					bottom: unset;
+				}
+			}
+		}
 	}
 
 	.day-name {

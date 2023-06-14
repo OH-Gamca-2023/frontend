@@ -6,6 +6,10 @@ export const grades = new LoadableModel<Grade>(
 	(rawGrade: any) => ({
 		id: rawGrade.id,
 		name: rawGrade.name,
+		competing: rawGrade.competing,
+		cipher_competing: rawGrade.cipher_competing,
+		is_organiser: rawGrade.is_organiser,
+		is_teacher: rawGrade.is_teacher,
 	}),
 	true,
 	[],

@@ -95,10 +95,8 @@ export async function makeApiRequest<T>(
 				const data = await response.json()
 				return {
 					status: response.status,
-					errorCode: data.error_code,
-					errorMessage: data.error_message,
-					internal: data.internal ?? false,
 					error: true,
+					data,
 				} as ErrorResponse
 			}
 	} catch (e) {
@@ -106,9 +104,9 @@ export async function makeApiRequest<T>(
 	}
 	return {
 		status: 500,
-		errorCode: 'connection',
-		errorMessage: 'Connection or internal error',
-		internal: true,
 		error: true,
+		data: {
+			error: 'Connection error',
+		},
 	} as ErrorResponse
 }
