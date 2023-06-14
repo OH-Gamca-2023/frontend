@@ -15,23 +15,22 @@
 	</div>
 	<div class="flex flex-col body p-2 rounded-xl">
 		<div class="flex flex-row justify-between items-center">
-			<Icon icon="mdi:calendar" class="mr-5" />
+			<Icon icon="mdi:calendar" class="h-4 w-4" />
 			<span class="text-sm"
-				>{String(item.date.getDate()).padStart(2, '0')}. {String(item.date.getMonth() + 1).padStart(
-					2,
-					'0',
-				)}. {item.date.getFullYear()}</span
+				>{String(item.date.getDate()).padStart(2, '0')}.&nbsp;{String(
+					item.date.getMonth() + 1,
+				).padStart(2, '0')}.&nbsp;{item.date.getFullYear()}</span
 			>
 		</div>
 		{#if event.time}
 			<div class="flex flex-row justify-between items-center">
-				<Icon icon="mdi:clock-outline" class="mr-5" />
+				<Icon icon="mdi:clock-outline" class="h-4 w-4" />
 				<span class="text-sm">{event.time}</span>
 			</div>
 		{/if}
 		{#if event.location}
 			<div class="flex flex-row justify-between items-center">
-				<Icon icon="mdi:map-marker" class="mr-5" />
+				<Icon icon="mdi:map-marker" class="h-4 w-4" />
 				<span class="text-sm">{event.location}</span>
 			</div>
 		{/if}
@@ -50,7 +49,8 @@
 
 <style lang="scss">
 	.task--warning {
-		background-color: #df880f;
+		background-color: #fc9b10;
+		color: #fef0db;
 
 		.body {
 			color: #e69423;

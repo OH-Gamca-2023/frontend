@@ -7,7 +7,6 @@
 	import { filterItems, initMonthDays } from './utils'
 	import clickOutside from '$lib/utils/clickOutside'
 	import Event from './Event.svelte'
-	import { slide } from 'svelte/transition'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -156,7 +155,7 @@
 	</div>
 
 	{#if selectedItems.length > 0}
-		<div class="flex flex-row flex-wrap justify-around gap-3 pt-5" transition:slide>
+		<div class="flex flex-row flex-wrap justify-around gap-3 pt-5">
 			{#each selectedItems as item}
 				<Event {item} />
 			{/each}
