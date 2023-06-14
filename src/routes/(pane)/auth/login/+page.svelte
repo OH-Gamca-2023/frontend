@@ -149,7 +149,7 @@
 			{#if loginStatus}
 				<div class="ml-4 flex flex-col">
 					<span>{loginStatus}</span>
-					{#if $prefs.devMode}
+					{#if $prefs.debugMode}
 						<span class="text-xs text-gray-600 dark:text-gray-300">{statusDetails}</span>
 					{/if}
 				</div>

@@ -1,7 +1,7 @@
 export const loginRequired = false
 export const devOptionsEnabled = false
 
-export const devMode = {
+export const debugMode = {
     default: true,
-    force: null as boolean | null,
+    force: true as boolean | null,
 }

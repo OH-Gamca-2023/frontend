@@ -1,16 +1,16 @@
 import { browser } from '$app/environment'
 import { derived, type Writable } from 'svelte/store'
-import { devMode } from './settings'
+import { debugMode } from './settings'
 
 interface Prefs {
 	theme: 'light' | 'dark'
-	devMode: boolean
+	debugMode: boolean
 }
 
 // Default values for preferences
 const defaultValues: Prefs = {
 	theme: 'dark',
-	devMode: devMode.default,
+	debugMode: debugMode.default,
 }
 
 // Preferences singleton
@@ -31,7 +31,7 @@ function load(): Prefs {
 	} catch (e) {
 		console.error('Failed to load prefs from local storage', e)
 	}
-	if(devMode.force !== null) prefs.devMode = devMode.force
+	if(debugMode.force !== null) prefs.debugMode = debugMode.force
 	return prefs
 }
 
