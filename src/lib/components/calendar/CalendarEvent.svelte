@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { disciplines } from '$lib/posts/disciplines'
 	import Icon from '../Icon.svelte'
-	import type { Item } from './types'
+	import type { Item } from '../../types/calendar'
 
 	export let item: Item
 	$: event = item.event

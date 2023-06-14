@@ -1,7 +1,7 @@
 import { categories } from '$lib/posts'
 import { grades as gradesModel } from '$lib/state'
 import { LoadableModel } from '$lib/utils/models'
-import type { CalendarData, CalendarEvent, CalendarProps } from './types'
+import type { CalendarData, CalendarEvent, CalendarProps } from '../types/calendar'
 
 export const calendarData = new LoadableModel<CalendarData>(
 	'calendar/auto.json',

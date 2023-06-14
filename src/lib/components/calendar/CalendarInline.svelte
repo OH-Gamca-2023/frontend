@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Item, Day, Header } from './types'
+	import type { Item, Day, Header } from '$lib/types'
 	import { dayNames, monthNames } from './consts'
-	import { calendarData } from './data'
+	import { calendarData } from '$lib/data/calendar'
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
-	import { filterItems, initMonthDays } from './utils'
+	import { filterItems, initMonthDays } from '$lib/utils/calendar'
 	import clickOutside from '$lib/utils/clickOutside'
-	import Event from './Event.svelte'
+	import CalendarEvent from './CalendarEvent.svelte'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -157,7 +157,7 @@
 	{#if selectedItems.length > 0}
 		<div class="flex flex-row flex-wrap justify-around gap-3 pt-5">
 			{#each selectedItems as item}
-				<Event {item} />
+				<CalendarEvent {item} />
 			{/each}
 		</div>
 	{/if}
