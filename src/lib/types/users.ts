@@ -39,3 +39,9 @@ export interface User {
 		permissions: string[]
 	}
 }
+
+export interface UserState {
+	loading: boolean
+	loggedIn: boolean
+	user: User | null
+}
