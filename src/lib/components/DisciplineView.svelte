@@ -4,6 +4,7 @@
 	import type { Discipline } from '$lib/types'
 	import Icon from './Icon.svelte'
 	import { userState } from '$lib/state'
+	import Taglist from './posts/tags/Taglist.svelte'
 
 	export let id: string
 
@@ -24,24 +25,7 @@
 		<div class="flex flex-row justify-center items-center">
 			<div class="flex flex-col justify-center items-center">
 				<span class="text-3xl font-bold">{discipline.name}</span>
-				<div class="flex flex-row pt-2 justify-center space-x-2">
-					{#if discipline.category}
-						<!-- Using if in case something goes wrong, so that the rest
-							of the page will still render -->
-						<div class="ampule {discipline.category.calendarClass}" class:dark={$darkTheme}>
-							<span class="dot" />
-							<span class="text-sm font-bold">{discipline.category.name}</span>
-						</div>
-					{/if}
-					{#each discipline.target_grades as grade}
-						{#if grade}
-							<div class="ampule" class:dark={$darkTheme}>
-								<span class="dot" />
-								<span class="text-sm font-bold">{grade.name}</span>
-							</div>
-						{/if}
-					{/each}
-				</div>
+				<Taglist {discipline} />
 			</div>
 		</div>
 		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-5">
