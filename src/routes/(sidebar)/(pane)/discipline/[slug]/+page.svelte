@@ -8,6 +8,7 @@
 	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
 	import Taglist from '$lib/components/posts/tags/Taglist.svelte'
+	import Person from '$lib/components/Person.svelte'
 
 	export let data: PageData
 
@@ -84,36 +85,13 @@
 								{#each discipline.primary_organisers as organiser}
 									{#if organiser}
 										<div
-											class="flex flex-row bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
-										border-b border-gray-300 dark:border-gray-500"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex flex-row"
 										>
-											<div class="flex flex-col flex-1">
-												<div class="flex flex-row justify-between items-center">
-													<Icon icon="mdi:account" />
-													<span class="text-md">{organiser.first_name} {organiser.last_name}</span>
-												</div>
-												{#if organiser.email}
-													<div class="flex flex-row justify-between items-center">
-														<Icon icon="entypo:email" />
-														<a
-															class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400
-														"
-															href="mailto:{organiser.email}?subject=OH Gamča - {discipline.name}"
-															>{organiser.email}</a
-														>
-													</div>
-												{/if}
-												{#if organiser.phone_number}
-													<div class="flex flex-row justify-between items-center">
-														<Icon icon="ph:phone-bold" />
-														<a
-															class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400
-														"
-															href="tel:{organiser.phone_number}">{organiser.phone_number}</a
-														>
-													</div>
-												{/if}
-											</div>
+											<Person
+												user={organiser}
+												mail_subject={`OH Gamča - ${discipline.name}`}
+												real_name={true}
+											/>
 										</div>
 									{/if}
 								{/each}
@@ -165,35 +143,13 @@
 								{#each discipline.teacher_supervisors as teacher}
 									{#if teacher}
 										<div
-											class="flex flex-row bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
-										border-b border-gray-300 dark:border-gray-500"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex flex-row"
 										>
-											<div class="flex flex-col flex-1">
-												<div class="flex flex-row justify-between items-center">
-													<Icon icon="mdi:account" />
-													<span class="text-md">{teacher.first_name} {teacher.last_name}</span>
-												</div>
-												{#if teacher.email}
-													<div class="flex flex-row justify-between items-center">
-														<Icon icon="entypo:email" />
-														<a
-															class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400
-														"
-															href="mailto:{teacher.email}?subject=OH Gamča - {discipline.name}"
-															>{teacher.email}</a
-														>
-													</div>
-												{/if}
-												{#if teacher.phone_number}
-													<div class="flex flex-row justify-between items-center">
-														<Icon icon="ph:phone-bold" />
-														<a
-															class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
-															href="tel:{teacher.phone_number}">{teacher.phone_number}</a
-														>
-													</div>
-												{/if}
-											</div>
+											<Person
+												user={teacher}
+												mail_subject={`OH Gamča - ${discipline.name}`}
+												real_name={true}
+											/>
 										</div>
 									{/if}
 								{/each}
