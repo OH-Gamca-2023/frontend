@@ -20,12 +20,12 @@
 </script>
 
 <a
-	class="flex flex-row justify-between bg-gray-800 bg-opacity-0 hover:bg-opacity-5 hover:dark:bg-opacity-40 rounded-xl p-2 mb-2"
+	class="flex flex-col sm:flex-row justify-between bg-gray-800 bg-opacity-0 hover:bg-opacity-5 hover:dark:bg-opacity-40 rounded-xl p-2 mb-2"
 	href={cipher.started ? `/ciphers/${cipher.id}` : '#'}
 	class:cursor-pointer={cipher.started}
 	class:cursors-not-allowed={!cipher.started}
 >
-	<div class="flex flex-col">
+	<div class="flex flex-col flex-1">
 		<div class="flex flex-row">
 			<div class="flex flex-col justify-center mr-1 w-10">
 				<div class="flex flex-row justify-center">
@@ -64,9 +64,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="flex flex-col text-right">
+	<div class="flex-col text-right hidden sm:flex">
 		{#if $userState.loggedIn && userClass}
-			<span class="text-xs md:text-sm text-gray-500 dark:text-gray-400 pb-2 whitespace-nowrap">
+			<span class="text-sm text-gray-500 dark:text-gray-400 pb-2 whitespace-nowrap">
 				{#if solving == 'class'}
 					Trieda: {userClass?.name}
 				{:else}
@@ -82,26 +82,68 @@
 			{:else}
 				<div class="flex-1">
 					{#if data?.solved}
-						<span class="text-green-500 dark:text-green-400 text-md md:text-lg font-bold"
-							>Vyriešené</span
-						>
+						<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>
 						{#if data.after_hint}
 							<br class="block md:hidden" />
-							<span
-								class="text-sm md:text-md text-yellow-500 dark:text-yellow-400 whitespace-nowrap"
+							<span class="text-md text-yellow-500 dark:text-yellow-400 whitespace-nowrap"
 								>(po nápovede)</span
 							>
 						{/if}
 					{:else}
-						<span class="text-red-500 dark:text-red-500 text-md md:text-lg font-bold"
-							>Nevyriešené</span
-						>
+						<span class="text-red-500 dark:text-red-500 text-lg font-bold">Nevyriešené</span>
 					{/if}
 				</div>
-				<span class="text-xs md:text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
+				<span class="text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
 					>Počet pokusov: {data?.attempts ?? 'N/A'}</span
 				>
 			{/if}
+		{:else if $userState.loggedIn}
+			<span class="text-red-500 dark:text-red-400">Nastala chyba pri spracovaní údajov.</span>
+		{:else}
+			<span class="text-gray-500 dark:text-gray-400"
+				>Pre odovzdanie riešenia<br />sa musíte prihlásiť.</span
+			>
+			<a
+				href="/auth/login"
+				class="block p-2 mt-2 text-center bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-900
+                 rounded-md shadow-md">Prihlásiť sa</a
+			>
+		{/if}
+	</div>
+	<div class="flex-row justify-between flex sm:hidden pt-2">
+		{#if $userState.loggedIn && userClass}
+			<div class="flex flex-col">
+				{#if solving == 'none'}
+					<div class="flex-1">
+						<span class="text-gray-500 dark:text-gray-400 text-sm md:text-md font-bold"
+							>Individuálne riešenie<br />nemáš povolené</span
+						>
+					</div>
+				{:else if data?.solved}
+					<span class="text-green-500 dark:text-green-400 text-lg font-bold">Vyriešené</span>
+					{#if data.after_hint}
+						<span class="text-md text-yellow-500 dark:text-yellow-400 whitespace-nowrap"
+							>(po nápovede)</span
+						>
+					{/if}
+				{:else}
+					<span class="text-red-500 dark:text-red-500 text-lg font-bold">Nevyriešené</span>
+				{/if}
+			</div>
+			<div class="flex flex-col text-right">
+				<span class="text-sm text-gray-500 dark:text-gray-400 pb-2 whitespace-nowrap">
+					{#if solving == 'class'}
+						Trieda: {userClass?.name}
+					{:else}
+						Individuálne: {$userState.user?.username}
+					{/if}
+				</span>
+				{#if solving !== 'none'}
+					<span class="text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap"
+						>Počet pokusov: {data?.attempts ?? 'N/A'}</span
+					>
+				{/if}
+			</div>
 		{:else if $userState.loggedIn}
 			<span class="text-red-500 dark:text-red-400">Nastala chyba pri spracovaní údajov.</span>
 		{:else}
