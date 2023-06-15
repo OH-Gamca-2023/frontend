@@ -1,9 +1,10 @@
 <script context="module" lang="ts">
 	export const userRoleDict = {
 		admin: ['Administrátor', 'clarity:administrator-solid'],
-		organizer: ['Organizátor', 'wpf:administrator'],
+		organiser: ['Organizátor', 'wpf:administrator'],
 		teacher: ['Učiteľ', 'vaadin:academy-cap'],
 		student: ['Študent', 'wpf:name'],
+		alumni: ['Absolvent', 'charm:graduate-cap'],
 		unknown: ['Unknown', 'carbon:unknown-filled'],
 	}
 </script>
@@ -69,7 +70,7 @@
 						<Icon icon="carbon:user-profile" class="h-6 w-6" />
 						<span class="ml-2 text-sm font-medium">Profil</span>
 					</a>
-					{#if $userState.user?.type === 'organizer' || $userState.user?.type === 'admin'}
+					{#if $userState.user?.type === 'organiser' || $userState.user?.type === 'admin'}
 						<a
 							href={`/admin/`}
 							class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"

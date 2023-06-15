@@ -24,7 +24,7 @@ export interface User {
 	phone_number: string
 	clazz: Clazz
 	microsoft_user: string
-	type: 'student' | 'teacher' | 'organizer' | 'admin' | 'alumni'
+	type: 'student' | 'teacher' | 'organiser' | 'admin' | 'alumni'
 	has_password: boolean
 
 	individual_cipher_solving: boolean
@@ -34,7 +34,7 @@ export interface User {
 		teacher: boolean
 		admin: boolean
 		superuser: boolean
-		type: 'student' | 'teacher' | 'organizer' | 'admin' | 'alumni'
+		type: 'student' | 'teacher' | 'organiser' | 'admin' | 'alumni'
 		profile_edit: string[]
 		permissions: string[]
 	}
