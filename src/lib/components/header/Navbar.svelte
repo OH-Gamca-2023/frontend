@@ -79,7 +79,7 @@
 							>
 								{#each categoriesIterable as category}
 									<a
-										href={`/news/category/${category.id}`}
+										href={`/disciplines/categories/${category.id}`}
 										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
 									>
 										<span>{category.name}</span>
@@ -264,7 +264,7 @@
 						>
 							{#each categoriesIterable as category}
 								<a
-									href={`/category/${category.id}`}
+									href={`/disciplines/categories/${category.id}`}
 									class="flex flex-row p-1 pr-0"
 									on:click={() => (sidebarOpen = !sidebarOpen)}
 									on:keypress={(e) => {

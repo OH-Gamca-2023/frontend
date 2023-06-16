@@ -16,19 +16,19 @@
 {:else}
 	{#if post}
 		{#each post.discipline_categories as category}
-			<Tag name={category.name} styleClass={category.calendarClass} />
+			<Tag name={category?.name} styleClass={category?.calendarClass} />
 		{/each}
 		{#each post.affected_grades as grade}
-			<Tag name={grade.name} />
+			<Tag name={grade?.name} />
 		{/each}
 		{#each post.tags as tag}
-			<Tag name={tag.name} />
+			<Tag name={tag?.name} />
 		{/each}
 	{/if}
 	{#if discipline}
-		<Tag name={discipline.category.name} styleClass={discipline.category.calendarClass} />
+		<Tag name={discipline.category?.name} styleClass={discipline.category?.calendarClass} />
 		{#each discipline.target_grades as grade}
-			<Tag name={grade.name} />
+			<Tag name={grade?.name} />
 		{/each}
 	{/if}
 	{#if tags}
