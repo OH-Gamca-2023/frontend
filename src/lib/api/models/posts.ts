@@ -1,7 +1,7 @@
 import { clazzes, grades } from '$lib/api/models'
 import type { Discipline, Post, User } from '$lib/types'
 import { PartialModel } from '$lib/utils/models'
-import { derived } from 'svelte/store'
+import { derived, get } from 'svelte/store'
 import { categories, tags } from '$lib/api/models/generic'
 import { disciplines } from './disciplines'
 
@@ -13,13 +13,7 @@ class PostModel extends PartialModel<Post> {
 				const rawPost = data as any
 
 				const author: Partial<User> = rawPost.author
-					? {
-							id: rawPost.author.id,
-							username: rawPost.author.username,
-							first_name: rawPost.author.first_name,
-							last_name: rawPost.author.last_name,
-							type: rawPost.author.type,
-					  }
+					? rawPost.author
 					: {
 							id: -1,
 							username: 'admin',
@@ -28,7 +22,9 @@ class PostModel extends PartialModel<Post> {
 							type: 'admin',
 					  }
 
-				rawPost.related_disciplines.forEach((id: any) => disciplines.load(id))
+				Promise.all(rawPost.related_disciplines.map((id: any) => disciplines.load(id))).then(() => {
+					this.triggerUpdated()
+				})
 
 				return {
 					id: rawPost.id,
@@ -36,9 +32,12 @@ class PostModel extends PartialModel<Post> {
 					content: rawPost.content,
 					author: author,
 					date: new Date(rawPost.date),
-					affected_grades: rawPost.affected_grades.map((id: any) => grades.get(id)),
-					tags: rawPost.tags.map((id: any) => tags.get(id)),
-					disable_comments: rawPost.disable_comments,
+					get affected_grades() {
+						return rawPost.affected_grades.map((id: any) => grades.get(id))
+					},
+					get tags() {
+						return rawPost.tags.map((id: any) => tags.get(id))
+					},
 
 					get related_disciplines() {
 						return rawPost.related_disciplines.map((id: any) => disciplines.get(id))

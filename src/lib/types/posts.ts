@@ -17,6 +17,4 @@ export interface Post {
 	discipline_categories: Category[]
 	affected_grades: Grade[]
 	tags: Tag[]
-
-	disable_comments: boolean
 }

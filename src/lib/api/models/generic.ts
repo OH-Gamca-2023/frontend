@@ -41,7 +41,9 @@ export const clazzes = new LoadableModel<Clazz>(
 	(rawClazz: any) => ({
 		id: rawClazz.id,
 		name: rawClazz.name,
-		grade: grades.get(rawClazz.grade)!,
+		get grade() {
+			return grades.get(rawClazz.grade)!
+		},
 		is_fake: rawClazz.is_fake,
 	}),
 	true,

@@ -15,8 +15,12 @@ export const calendarData = new LoadableModel<CalendarData>(
 			return {
 				...rest,
 				date: new Date(date),
-				category: categories.get(category),
-				grades: grades.map((grade: number) => gradesModel.get(grade)),
+				get category() {
+					return categories.get(category)
+				},
+				get grades() {
+					return grades.map((grade: string) => gradesModel.get(grade))
+				}
 			} as CalendarEvent
 		})
 
