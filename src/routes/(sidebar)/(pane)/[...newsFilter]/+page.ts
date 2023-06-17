@@ -32,6 +32,6 @@ export const load = (({params}) => {
 
     return {
         filter,
-        rawFilter: params.filter,
+        rawFilter: params.newsFilter,
     }
 }) satisfies PageLoad
