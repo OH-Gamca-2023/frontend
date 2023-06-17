@@ -56,7 +56,7 @@
 			.filter((e) => e[1].length > 0)
 			.map((e) => e.join('/'))
 			.join('/')
-		const url = filterParams ? '/news/' + filterParams : $page.url.href == '' ? '/' : '/news/'
+		const url = filterParams || $page.url.href.includes('/news') ? '/news/' + filterParams : '/'
 		if (browser) goto(url, { noScroll: true, keepFocus: true, replaceState: true })
 	}
 </script>

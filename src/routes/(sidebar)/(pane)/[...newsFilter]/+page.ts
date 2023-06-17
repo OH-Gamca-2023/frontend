@@ -13,7 +13,7 @@ export const load = (({params}) => {
     let lastKey: string | undefined
     if (params.newsFilter) {
         for (const part of params.newsFilter.split('/')) {
-            if(part == 'news') continue
+            if(part === 'news' || part === '') continue
             if (lastKey) {
                 try {
                     const ids = part.split(',').map(e => parseInt(e))
