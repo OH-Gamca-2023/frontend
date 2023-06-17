@@ -32,7 +32,6 @@ export interface User {
 	permissions: {
 		staff: boolean
 		teacher: boolean
-		admin: boolean
 		superuser: boolean
 		type: 'student' | 'teacher' | 'organiser' | 'admin' | 'alumni'
 		profile_edit: string[]

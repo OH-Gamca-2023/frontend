@@ -256,18 +256,11 @@
 			class="flex flex-col text-gray-800 dark:text-gray-200 divide-y divide-gray-300 dark:divide-gray-600"
 		>
 			<div class="flex flex-row items-center justify-center pb-2">
-				<Icon
-					icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]}
-					class="w-16 h-16 mr-2 {isSuperuser ? 'text-yellow-500' : ''}"
-				/>
+				<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="w-16 h-16 mr-2" />
 				<div class="flex flex-col">
 					<div class="text-sm font-medium">Typ účtu</div>
 					<div class="text-lg font-bold">
-						{#if isSuperuser}
-							<span class="text-amber-500">Superadmin</span>
-						{:else}
-							{userRoleDict[$userState.user?.type ?? 'unknown'][0]}
-						{/if}
+						{userRoleDict[$userState.user?.type ?? 'unknown'][0]}
 					</div>
 				</div>
 			</div>
