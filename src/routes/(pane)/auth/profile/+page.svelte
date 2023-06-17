@@ -4,23 +4,22 @@
 	import { onMount } from 'svelte'
 	import { userRoleDict } from '$lib/components/header/UserMenu.svelte'
 	import Icon from '$lib/components/Icon.svelte'
-	import { getUserPermissions, setUserDetails, setUserPassword, type ErrorResponse } from '$lib/api'
+	import { setUserDetails, setUserPassword, type ErrorResponse } from '$lib/api'
 	import { toast } from '$lib/utils/toasts'
-	import type { User } from '$lib/types'
+	import type { ProfileEditPermissions, User } from '$lib/types'
 	import { goto } from '$app/navigation'
 
 	let title = 'Profil'
-	let permissionsLoaded = false
-	let permissionLoadError = false
-	let editPermissions = {
-		first_name: false,
-		last_name: false,
-		email: false,
-		username: false,
-		password: false,
-		phone_number: false,
-	}
-	let isSuperuser = false
+	$: editPermissions =
+		$userState.user?.permissions.profile_edit ??
+		({
+			username: false,
+			first_name: false,
+			last_name: false,
+			email: false,
+			phone_number: false,
+			password: false,
+		} as ProfileEditPermissions)
 
 	onMount(async () => {
 		await userState.loaded
@@ -32,19 +31,6 @@
 			email = $userState.user?.email ?? ''
 			username = $userState.user?.username ?? ''
 			phone = $userState.user?.phone_number ?? ''
-
-			const permRequest = await getUserPermissions()
-			if (!permRequest.error) {
-				for (const perm of permRequest.data?.profile_edit ?? []) {
-					if (perm in editPermissions) {
-						editPermissions[perm as keyof typeof editPermissions] = true
-					}
-				}
-				isSuperuser = permRequest.data?.superuser ?? false
-				permissionsLoaded = true
-			} else {
-				permissionLoadError = true
-			}
 		} else {
 			title = 'Profil · Neprihlásený'
 		}
@@ -345,40 +331,31 @@
 					</div>
 				</div>
 				<div class="flex flex-col items-center justify-center py-2">
-					{#if permissionsLoaded}
-						{#if !Object.values(editPermissions).some((x) => x)}
-							<div class="text-red-500 text-md font-bold">
-								Pre váš typ účtu nie sú povolené úpravy profilu.
-							</div>
-						{:else if !Object.values(editPermissions).every((x) => x)}
-							<div class="text-amber-500 text-md font-bold">
-								Pre váš typ účtu sú povolené iba limitované úpravy profilu.
-							</div>
-						{/if}
-						{#if Object.values(editPermissions).some((x) => x)}
-							<div class="flex flex-row items-center justify-center">
-								<button
-									class="flex flex-row items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
+					{#if !Object.values(editPermissions).some((x) => x)}
+						<div class="text-red-500 text-md font-bold">
+							Pre váš typ účtu nie sú povolené úpravy profilu.
+						</div>
+					{:else if !Object.values(editPermissions).every((x) => x)}
+						<div class="text-amber-500 text-md font-bold">
+							Pre váš typ účtu sú povolené iba limitované úpravy profilu.
+						</div>
+					{/if}
+					{#if Object.values(editPermissions).some((x) => x)}
+						<div class="flex flex-row items-center justify-center">
+							<button
+								class="flex flex-row items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
 								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700"
-									on:click={saveProfile}
-									disabled={savingProfile}
-								>
-									{#if savingProfile}
-										<Spinner class="w-4 h-4 mr-2" />
-										Ukladám...
-									{:else}
-										<Icon icon="material-symbols:save" class="w-4 h-4 mr-2" />
-										Uložiť zmeny
-									{/if}
-								</button>
-							</div>
-						{/if}
-					{:else if permissionLoadError}
-						<div class="text-red-500 text-md font-bold">Chyba pri načítavaní oprávnení.</div>
-					{:else}
-						<div class="flex flex-row items-center justify-center pb-2 pt-2">
-							<Spinner class="w-6 h-6" />
-							<span class="text-sm font-bold ml-2">Načítavam...</span>
+								on:click={saveProfile}
+								disabled={savingProfile}
+							>
+								{#if savingProfile}
+									<Spinner class="w-4 h-4 mr-2" />
+									Ukladám...
+								{:else}
+									<Icon icon="material-symbols:save" class="w-4 h-4 mr-2" />
+									Uložiť zmeny
+								{/if}
+							</button>
 						</div>
 					{/if}
 				</div>
@@ -431,35 +408,26 @@
 							/>
 						</div>
 					</div>
-					{#if permissionsLoaded}
-						{#if !editPermissions.password}
-							<div class="text-red-500 text-md font-bold">
-								Pre váš typ účtu nie je povolená zmena hesla.
-							</div>
-						{:else}
-							<div class="flex flex-row items-center justify-center pb-2">
-								<button
-									class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
-								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700"
-									on:click={changePassword}
-									disabled={changingPassword}
-								>
-									{#if changingPassword}
-										<Spinner class="w-4 h-4 mr-2" />
-										Ukladám...
-									{:else}
-										<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
-										Zmeniť heslo
-									{/if}
-								</button>
-							</div>
-						{/if}
-					{:else if permissionLoadError}
-						<div class="text-red-500 text-md font-bold">Chyba pri načítavaní oprávnení.</div>
+					{#if !editPermissions.password}
+						<div class="text-red-500 text-md font-bold">
+							Pre váš typ účtu nie je povolená zmena hesla.
+						</div>
 					{:else}
-						<div class="flex flex-row items-center justify-center pb-2 pt-2">
-							<Spinner class="w-6 h-6" />
-							<span class="text-sm font-bold ml-2">Načítavam...</span>
+						<div class="flex flex-row items-center justify-center pb-2">
+							<button
+								class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
+								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700"
+								on:click={changePassword}
+								disabled={changingPassword}
+							>
+								{#if changingPassword}
+									<Spinner class="w-4 h-4 mr-2" />
+									Ukladám...
+								{:else}
+									<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
+									Zmeniť heslo
+								{/if}
+							</button>
 						</div>
 					{/if}
 				</div>

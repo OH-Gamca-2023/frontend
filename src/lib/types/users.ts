@@ -34,9 +34,18 @@ export interface User {
 		teacher: boolean
 		superuser: boolean
 		type: 'student' | 'teacher' | 'organiser' | 'admin' | 'alumni'
-		profile_edit: string[]
+		profile_edit: ProfileEditPermissions 
 		permissions: string[]
 	}
+}
+
+export interface ProfileEditPermissions {
+	username: boolean
+	first_name: boolean
+	last_name: boolean
+	email: boolean
+	phone_number: boolean
+	password: boolean
 }
 
 export interface UserState {
