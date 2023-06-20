@@ -12,7 +12,6 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
-	import Spinner from '$lib/components/Spinner.svelte'
 	import { slide } from 'svelte/transition'
 
 	let userMenuOpen = false
@@ -22,7 +21,7 @@
 
 {#if $userState.loading}
 	<div id="user-menu" class="flex flex-row items-center justify-center">
-		<Spinner class="h-12 w-12 p-2" />
+		<Icon icon="mdi:loading" class="w-12 h-12 animate-spin" />
 	</div>
 {:else if $userState.loggedIn}
 	<div id="user-menu" class="flex flex-row items-center justify-center relative">

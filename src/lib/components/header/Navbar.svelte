@@ -3,7 +3,6 @@
 	import { categories } from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
-	import Spinner from '../Spinner.svelte'
 	import Hamburger from './Hamburger.svelte'
 	import UserMenu from './UserMenu.svelte'
 
@@ -58,7 +57,7 @@
 						<Icon icon="iconamoon:category" class="h-6 w-6" />
 						<span>Kategórie</span>
 						{#await categories.load()}
-							<Spinner class="h-6 w-6 opacity-50" style="margin-left: 0.5rem;" />
+							<Icon icon="mdi:loading" class="w-6 h-6 animate-spin opacity-50 ml-2" />
 						{:then}
 							<Icon
 								icon="tabler:chevron-left"
@@ -244,7 +243,7 @@
 					}}
 				>
 					{#await categories.load()}
-						<Spinner class="h-6 w-6" style="margin-left: 0.5rem;" />
+						<Icon icon="mdi:loading" class="w-6 h-6 animate-spin ml-2" />
 					{:then}
 						<Icon
 							icon="tabler:chevron-right"

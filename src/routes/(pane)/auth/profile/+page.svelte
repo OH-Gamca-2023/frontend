@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Spinner from '$lib/components/Spinner.svelte'
 	import { userState } from '$lib/state'
 	import { onMount } from 'svelte'
 	import { userRoleDict } from '$lib/components/header/UserMenu.svelte'
@@ -232,7 +231,7 @@
 
 {#await userState.loaded}
 	<div class="flex justify-center items-center pt-5">
-		<Spinner class="w-10 h-10" />
+		<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 		<h3 class="text-gray-800 dark:text-gray-200 pl-5">Načítavam...</h3>
 	</div>
 {:then}
@@ -349,7 +348,7 @@
 								disabled={savingProfile}
 							>
 								{#if savingProfile}
-									<Spinner class="w-4 h-4 mr-2" />
+									<Icon icon="mdi:loading" class="w-4 h-4 mr-2 animate-spin" />
 									Ukladám...
 								{:else}
 									<Icon icon="material-symbols:save" class="w-4 h-4 mr-2" />
@@ -421,7 +420,7 @@
 								disabled={changingPassword}
 							>
 								{#if changingPassword}
-									<Spinner class="w-4 h-4 mr-2" />
+									<Icon icon="mdi:loading" class="w-4 h-4 mr-2 animate-spin" />
 									Ukladám...
 								{:else}
 									<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
@@ -441,7 +440,7 @@
 					disabled={loggingOutAll}
 				>
 					{#if loggingOutAll}
-						<Spinner class="w-4 h-4 mr-2" />
+						<Icon icon="mdi:loading" class="w-4 h-4 mr-2 animate-spin" />
 						Odhlasujem...
 					{:else}
 						<Icon icon="material:logout" class="w-6 h-6 mr-2" />
