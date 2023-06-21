@@ -4,10 +4,7 @@
 	import { postList } from '$lib/api/models'
 	import Filter, { type FilterResult } from '$lib/components/posts/filter/Filter.svelte'
 	import Taglist from '$lib/components/posts/tags/Taglist.svelte'
-	import { highlightPlugin } from '$lib/prism'
 	import type { Post } from '$lib/types'
-	import Markdown from 'svelte-exmarkdown'
-	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 
@@ -77,11 +74,5 @@
 			<span class="text-sm text-gray-500">{post.date}</span>
 		</div>
 		<Taglist {post} />
-		<p class="text-gray-500 max-h-20 overflow-hidden">
-			<Markdown
-				md={post.content?.split('\n').slice(0, 10).join('\n') ?? ''}
-				plugins={[gfmPlugin, highlightPlugin]}
-			/>
-		</p>
 	</a>
 {/each}
