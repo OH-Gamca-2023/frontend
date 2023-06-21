@@ -61,12 +61,17 @@
 	}
 </script>
 
-<h2>Latest Posts</h2>
+<div class="flex flex-col justify-between items-center w-full">
+	<h1 class="text-2xl font-semibold pb-5">Príspevky</h1>
 
-<Filter bind:filter bind:searchQuery />
+	<Filter bind:filter bind:searchQuery />
+</div>
 
 {#each posts as post}
-	<a href="/post/{post.id}" class="border-b border-gray-200 flex py-2 w-full flex-col">
+	<a
+		href="/post/{post.id}"
+		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-col"
+	>
 		<div class="flex justify-between">
 			<h3 class="text-lg font-semibold">{post.title}</h3>
 			<span class="text-sm text-gray-500">{post.date}</span>

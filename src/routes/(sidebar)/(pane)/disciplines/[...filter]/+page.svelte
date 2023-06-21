@@ -49,12 +49,17 @@
 	}
 </script>
 
-<h2>Disciplines</h2>
+<div class="flex flex-col justify-between items-center w-full">
+	<h1 class="text-2xl font-semibold pb-5">Disciplíny</h1>
 
-<Filter tag={false} bind:filter bind:searchQuery />
+	<Filter tag={false} bind:filter bind:searchQuery />
+</div>
 
 {#each disciplines as discipline}
-	<a href="/discipline/{discipline.id}" class="border-b border-gray-200 flex py-2 w-full flex-col">
+	<a
+		href="/discipline/{discipline.id}"
+		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-col"
+	>
 		<div class="flex justify-between">
 			<h3 class="text-lg font-semibold">{discipline.name}</h3>
 		</div>
