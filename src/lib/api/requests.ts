@@ -11,6 +11,7 @@ async function internalApiRequest(
 	body: object | string | undefined,
 	auth: boolean,
 	canRetry = true,
+	ignore401 = false,
 ): Promise<Response> {
 	if (!browser) return await fetch('', { method: 'GET' })
 	const headers = new Headers()
@@ -37,7 +38,7 @@ async function internalApiRequest(
 		body: typeof body === 'object' ? JSON.stringify(body) : body,
 	})
 
-	if (resp.status == 401 && auth && getAccessToken()) {
+	if (resp.status == 401 && auth && getAccessToken() && !ignore401) {
 		console.warn('Received 401 when attempting an authorizated request')
 		// User was probably logged out
 		if (canRetry) {
@@ -88,9 +89,10 @@ export async function makeApiRequest<T>(
 	method: RequestMethod,
 	body: object | string | undefined,
 	auth: boolean,
+	ignore401 = false,
 ): Promise<ApiResponse<T>> {
 	try {
-		const response = await internalApiRequest(url, method, body, auth)
+		const response = await internalApiRequest(url, method, body, auth, true, ignore401)
 
 		if (response.status)
 			if (response.status === 204) return { status: 204 } as SuccessResponse<never>

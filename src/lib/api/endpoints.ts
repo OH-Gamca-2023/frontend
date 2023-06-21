@@ -30,7 +30,7 @@ getServerStatus.requiresAuth = false
  * @throws 401 error if not logged in
  */
 export async function getUserDetails(id?: string) {
-	return makeApiRequest<User>(`user/${id ?? 'me'}`, 'GET', undefined, true)
+	return makeApiRequest<User>(`user/${id ?? 'me'}`, 'GET', undefined, true, id ? false : true) // ignore 401 error if id is not specified
 }
 getUserDetails.requiresAuth = true
 
