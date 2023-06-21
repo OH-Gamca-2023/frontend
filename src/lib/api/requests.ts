@@ -1,17 +1,18 @@
 import { browser } from '$app/environment'
-import { getAccessToken } from '$lib/state/token'
+import { getAccessToken, setAccessToken } from '$lib/state/token'
 import { get } from 'svelte/store'
 import { getApiHost } from '$lib/data/api'
 import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from '$lib/types'
 import { toast } from '$lib/utils/toasts'
 
-function internalApiRequest(
+async function internalApiRequest(
 	url: string,
 	method: RequestMethod,
 	body: object | string | undefined,
 	auth: boolean,
-) {
-	if (!browser) return fetch('', { method: 'GET' })
+	canRetry = true,
+): Promise<Response> {
+	if (!browser) return await fetch('', { method: 'GET' })
 	const headers = new Headers()
 	switch (typeof body) {
 		case 'object':
@@ -30,11 +31,53 @@ function internalApiRequest(
 	if (!url.startsWith('/')) url = '/' + url
 	if (!url.endsWith('/')) url += '/'
 
-	return fetch(getApiHost() + url, {
+	const resp = await fetch(getApiHost() + url, {
 		method,
 		headers,
 		body: typeof body === 'object' ? JSON.stringify(body) : body,
 	})
+
+	if (resp.status == 401 && auth && getAccessToken()) {
+		console.warn('Received 401 when attempting an authorizated request')
+		// User was probably logged out
+		if (canRetry) {
+			try {
+				const state = (await import('../state/state')).userState
+				await state.fetchUser()
+				if (!get(state).loggedIn) {
+					toast({
+						title: 'Boli ste odhlásený',
+						type: 'error',
+						duration: 5000,
+					})
+				}
+			} catch (e) {
+				console.error('Failed to validate logout', e)
+				console.error('Forcing local logout for safety reasons...')
+				setAccessToken(undefined)
+				toast({
+					title: 'Boli ste odhlásený',
+					message: 'Počas spracovávania údajov nastala chyba',
+					type: 'error',
+					duration: 5000,
+				})
+			}
+
+			// retry request
+			return await internalApiRequest(url, method, body, auth, false)
+		} else {
+			console.error('Failed to retry request, giving up')
+			console.error('Forcing local logout for safety reasons...')
+			setAccessToken(undefined)
+			toast({
+				title: 'Boli ste odhlásený',
+				message: 'Počas spracovávania údajov nastala chyba (2)',
+				type: 'error',
+				duration: 5000,
+			})
+		}
+	}
+	return resp
 }
 
 /**
