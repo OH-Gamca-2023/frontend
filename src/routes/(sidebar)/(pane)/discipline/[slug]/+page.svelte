@@ -9,6 +9,8 @@
 	import { userState } from '$lib/state'
 	import Taglist from '$lib/components/posts/tags/Taglist.svelte'
 	import Person from '$lib/components/Person.svelte'
+	import { modifyPrimaryOrganisers, modifyTeacherSupervisors } from '$lib/api'
+	import { toast } from '$lib/utils/toasts'
 
 	export let data: PageData
 
@@ -18,8 +20,53 @@
 
 	$: is_primary =
 		discipline?.primary_organisers?.map((e) => e.id).includes($userState.user?.id) ?? false
+	let primary_loading = false
 	$: is_supervisor =
 		discipline?.teacher_supervisors?.map((e) => e.id).includes($userState.user?.id) ?? false
+	let supervisor_loading = false
+
+	async function primary_click() {
+		primary_loading = true
+		const was_primary = is_primary
+		const resp = await modifyPrimaryOrganisers(discipline!.id, is_primary ? 'remove' : 'add')
+		if (resp.status == 200) {
+			toast({
+				title: was_primary
+					? 'Boli ste odstránení zo zodpovedných organizátorov'
+					: 'Boli ste pridaní medzi zodpovedných organizátorov',
+				type: 'success',
+				duration: 5000,
+			})
+		} else {
+			toast({
+				title: 'Nastla chyba pri spracovaní operácie',
+				type: 'error',
+				duration: 5000,
+			})
+		}
+		primary_loading = false
+	}
+	async function supervisor_click() {
+		supervisor_loading = true
+		const was_supervisor = is_supervisor
+		const resp = await modifyTeacherSupervisors(discipline!.id, is_supervisor ? 'remove' : 'add')
+		if (resp.status == 200) {
+			toast({
+				title: was_supervisor
+					? 'Boli ste odstránení z dozorujúcich učiteľov'
+					: 'Boli ste pridaní medzi dozorujúcich učiteľov',
+				type: 'success',
+				duration: 5000,
+			})
+		} else {
+			toast({
+				title: 'Nastla chyba pri spracovaní operácie',
+				type: 'error',
+				duration: 5000,
+			})
+		}
+		supervisor_loading = false
+	}
 </script>
 
 <div class="w-full flex flex-col">
@@ -106,22 +153,32 @@
 							{/if}
 
 							{#if $userState.user.clazz.grade.is_organiser}
-								{#if is_primary}
+								{#if primary_loading}
 									<div
 										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+						border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 									>
-										<Icon icon="octicon:x-12" />
+										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
+										Spracúvam...
+									</div>
+								{:else if is_primary}
+									<button
+										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										on:click={primary_click}
+									>
+										<Icon icon="octicon:x-12" class="w-6 h-6" />
 										Odhlásiť sa
-									</div>
+									</button>
 								{:else}
-									<div
+									<button
 										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										on:click={primary_click}
 									>
-										<Icon icon="typcn:plus" />
+										<Icon icon="typcn:plus" class="w-6 h-6" />
 										Pridať sa
-									</div>
+									</button>
 								{/if}
 							{:else}
 								<div
@@ -164,22 +221,32 @@
 							{/if}
 
 							{#if $userState.user.clazz.grade.is_teacher}
-								{#if is_supervisor}
+								{#if supervisor_loading}
 									<div
 										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+						border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+									>
+										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
+										Spracúvam...
+									</div>
+								{:else if is_supervisor}
+									<button
+										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										on:click={supervisor_click}
 									>
 										<Icon icon="octicon:x-12" />
 										Odhlásiť sa
-									</div>
+									</button>
 								{:else}
-									<div
+									<button
 										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										on:click={supervisor_click}
 									>
 										<Icon icon="typcn:plus" />
 										Pridať sa
-									</div>
+									</button>
 								{/if}
 							{:else}
 								<div

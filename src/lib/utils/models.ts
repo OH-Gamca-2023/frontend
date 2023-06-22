@@ -358,8 +358,10 @@ export class PartialModel<T> extends LoadableModel<T> {
 				if (response.ok) {
 					const data = await response.json()
 					respData = data
-
-					this.data.set(id.toString(), { ...this.parser(data), fromServer: true })
+					// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
+					const obj = this.parser(data) as T & { fromServer: boolean }
+					obj.fromServer = true
+					this.data.set(data.id.toString(), obj)
 				} else {
 					error(undefined)
 					return
@@ -373,6 +375,16 @@ export class PartialModel<T> extends LoadableModel<T> {
 		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id}`)
 
 		this.saveToCache(respData)
+	}
+
+	setRaw(id: string, raw: object, fromServer: boolean) {
+		// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
+		const obj = this.parser(raw) as T & { fromServer: boolean }
+		obj.fromServer = fromServer
+		this.data.set(id, obj)
+		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id} from external call`)
+		this.triggerUpdated()
+		this.saveToCache(raw)
 	}
 
 	public loadMultiple() {
