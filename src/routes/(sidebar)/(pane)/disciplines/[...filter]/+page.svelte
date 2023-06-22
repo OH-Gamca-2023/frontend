@@ -2,8 +2,8 @@
 	import { browser } from '$app/environment'
 	import { goto } from '$app/navigation'
 	import { disciplines as rawDisciplines } from '$lib/api/models'
-	import Filter, { type FilterResult } from '$lib/components/posts/filter/Filter.svelte'
-	import Taglist from '$lib/components/posts/tags/Taglist.svelte'
+	import Filter, { type FilterResult } from '$lib/components/filter/Filter.svelte'
+	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import type { Discipline } from '$lib/types'
 	import type { PageData } from './$types'
 

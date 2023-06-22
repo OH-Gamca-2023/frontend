@@ -1,4 +1,4 @@
-import type { FilterResult } from '$lib/components/posts/filter/Filter.svelte'
+import type { FilterResult } from '$lib/components/filter/Filter.svelte'
 import type { PageLoad } from './$types'
 
 export const prerender = false
@@ -32,6 +32,6 @@ export const load = (({params}) => {
 
     return {
         filter,
-        rawFilter: params.newsFilter,
+        rawFilter: params.filter,
     }
 }) satisfies PageLoad

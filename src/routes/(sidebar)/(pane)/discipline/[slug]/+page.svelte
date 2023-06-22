@@ -7,7 +7,7 @@
 	import type { Discipline } from '$lib/types'
 	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
-	import Taglist from '$lib/components/posts/tags/Taglist.svelte'
+	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import Person from '$lib/components/Person.svelte'
 	import { modifyPrimaryOrganisers, modifyTeacherSupervisors } from '$lib/api'
 	import { toast } from '$lib/utils/toasts'
