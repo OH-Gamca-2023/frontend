@@ -11,8 +11,8 @@ export const load = (({params}) => {
     }
 
     let lastKey: string | undefined
-    if (params.newsFilter) {
-        for (const part of params.newsFilter.split('/')) {
+    if (params.filter) {
+        for (const part of params.filter.split('/')) {
             if(part === 'news' || part === '') continue
             if (lastKey) {
                 try {
