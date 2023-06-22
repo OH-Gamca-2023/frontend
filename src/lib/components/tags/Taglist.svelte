@@ -10,7 +10,7 @@
 </script>
 
 {#if wrapper}
-	<div class="flex flex-row pt-2 justify-center flex-wrap gap-2">
+	<div class="flex flex-row pt-2 flex-wrap gap-2 {$$props.class}">
 		<svelte:self {post} {discipline} {tags} wrapper={false} />
 	</div>
 {:else}

@@ -8,24 +8,47 @@
 	import { highlightPlugin } from '$lib/prism'
 	import Markdown from 'svelte-exmarkdown'
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 
 	$: post = $posts[data.postId]
 
 	if (!post) posts.loadSingle(data.postId)
+
+	$: authorFullName = post?.author.first_name + ' ' + post?.author.last_name
 </script>
 
 <div class="w-full flex flex-col">
 	{#if post}
 		<div id="info" class="flex flex-row justify-between items-center">
-			<div class="flex flex-row items-center">
-				<div class="flex flex-col">
-					<span class="text-lg font-bold">{post.title}</span>
-					<span class="text-sm font-bold">{post.author.username}</span>
+			<div class="flex flex-col md:flex-row md:items-center justify-between w-full">
+				<div class="flex flex-col pb-2 md:pb-0 whitespace-break-spaces">
+					<span class="text-3xl font-bold">{post.title}</span>
+				</div>
+				<div class="flex flex-col items-right text-right gap-1 font-medium">
+					<span class="flex items-center gap-1 md:gap-2 md:justify-end">
+						<span class="order-2">{authorFullName}</span>
+						<Icon icon="wpf:name" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
+					</span>
+					<div class="flex items-center gap-1 md:gap-2 md:justify-end">
+						<span class="order-2">
+							{String(post.date.getDate()).padStart(2, '0')}. {String(
+								post.date.getMonth() + 1,
+							).padStart(2, '0')}. {post.date.getFullYear()}
+						</span>
+						<Icon icon="mdi:calendar" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
+					</div>
+					<div class="flex items-center gap-1 md:gap-2 md:justify-end">
+						<span class="order-2">
+							{String(post.date.getHours()).padStart(2, '0')}:{String(
+								post.date.getMinutes(),
+							).padStart(2, '0')}
+						</span>
+						<Icon icon="mdi:clock-outline" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
+					</div>
 				</div>
 			</div>
-			<span class="text-xs text-gray-500">{post?.date}</span>
 		</div>
 		<div id="content" class="markdown" class:dark={$darkTheme}>
 			<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />

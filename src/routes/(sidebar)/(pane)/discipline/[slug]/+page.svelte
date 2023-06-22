@@ -74,7 +74,7 @@
 		<div class="flex flex-row justify-center items-center">
 			<div class="flex flex-col justify-center items-center">
 				<span class="text-3xl font-bold">{discipline.name}</span>
-				<Taglist {discipline} />
+				<Taglist {discipline} class="justify-center" />
 			</div>
 		</div>
 		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-5">

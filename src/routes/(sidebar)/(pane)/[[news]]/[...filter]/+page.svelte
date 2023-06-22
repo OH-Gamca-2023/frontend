@@ -7,6 +7,7 @@
 	import type { Post } from '$lib/types'
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 
@@ -67,12 +68,31 @@
 {#each posts as post}
 	<a
 		href="/post/{post.id}"
-		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-col"
+		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-row"
 	>
-		<div class="flex justify-between">
-			<h3 class="text-lg font-semibold">{post.title}</h3>
-			<span class="text-sm text-gray-500">{post.date}</span>
+		<div class="flex flex-col justify-between flex-1 items-left">
+			<h3 class="text-lg font-bold">{post.title}</h3>
+			<Taglist {post} />
 		</div>
-		<Taglist {post} />
+		<div class="flex flex-col items-right text-right gap-1 font-medium text-sm">
+			<div class="flex items-center gap-2 justify-end">
+				<span>
+					{String(post.date.getDate()).padStart(2, '0')}. {String(
+						post.date.getMonth() + 1,
+					).padStart(2, '0')}.
+					{String(post.date.getHours()).padStart(2, '0')}:{String(post.date.getMinutes()).padStart(
+						2,
+						'0',
+					)}
+				</span>
+				<Icon icon="formkit:datetime" class="w-4 h-4" />
+			</div>
+			<div class="flex items-center gap-2 justify-end">
+				<span>
+					{post.author.username}
+				</span>
+				<Icon icon="wpf:name" class="w-4 h-4" />
+			</div>
+		</div>
 	</a>
 {/each}
