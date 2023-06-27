@@ -124,28 +124,23 @@
 				[&>*]:pr-2 [&>*]:pl-2"
 		>
 			<UserMenu />
-			<div
+			<button
 				id="dark-mode"
 				class="flex flex-col items-center justify-center cursor-pointer"
 				transition:fade
 				on:click={() =>
 					$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')}
-				on:keypress={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')
-					}
-				}}
 			>
 				{#if $darkTheme}
 					<Icon icon="material-symbols:light-mode" class="h-6 w-6" />
 				{:else}
 					<Icon icon="material-symbols:dark-mode-rounded" class="h-6 w-6" />
 				{/if}
-			</div>
+			</button>
 		</div>
 	</div>
 	<div id="mobile" class="flex flex-row justify-between items-center w-full lmd:hidden">
-		<div
+		<button
 			id="hamburger"
 			class="flex flex-row items-center justify-start
 							bg-gradient-to-br from-gray-200 to-zinc-200
@@ -154,14 +149,9 @@
 							text-gray-800 dark:text-gray-200
 							shadow-inner rounded-md py-1 px-2"
 			on:click={() => (sidebarOpen = !sidebarOpen)}
-			on:keypress={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					sidebarOpen = !sidebarOpen
-				}
-			}}
 		>
 			<Hamburger open={sidebarOpen} class="h-6 w-6" />
-		</div>
+		</button>
 		<div
 			id="right"
 			class="flex flex-row items-center justify-end divide-x
@@ -191,33 +181,23 @@
 					href="/"
 					class="flex flex-row items-center justify-start px-2 -py-1"
 					on:click={() => (sidebarOpen = !sidebarOpen)}
-					on:keypress={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							sidebarOpen = !sidebarOpen
-						}
-					}}
 				>
 					<Icon icon="tabler:home" class="h-7 w-7 cursor-pointer" />
 				</a>
 
-				<div
+				<button
 					id="dark-mode"
 					class="flex flex-col items-center justify-center cursor-pointer"
 					transition:fade
 					on:click={() =>
 						$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')}
-					on:keypress={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')
-						}
-					}}
 				>
 					{#if $darkTheme}
 						<Icon icon="material-symbols:light-mode" class="h-6 w-6" />
 					{:else}
 						<Icon icon="material-symbols:dark-mode-rounded" class="h-6 w-6" />
 					{/if}
-				</div>
+				</button>
 			</div>
 			<a
 				href="/news"
@@ -233,14 +213,9 @@
 				<span>Novinky</span>
 			</a>
 			<div class="flex flex-col space-y-1">
-				<div
+				<button
 					class="flex flex-row space-x-1 cursor-pointer"
 					on:click={() => categories.isLoaded && (categoriesOpen = !categoriesOpen)}
-					on:keypress={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							categoriesOpen = !categoriesOpen
-						}
-					}}
 				>
 					{#await categories.load()}
 						<Icon icon="mdi:loading" class="w-6 h-6 animate-spin ml-2" />
@@ -254,7 +229,7 @@
 					{/await}
 					<Icon icon="bxs:category-alt" class="h-6 w-6" />
 					<span>Kategórie</span>
-				</div>
+				</button>
 				{#if categoriesOpen}
 					<div class="flex flex-col space-y-2" transition:slide>
 						<div
@@ -266,11 +241,6 @@
 									href={`/disciplines/categories/${category.id}`}
 									class="flex flex-row p-1 pr-0"
 									on:click={() => (sidebarOpen = !sidebarOpen)}
-									on:keypress={(e) => {
-										if (e.key === 'Enter' || e.key === ' ') {
-											sidebarOpen = !sidebarOpen
-										}
-									}}
 								>
 									<span>{category.name}</span>
 								</a>
@@ -280,14 +250,9 @@
 				{/if}
 			</div>
 			<a
-				href="/results"
+				href="/disciplines/results"
 				class="flex flex-row space-x-1"
 				on:click={() => (sidebarOpen = !sidebarOpen)}
-				on:keypress={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						sidebarOpen = !sidebarOpen
-					}
-				}}
 			>
 				<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
 				<span>Výsledky</span>
@@ -296,11 +261,6 @@
 				href="/calendar"
 				class="flex flex-row space-x-1"
 				on:click={() => (sidebarOpen = !sidebarOpen)}
-				on:keypress={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						sidebarOpen = !sidebarOpen
-					}
-				}}
 			>
 				<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
 				<span>Kalendár</span>
@@ -309,11 +269,6 @@
 				href="/ciphers"
 				class="flex flex-row space-x-1"
 				on:click={() => (sidebarOpen = !sidebarOpen)}
-				on:keypress={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						sidebarOpen = !sidebarOpen
-					}
-				}}
 			>
 				<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
 				<span>Šifrovačka</span>
