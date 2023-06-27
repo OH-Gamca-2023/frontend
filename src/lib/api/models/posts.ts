@@ -1,7 +1,7 @@
 import { clazzes, grades } from '$lib/api/models'
 import type { Discipline, Post, User } from '$lib/types'
 import { PartialModel } from '$lib/utils/models'
-import { derived, get } from 'svelte/store'
+import { derived } from 'svelte/store'
 import { categories, tags } from '$lib/api/models/generic'
 import { disciplines } from './disciplines'
 
