@@ -67,7 +67,7 @@
 
 {#each posts as post}
 	<a
-		href="/post/{post.id}"
+		href={post.redirect ? post.redirect : '/post/' + post.id}
 		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-row"
 	>
 		<div class="flex flex-col justify-between flex-1 items-left">

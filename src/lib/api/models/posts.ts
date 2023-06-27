@@ -30,6 +30,7 @@ class PostModel extends PartialModel<Post> {
 					id: rawPost.id,
 					title: rawPost.title,
 					content: rawPost.content,
+					redirect: rawPost.redirect || null,
 					author: author,
 					date: new Date(rawPost.date),
 					get affected_grades() {

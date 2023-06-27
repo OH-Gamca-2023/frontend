@@ -9,12 +9,16 @@
 	import Markdown from 'svelte-exmarkdown'
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 	import Icon from '$lib/components/Icon.svelte'
+	import { browser } from '$app/environment'
+	import { goto } from '$app/navigation'
 
 	export let data: PageData
 
 	$: post = $posts[data.postId]
 
 	if (!post) posts.loadSingle(data.postId)
+
+	$: browser && post.redirect && goto(post.redirect)
 
 	$: authorFullName = post?.author.first_name + ' ' + post?.author.last_name
 </script>
@@ -51,7 +55,14 @@
 			</div>
 		</div>
 		<div id="content" class="markdown" class:dark={$darkTheme}>
-			<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
+			{#if post.redirect}
+				<div class="flex flex-col items-center justify-center w-full h-12 relative mt-6">
+					<div class="absolute bg-gray-200 dark:bg-slate-600 rounded animate-pulse w-full h-12" />
+					<span class="text-lg font-bold z-10">Prebieha presmerovanie...</span>
+				</div>
+			{:else}
+				<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
+			{/if}
 		</div>
 	{:else}
 		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />

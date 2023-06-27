@@ -10,6 +10,7 @@ export interface Post {
 	id: number
 	title: string
 	content: string
+	redirect: string | null
 	author: Partial<User>
 	date: Date
 
