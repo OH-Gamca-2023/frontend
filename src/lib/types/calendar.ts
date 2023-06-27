@@ -11,6 +11,7 @@ export type Day = {
 	enabled: boolean
 	date: Date
 
+	selected?: boolean
 	today?: boolean
 }
 
