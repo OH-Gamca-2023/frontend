@@ -10,6 +10,7 @@
 	export let days: Day[] = []
 	export let items: Item[] = []
 	export let usedHeaders: string[] = []
+	export let selected: { items: string[]; days: string[] } = { items: [], days: [] }
 
 	$: perDayItems = days.map((day) => items.filter((item) => compareDates(item.date, day.date)))
 
@@ -32,7 +33,7 @@
 			class="day"
 			class:day-disabled={!day.enabled}
 			class:day-today={day.today}
-			class:day-selected={day.selected}
+			class:day-selected={selected.days.includes(day.id)}
 			class:dark={$darkTheme}
 			class:row-1={dayPositions[index].row === 1}
 			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};"
@@ -41,8 +42,8 @@
 		>
 			<div class="details-wrapper">
 				{#each perDayItems[index] as item}
-					{#if item.selected}
-						<div class="details" transition:slide>
+					{#if selected.items.includes(item.id)}
+						<div class="details" transition:slide={{ duration: 600 }}>
 							<CalendarEvent {item} />
 						</div>
 					{/if}
@@ -64,7 +65,7 @@
 					on:click={() => dispatch('itemClick', item)}
 					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
 					class="task {item.className}"
-					class:task-selected={item.selected}
+					class:task-selected={selected.items.includes(item.id)}
 					class:task-disabled={!day.enabled}
 					class:dark={$darkTheme}
 				>

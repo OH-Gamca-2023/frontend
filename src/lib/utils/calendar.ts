@@ -6,6 +6,10 @@ export function compareDates(a: Date, b: Date): boolean {
 	return a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 }
 
+function getDayID(date: Date, month: number) {
+	return `${month}-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+}
+
 export function initMonthDays(month: number, year: number) {
 	const now = new Date()
 	const days = [] as Day[]
@@ -24,7 +28,7 @@ export function initMonthDays(month: number, year: number) {
 		const d = new Date(prevMonth == 11 ? year - 1 : year, prevMonth, i + 1)
 		const name =
 			(i == daysInLastMonth - firstDay ? monthNames[prevMonth].shortName + ' ' : '') + (i + 1)
-		days.push({ name, enabled: false, date: d })
+		days.push({ name, enabled: false, date: d, id: getDayID(d, month) })
 	}
 
 	//	show the days in this month (enabled) - always 28 - 31
@@ -36,6 +40,7 @@ export function initMonthDays(month: number, year: number) {
 			enabled: true,
 			date: d,
 			today: i == now.getDate() - 1 && month == now.getMonth(),
+			id: getDayID(d, month)
 		})
 	}
 
@@ -43,7 +48,7 @@ export function initMonthDays(month: number, year: number) {
 	for (let i = 0; days.length % 7; i++) {
 		const d = new Date(month == 11 ? year + 1 : year, (month + 1) % 12, i + 1)
 		const name = (i == 0 ? monthNames[nextMonth].shortName + ' ' : '') + (i + 1)
-		days.push({ name, enabled: false, date: d })
+		days.push({ name, enabled: false, date: d, id: getDayID(d, month) })
 	}
 
 	return days
