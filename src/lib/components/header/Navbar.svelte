@@ -90,7 +90,7 @@
 				</div>
 				<div>
 					<a
-						href="/disciplines/results"
+						href="/results"
 						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
@@ -250,7 +250,7 @@
 				{/if}
 			</div>
 			<a
-				href="/disciplines/results"
+				href="/results"
 				class="flex flex-row space-x-1"
 				on:click={() => (sidebarOpen = !sidebarOpen)}
 			>

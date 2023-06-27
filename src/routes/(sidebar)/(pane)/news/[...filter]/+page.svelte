@@ -6,12 +6,12 @@
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import type { Post } from '$lib/types'
 	import type { PageData } from './$types'
-	import { page } from '$app/stores'
 	import Icon from '$lib/components/Icon.svelte'
+	import { page } from '$app/stores'
 
 	export let data: PageData
 
-	let filter: FilterResult = data.filter
+	$: filter = data.filter as FilterResult
 	let searchQuery: string = ''
 
 	let posts: Post[] = []
@@ -96,3 +96,9 @@
 		</div>
 	</a>
 {/each}
+
+{#if posts.length === 0}
+	<div class="flex py-2 w-full flex-row justify-center items-center text-center gap-2">
+		<p class="text-lg font-bold">Žiadne príspevky vyhovujúce filtru neboli nájdené</p>
+	</div>
+{/if}
