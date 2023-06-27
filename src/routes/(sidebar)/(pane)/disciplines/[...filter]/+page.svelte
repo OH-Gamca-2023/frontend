@@ -9,7 +9,7 @@
 
 	export let data: PageData
 
-	let filter: FilterResult = data.filter
+	$: filter = data.filter
 	let searchQuery: string = ''
 
 	let disciplines: Discipline[] = []
@@ -27,6 +27,8 @@
 				)
 			}
 		}
+
+		if (data.requireResults) list = list.filter((e) => e.results_published)
 
 		if (searchQuery) {
 			list = list.filter(

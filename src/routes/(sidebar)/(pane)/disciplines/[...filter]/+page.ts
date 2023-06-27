@@ -9,10 +9,12 @@ export const load = (({params}) => {
         tags: [],
         grades: [],
     }
+    let requireResults = false
 
     let lastKey: string | undefined
     if (params.filter) {
         for (const part of params.filter.split('/')) {
+            if(part === 'news' || part === '') continue
             if (lastKey) {
                 try {
                     const ids = part.split(',').map(e => parseInt(e))
@@ -24,6 +26,10 @@ export const load = (({params}) => {
                 lastKey = undefined
             } else {
                 lastKey = part
+                if (lastKey === 'results') {
+                    requireResults = true, lastKey = undefined
+                    continue
+                }
                 if (![ 'categories', 'tags', 'grades' ].includes(lastKey)) console.error('Invalid filter key ' + lastKey)
             }
         }
@@ -32,5 +38,6 @@ export const load = (({params}) => {
     return {
         filter,
         rawFilter: params.filter,
+        requireResults,
     }
 }) satisfies PageLoad
