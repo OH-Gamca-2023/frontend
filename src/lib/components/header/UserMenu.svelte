@@ -2,9 +2,9 @@
 	export const userRoleDict = {
 		admin: ['Administrátor', 'clarity:administrator-solid'],
 		organiser: ['Organizátor', 'wpf:administrator'],
-		teacher: ['Učiteľ', 'vaadin:academy-cap'],
+		teacher: ['Učiteľ', 'mdi:account-student'],
 		student: ['Študent', 'wpf:name'],
-		alumni: ['Absolvent', 'charm:graduate-cap'],
+		alumni: ['Absolvent', 'vaadin:academy-cap'],
 		unknown: ['Unknown', 'carbon:unknown-filled'],
 	}
 </script>
