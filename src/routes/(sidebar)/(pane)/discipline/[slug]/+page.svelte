@@ -9,7 +9,7 @@
 	import { userState } from '$lib/state'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import Person from '$lib/components/Person.svelte'
-	import { modifyPrimaryOrganisers, modifyTeacherSupervisors } from '$lib/api'
+	import { getDisciplineResults, modifyPrimaryOrganisers, modifyTeacherSupervisors } from '$lib/api'
 	import { toast } from '$lib/utils/toasts'
 
 	export let data: PageData
@@ -67,6 +67,9 @@
 		}
 		supervisor_loading = false
 	}
+	$: resultPromise = discipline?.results_published
+		? getDisciplineResults(data.disciplineId)
+		: undefined
 </script>
 
 <div class="w-full flex flex-col">
@@ -79,35 +82,110 @@
 		</div>
 		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-5">
 			<div class="flex flex-col basis-1/2 2xl:basis-1/5 2xl:mr-5">
-				<span class="text-xl font-bold">Základné informácie</span>
-				<div class="flex flex-col space-y-1 pt-1">
-					{#if discipline.date}
-						<div class="flex flex-row space-x-1">
-							<Icon icon="mdi:calendar" />
-							<span class="text-sm"
-								>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
-									discipline.date.getMonth() + 1,
-								).padStart(2, '0')}. {discipline.date.getFullYear()}</span
-							>
-						</div>
-					{/if}
-					{#if discipline.time}
-						<div class="flex flex-row space-x-1">
-							<Icon icon="mdi:clock-outline" />
-							<span class="text-sm"
-								>{String(discipline.time.getHours()).padStart(2, '0')}:{String(
-									discipline.time.getMinutes(),
-								).padStart(2, '0')}</span
-							>
-						</div>
-					{/if}
-					{#if discipline.location}
-						<div class="flex flex-row space-x-1">
-							<Icon icon="mdi:map-marker" />
-							<span class="text-sm">{discipline.location}</span>
-						</div>
-					{/if}
+				<div class="flex flex-col">
+					<span class="text-xl font-bold">Základné informácie</span>
+					<div class="flex flex-col space-y-1 pt-1">
+						{#if discipline.date}
+							<div class="flex flex-row space-x-1">
+								<Icon icon="mdi:calendar" />
+								<span class="text-sm"
+									>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
+										discipline.date.getMonth() + 1,
+									).padStart(2, '0')}. {discipline.date.getFullYear()}</span
+								>
+							</div>
+						{/if}
+						{#if discipline.time}
+							<div class="flex flex-row space-x-1">
+								<Icon icon="mdi:clock-outline" />
+								<span class="text-sm"
+									>{String(discipline.time.getHours()).padStart(2, '0')}:{String(
+										discipline.time.getMinutes(),
+									).padStart(2, '0')}</span
+								>
+							</div>
+						{/if}
+						{#if discipline.location}
+							<div class="flex flex-row space-x-1">
+								<Icon icon="mdi:map-marker" />
+								<span class="text-sm">{discipline.location}</span>
+							</div>
+						{/if}
+						{#if !(discipline.date || discipline.time || discipline.location)}
+							<div class="text-amber-500 text-lg font-bold text-center">
+								Žiadne informácie neboli nájdené
+							</div>
+						{/if}
+					</div>
 				</div>
+				{#if discipline.results_published}
+					<div class="felx flex-col pt-5">
+						<div class="text-xl font-bold pb-2">Výsledky</div>
+						{#if resultPromise}
+							{#await resultPromise}
+								<div
+									class="w-full h-6 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative"
+								/>
+							{:then resultResponse}
+								{#if resultResponse.error}
+									<div class="text-red-500 text-lg font-bold text-center">
+										Nastala chyba pri načítavaní výsledkov ({resultResponse.status})
+									</div>
+								{:else if !resultResponse.data || resultResponse.data.length === 0}
+									<div class="text-amber-500 text-lg font-bold text-center">
+										Žiadne výsledky neboli nájdené
+									</div>
+								{:else}
+									<div
+										class="flex flex-col divide-y-4 divide-zinc-200 dark:divide-slate-500 divide-dotted"
+									>
+										{#each resultResponse.data as results}
+											{@const top3 = results.placements.filter((p) => p.participated).slice(0, 3)}
+											<div class="flex flex-col p-3">
+												{#if results.name}
+													<div class="font-semibold pb-1">{results.name}</div>
+												{/if}
+												<Taglist
+													tags={results.grades.map((g) => g.name)}
+													class="pt-0 border-b border-zinc-200 dark:border-slate-500 pb-3 mb-1"
+												/>
+												<div class="flex flex-col relative">
+													{#each top3 as placement}
+														<div class="">
+															<span class="font-semibold pr-2">{placement.place}.</span>
+															<span class="font-medium">{placement.clazz.name}</span>
+														</div>
+													{/each}
+													{#each Array(3 - top3.length) as k, i}
+														<div class="">
+															<span class="font-semibold pr-2">{i + top3.length + 1}.</span>
+															<span class="font-medium">...</span>
+														</div>
+													{/each}
+
+													<div
+														class="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-700"
+													/>
+												</div>
+												<div class="border-t border-zinc-200 dark:border-slate-500 pt-1 mt-1">
+													<a
+														href="/results"
+														class="text-lg font-bold text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
+														>Kompletné výsledky</a
+													>
+												</div>
+											</div>
+										{/each}
+									</div>
+								{/if}
+							{/await}
+						{:else}
+							<div class="text-red-500 text-xl font-bold text-center">
+								Stránka sa dostala do neplatného stavu
+							</div>
+						{/if}
+					</div>
+				{/if}
 			</div>
 			<div class="flex flex-col flex-1">
 				<span class="text-xl font-bold">Detaily</span>
@@ -115,7 +193,7 @@
 					{#if discipline.details.length > 0}
 						{discipline.details}
 					{:else}
-						<div class="text-red-500 text-lg font-bold">Nastala chyba pri spracúvaní údajov</div>
+						<div class="text-red-500 text-lg font-bold">Nastala chyba pri spracovaní údajov</div>
 					{/if}
 				{:else}
 					<div class="text-amber-500 text-lg font-bold">Informácie ešte neboli zverejnené</div>
