@@ -1,7 +1,7 @@
 import { userState } from '$lib/state'
 import { getAccessToken } from '$lib/state/token'
-import type { Submission, User } from '$lib/types'
-import { disciplines } from './models'
+import type { Results, Submission, SuccessResponse, User } from '$lib/types'
+import { clazzes, disciplines, grades } from './models'
 import { makeApiRequest } from './requests'
 
 /**
@@ -202,6 +202,44 @@ export async function modifyTeacherSupervisors(disciplineId: string, operation: 
 		if(!resp.data) {
 			console.error('Received status 200 but no data from teacher supervisors endpoint')
 		} else disciplines.setRaw(disciplineId, resp.data, false)
+	}
+	return resp
+}
+
+/**
+ * Get results for a discipline.
+ * 
+ * @param disciplineId the discipline ID
+ * @returns the results
+ * @throws 404 error if discipline was not found
+ */
+export async function getDisciplineResults(disciplineId: string) {
+	const resp = await makeApiRequest<Results[]>(`disciplines/${disciplineId}/results`, 'GET', undefined, false)  
+
+	if(!resp.error) {
+		const data = [] as Results[]
+		for(const result of (resp as SuccessResponse<any[]>).data) {
+			data.push({
+				id: result.id,
+				name: result.name,
+				get grades() {
+					return result.grades.map((g: any) => grades.get(g))
+				},
+				get discipline() {
+					return disciplines.get(result.discipline)
+				},
+
+				placements: result.placements.map((p: any) => {return {
+					get clazz() {
+						return clazzes.get(p.clazz)
+					},
+					place: p.place,
+					participated: p.participated,
+				}}),
+
+			} as Results)
+		}
+		resp.data = data
 	}
 	return resp
 }

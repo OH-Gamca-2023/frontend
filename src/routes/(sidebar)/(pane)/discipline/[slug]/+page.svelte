@@ -71,9 +71,9 @@
 
 <div class="w-full flex flex-col">
 	{#if discipline}
-		<div class="flex flex-row justify-center items-center">
+		<div class="flex flex-row justify-center items-center pb-5">
 			<div class="flex flex-col justify-center items-center">
-				<span class="text-3xl font-bold">{discipline.name}</span>
+				<span class="text-3xl font-bold pb-1">{discipline.name}</span>
 				<Taglist {discipline} class="justify-center" />
 			</div>
 		</div>

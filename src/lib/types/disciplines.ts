@@ -34,5 +34,11 @@ export interface Results {
 	grades: Grade[]
 	discipline: Discipline
 
-	placements: { clazz: Clazz; place: number }[]
+	placements: Placement[]
+}
+
+export interface Placement {
+	clazz: Clazz
+	place: number
+	participated: boolean
 }
