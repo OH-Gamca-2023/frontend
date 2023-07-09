@@ -122,7 +122,7 @@
 <h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
 
 <h4 class="text-gray-800 dark:text-gray-100 pb-4">Vyberte si spôsob prihlásenia</h4>
-<div
+<button
 	id="microsoft-login"
 	class="flex flex-row items-center justify-center
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2 mb-6
@@ -131,11 +131,6 @@
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
 	on:click={microsoftLogin}
-	on:keypress={(e) => {
-		if (e.key === 'Enter' || e.key === ' ') {
-			microsoftLogin()
-		}
-	}}
 >
 	<img
 		src="/assets/microsoft_logo{$darkTheme ? '_dark' : ''}.svg"
@@ -156,8 +151,8 @@
 			{/if}
 		</div>
 	{/if}
-</div>
-<div
+</button>
+<a
 	id="admin-login"
 	class="flex flex-row items-center justify-center
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
@@ -165,14 +160,7 @@
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
-	on:click={() => {
-		window.location.href = '/admin/login'
-	}}
-	on:keypress={(e) => {
-		if (e.key === 'Enter' || e.key === ' ') {
-			window.location.href = '/admin/login'
-		}
-	}}
+	href="/admin/login"
 >
 	<Icon
 		icon="material-symbols:admin-panel-settings"
@@ -181,4 +169,4 @@
 	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
 		Prihlásiť sa ako administrátor
 	</h4>
-</div>
+</a>

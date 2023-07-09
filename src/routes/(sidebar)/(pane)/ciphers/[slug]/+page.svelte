@@ -185,10 +185,9 @@
 						<div
 							class="flex flex-col border-t border-gray-300 pt-4 mt-4 dark:border-gray-500 justify-center items-center"
 						>
-							<div
+							<button
 								class="flex flex-row w-full justify-between items-center space-x-2 cursor-pointer"
 								on:click={() => (hintOpen = !hintOpen)}
-								on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (hintOpen = !hintOpen)}
 							>
 								<Icon
 									icon="mdi:chevron-right"
@@ -201,7 +200,7 @@
 									<span class="text-xl font-bold">Nápoveda</span>
 									<span class="text-md">Klikni pre rozbalenie nápovedy</span>
 								</div>
-							</div>
+							</button>
 							{#if hintOpen}
 								<div
 									class="flex flex-col mt-4 bg-gray-900 bg-opacity-25 p-4 rounded-lg"

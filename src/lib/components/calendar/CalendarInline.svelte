@@ -118,13 +118,13 @@
 				<span class="i-day-name" class:dark={$darkTheme}>{header}</span>
 			{/each}
 			{#each days as day, index}
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
 					class="i-day border-gray-500 dark:border-gray-700"
 					class:disabled={!day.enabled}
 					class:selected={day.selected}
 					class:today={day.today}
 					on:click={() => dayClick(day)}
-					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dayClick(day)}
 				>
 					{#if day.name.split(' ').length == 1}
 						<span class="i-day-number">{day.name.split(' ')[0]} </span>

@@ -154,6 +154,7 @@
 						{items}
 						{usedHeaders}
 						{selected}
+						visible={displayedMonth == i}
 						on:dayClick={(e) => dayClick(e.detail, i)}
 						on:itemClick={(e) => itemClick(e.detail, i)}
 						on:clickOutside={() => deselectAll(i)}

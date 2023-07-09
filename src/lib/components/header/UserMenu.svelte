@@ -25,14 +25,9 @@
 	</div>
 {:else if $userState.loggedIn}
 	<div id="user-menu" class="flex flex-row items-center justify-center relative">
-		<div
+		<button
 			class="flex flex-row items-center justify-center cursor-pointer"
 			on:click={() => (userMenuOpen = !userMenuOpen)}
-			on:keypress={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					userMenuOpen = !userMenuOpen
-				}
-			}}
 		>
 			<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
 			<div id="user-data" class="flex flex-col items-start justify-center mr-2 ml-2">
@@ -43,7 +38,7 @@
 					{userRoleDict[$userState.user?.type ?? 'unknown'][0]}
 				</div>
 			</div>
-		</div>
+		</button>
 		<a
 			id="logout"
 			href="/auth/logout"

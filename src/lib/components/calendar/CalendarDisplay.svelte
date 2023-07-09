@@ -11,6 +11,7 @@
 	export let items: Item[] = []
 	export let usedHeaders: string[] = []
 	export let selected: { items: string[]; days: string[] } = { items: [], days: [] }
+	export let visible = false
 
 	$: perDayItems = days.map((day) => items.filter((item) => compareDates(item.date, day.date)))
 
@@ -29,6 +30,7 @@
 		<span class="day-name" class:dark={$darkTheme}>{header}</span>
 	{/each}
 	{#each days as day, index}
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<span
 			class="day"
 			class:day-disabled={!day.enabled}
@@ -38,7 +40,6 @@
 			class:row-1={dayPositions[index].row === 1}
 			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};"
 			on:click={() => dispatch('dayClick', day)}
-			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
 		>
 			<div class="details-wrapper">
 				{#each perDayItems[index] as item}
@@ -61,13 +62,14 @@
 			--col-w: {perDayItems[index].length > 3 ? 'calc(50% - 5px)' : '100%'};"
 		>
 			{#each perDayItems[index] as item}
-				<section
+				<button
 					on:click={() => dispatch('itemClick', item)}
-					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
 					class="task {item.className}"
 					class:task-selected={selected.items.includes(item.id)}
 					class:task-disabled={!day.enabled}
 					class:dark={$darkTheme}
+					tabindex={visible ? 0 : -1}
+					disabled={!day.enabled}
 				>
 					{item.title}
 					<span class="task-text-cutoff" />
@@ -75,7 +77,7 @@
 						{item.title}
 					</div>
 					<div class="task-overlay task-hover-overlay" />
-				</section>
+				</button>
 			{/each}
 		</section>
 	{/each}

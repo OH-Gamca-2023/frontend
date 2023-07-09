@@ -14,24 +14,12 @@
 			src="/assets/header/logo{$darkTheme ? '-dark' : ''}.svg"
 			alt="Logo"
 			class="h-full cursor-pointer"
-			on:click={() => goto('/')}
-			on:keypress={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					goto('/')
-				}
-			}}
 		/>
 		<img
 			id="top-logo-text"
 			src="/assets/header/text{$darkTheme ? '-dark' : ''}.svg"
 			alt="Logo"
 			class="h-1/2 w-auto self-center cursor-pointer"
-			on:click={() => goto('/')}
-			on:keypress={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					goto('/')
-				}
-			}}
 		/>
 	</div>
 </div>

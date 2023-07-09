@@ -45,14 +45,9 @@
 					</a>
 				</div>
 				<div class="relative">
-					<div
+					<button
 						class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
 						on:click={() => (categoriesOpen = !categoriesOpen)}
-						on:keypress={(e) => {
-							if (e.key === 'Enter' || e.key === ' ') {
-								categoriesOpen = !categoriesOpen
-							}
-						}}
 					>
 						<Icon icon="iconamoon:category" class="h-6 w-6" />
 						<span>Kategórie</span>
@@ -66,7 +61,7 @@
 									: ''}"
 							/>
 						{/await}
-					</div>
+					</button>
 					<div class="absolute -bottom-3 left-0 right-0">
 						{#if categoriesOpen}
 							<div
@@ -199,16 +194,7 @@
 					{/if}
 				</button>
 			</div>
-			<a
-				href="/news"
-				class="flex flex-row space-x-1"
-				on:click={() => (sidebarOpen = !sidebarOpen)}
-				on:keypress={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						sidebarOpen = !sidebarOpen
-					}
-				}}
-			>
+			<a href="/news" class="flex flex-row space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="tabler:news" class="h-6 w-6" />
 				<span>Novinky</span>
 			</a>
