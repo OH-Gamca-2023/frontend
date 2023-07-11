@@ -6,6 +6,7 @@ export type Header = {
 }
 
 export type Day = {
+	id: string
 	name: string
 	enabled: boolean
 	date: Date
@@ -20,8 +21,6 @@ export type Item = {
 	date: Date
 	id: string
 	event: CalendarEvent
-
-	selected?: boolean
 }
 
 export type CalendarProps = {

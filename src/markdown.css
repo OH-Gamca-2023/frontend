@@ -55,7 +55,6 @@
 		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji',
 		'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
 	line-height: 1.4;
-	margin: 20px auto;
 	padding: 0 10px;
 	word-wrap: break-word;
 	color: var(--text-main);

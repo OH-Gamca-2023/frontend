@@ -1,4 +1,4 @@
-import type { Header } from './types'
+import type { Header } from '$lib/types'
 
 export const monthNames = [
 	{ name: 'Január', shortName: 'Jan' },

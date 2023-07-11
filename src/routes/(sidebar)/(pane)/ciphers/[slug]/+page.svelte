@@ -2,7 +2,7 @@
 	import { slide } from 'svelte/transition'
 	import type { Cipher } from '$lib/types/ciphers'
 	import Icon from '$lib/components/Icon.svelte'
-	import { ciphers, loadCipherSubmissions } from '$lib/data/ciphers'
+	import { ciphers, loadCipherSubmissions } from '$lib/api/models/ciphers'
 	import type { PageData } from './$types'
 	import { userState } from '$lib/state'
 	import timeAgo from '$lib/utils/timeago'
@@ -185,10 +185,9 @@
 						<div
 							class="flex flex-col border-t border-gray-300 pt-4 mt-4 dark:border-gray-500 justify-center items-center"
 						>
-							<div
+							<button
 								class="flex flex-row w-full justify-between items-center space-x-2 cursor-pointer"
 								on:click={() => (hintOpen = !hintOpen)}
-								on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (hintOpen = !hintOpen)}
 							>
 								<Icon
 									icon="mdi:chevron-right"
@@ -201,7 +200,7 @@
 									<span class="text-xl font-bold">Nápoveda</span>
 									<span class="text-md">Klikni pre rozbalenie nápovedy</span>
 								</div>
-							</div>
+							</button>
 							{#if hintOpen}
 								<div
 									class="flex flex-col mt-4 bg-gray-900 bg-opacity-25 p-4 rounded-lg"
@@ -219,7 +218,10 @@
 						</div>
 					{/if}
 				</div>
-				<div class="flex flex-col p-5 flex-1 order-4 2xl:order-2 basis-full 2xl:basis-2/5">
+				<div
+					class="flex flex-col p-5 flex-1 order-4 2xl:order-2 border-t basis-full 2xl:basis-2/5 border-gray-300 pt-4 mt-4 dark:border-gray-500 md:border-t-0 md:pt-3 md:mt-0"
+				>
+					<span class="text-xl font-bold pb-5">Zadanie</span>
 					<CipherTask {cipher} />
 				</div>
 				<div
@@ -260,113 +262,123 @@
 								<span class="text-red-500 dark:text-red-500 text-xl font-bold">Nevyriešené</span>
 							{/if}
 						</div>
-						<div class="flex flex-col justify-center text-center">
+						<div class="flex flex-col justify-between text-center h-full flex-1">
 							{#if solving != 'none'}
-								<span class="text-2xl font-bold">Odoslané riešenia</span>
-								<div
-									class="flex flex-col rounded-md border border-gray-300 dark:border-gray-500 mt-5"
-								>
+								<div class="flex flex-col">
+									<span class="text-xl 2xl:text-2xl font-bold">Odoslané riešenia</span>
 									<div
-										class="flex flex-row justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
-											border-b border-gray-300 dark:border-gray-500 rounded-t-md"
+										class="flex flex-col rounded-md border border-gray-300 dark:border-gray-500 mt-5"
 									>
-										<span class="text-lg font-bold basis-2/5 text-left">Riešenie</span>
-										<span class="text-lg font-bold">Po&nbsp;nápovede</span>
-										<span class="text-md font-bold basis-2/5 text-right">Dátum a čas</span>
-									</div>
-									{#each cipher.submissions as submission, i}
 										<div
-											class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
-												border-b border-gray-300 dark:border-gray-500"
-											class:bg-green-500={submission.correct}
-											class:bg-red-500={!submission.correct}
-											class:rounded-b-md={i === cipher.submissions.length - 1}
+											class="flex flex-row justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
+											border-b border-gray-300 dark:border-gray-500 rounded-t-md"
 										>
-											<span class="text-lg font-bold basis-2/5 text-left">{submission.answer}</span>
-											<span class="text-lg font-bold">
-												{#if submission.after_hint}
-													<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
-												{:else}
-													<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-gray-500" />
-												{/if}
-											</span>
-											<span class="text-md font-bold basis-2/5 text-right">
-												<span class="pr-2"
-													>{String(submission.time.getDate()).padStart(2, '0')}. {String(
-														submission.time.getMonth() + 1,
-													).padStart(2, '0')}.</span
-												>
-												<span
-													>{String(submission.time.getHours()).padStart(2, '0')}:{String(
-														submission.time.getMinutes(),
-													).padStart(2, '0')}</span
-												>
-											</span>
-										</div>
-									{:else}
-										<div
-											class="flex flex-row justify-between items-center bg-opacity-40 p-2
-												border-b border-gray-300 dark:border-gray-500"
-										>
-											<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
-										</div>
-									{/each}
-								</div>
-								<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
-								<form>
-									<label for="answer" class="text-md font-bold text-red-500 dark:text-red-400">
-										{#if !canSubmit && solved}
-											Nemôžete odoslať ďalšie riešenie,<br />keďže ste už šifru vyriešili.
-										{:else if !canSubmit && nextSubmitTime}
-											{#key $subSeconds}
-												Ďalšie riešenie môžete odoslať {String(
-													timeAgo.format(nextSubmitTime),
-												).replace('teraz', 'o menej ako minútu')}.
-											{/key}
-										{:else if !cipher.started}
-											Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
-										{:else if cipher.has_ended}
-											Nemôžete odoslať riešenie, keďže šifra už skončila.
-										{:else if !canSubmit}
-											Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste prosím
-											obnoviť stránku.<br />
-											<i class="text-sm text-gray-500 dark:text-gray-400"
-												>Ak sa chyba nevyrieši, kontaktujte administrátora.</i
+											<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left">Riešenie</span
 											>
-										{/if}
-									</label>
-									<div class="flex flex-row w-full pt-2">
-										<input
-											type="text"
-											id="answer"
-											name="answer"
-											class="flex-1 rounded-l-md border border-gray-300 dark:border-gray-500 p-2
+											<span class="text-sm 2xl:text-md font-bold">Nápoveda</span>
+											<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right"
+												>Dátum a čas</span
+											>
+										</div>
+										{#each cipher.submissions as submission, i}
+											<div
+												class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
+												border-b border-gray-300 dark:border-gray-500"
+												class:bg-green-500={submission.correct}
+												class:bg-red-500={!submission.correct}
+												class:rounded-b-md={i === cipher.submissions.length - 1}
+											>
+												<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
+													>{submission.answer}</span
+												>
+												<span class="text-sm 2xl:text-md font-bold">
+													{#if submission.after_hint}
+														<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
+													{:else}
+														<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-gray-500" />
+													{/if}
+												</span>
+												<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
+													<span class="pr-1"
+														>{String(submission.time.getDate()).padStart(2, '0')}. {String(
+															submission.time.getMonth() + 1,
+														).padStart(2, '0')}.</span
+													>
+													<span
+														>{String(submission.time.getHours()).padStart(2, '0')}:{String(
+															submission.time.getMinutes(),
+														).padStart(2, '0')}</span
+													>
+												</span>
+											</div>
+										{:else}
+											<div
+												class="flex flex-row justify-between items-center bg-opacity-40 p-2
+												border-b border-gray-300 dark:border-gray-500"
+											>
+												<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
+											</div>
+										{/each}
+									</div>
+								</div>
+								<div class="flex flex-col">
+									<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
+									<form>
+										<label for="answer" class="text-md font-bold text-red-500 dark:text-red-400">
+											{#if !canSubmit && solved}
+												Nemôžete odoslať ďalšie riešenie,<br />keďže ste už šifru vyriešili.
+											{:else if !canSubmit && nextSubmitTime}
+												{#key $subSeconds}
+													Ďalšie riešenie môžete odoslať {String(
+														timeAgo.format(nextSubmitTime),
+													).replace('teraz', 'o menej ako minútu')}.
+												{/key}
+											{:else if !cipher.started}
+												Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
+											{:else if cipher.has_ended}
+												Nemôžete odoslať riešenie, keďže šifra už skončila.
+											{:else if !canSubmit}
+												Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste prosím
+												obnoviť stránku.<br />
+												<i class="text-sm text-gray-500 dark:text-gray-400"
+													>Ak sa chyba nevyrieši, kontaktujte administrátora.</i
+												>
+											{/if}
+										</label>
+										<div class="flex flex-col md:flex-row w-full pt-2">
+											<input
+												type="text"
+												id="answer"
+												name="answer"
+												class="flex-1 rounded-t-md md:rounded-l-md md:rounded-tr-none border border-gray-300 dark:border-gray-500 p-2
 												focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
 												text-gray-700"
-											placeholder="Zadajte riešenie"
-											autocomplete="off"
-											autocorrect="off"
-											autocapitalize="off"
-											spellcheck="false"
-											bind:value={answer}
-											disabled={!cipher.started || cipher.has_ended}
-										/>
-										<button
-											type="submit"
-											class="flex-none rounded-r-md bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500
+												size="10"
+												placeholder="Zadajte riešenie"
+												autocomplete="off"
+												autocorrect="off"
+												autocapitalize="off"
+												spellcheck="false"
+												bind:value={answer}
+												disabled={!cipher.started || cipher.has_ended}
+											/>
+											<button
+												type="submit"
+												class="flex-none rounded-b-md md:rounded-r-md md:rounded-bl-none bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500
 												px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed
 												transition-all duration-200 ease-in-out disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700"
-											on:click|preventDefault={submitAnswer}
-											disabled={!canSubmit ||
-												submitting ||
-												!answer ||
-												!cipher.started ||
-												cipher.has_ended}
-										>
-											Odoslať
-										</button>
-									</div>
-								</form>
+												on:click|preventDefault={submitAnswer}
+												disabled={!canSubmit ||
+													submitting ||
+													!answer ||
+													!cipher.started ||
+													cipher.has_ended}
+											>
+												Odoslať
+											</button>
+										</div>
+									</form>
+								</div>
 							{/if}
 						</div>
 					{:else if $userState.loggedIn}

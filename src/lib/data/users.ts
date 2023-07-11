@@ -1,5 +1,5 @@
 import { getUserDetails } from '$lib/api'
-import { clazzes } from '$lib/state'
+import { clazzes } from '$lib/api/models'
 import type { User } from '$lib/types'
 
 const cachedUsers = new Map<string, User>()

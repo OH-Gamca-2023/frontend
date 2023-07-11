@@ -10,7 +10,13 @@
 		"sourceMap": true,
 		"strict": true,
 		"plugins": [{ "name": "vite-plugin-iso-import" }],
-		"ignoreDeprecations": "5.0"
+		"ignoreDeprecations": "5.0",
+		"lib": [
+			"esnext",
+			"DOM",
+			"dom",
+			"DOM.Iterable"
+		],
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//

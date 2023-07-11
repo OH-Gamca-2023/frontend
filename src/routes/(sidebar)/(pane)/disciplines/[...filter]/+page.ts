@@ -1,5 +1,8 @@
+import { disciplines } from '$lib/api/models'
 import type { FilterResult } from '$lib/components/filter/Filter.svelte'
+import { get } from 'svelte/store'
 import type { PageLoad } from './$types'
+import { redirect } from '@sveltejs/kit'
 
 export const prerender = false
 
@@ -14,9 +17,16 @@ export const load = (({params}) => {
     if(rawFilter.startsWith('/')) rawFilter = rawFilter.slice(1)
     const parts = rawFilter.split('/').filter(e => e.length > 0)
 
+
+    if(parts.length == 1) {
+        // Will work once disciplines are made cacheable
+        if (get(disciplines)[parts[0]] !== undefined) {
+            throw redirect(302, `/discipline/${parts[0]}`)
+        }
+    }
+
     let lastKey: string | undefined
     for (const part of parts) {
-        if(part === 'news' || part === '') continue
         if (lastKey) {
             try {
                 const ids = part.split(',').map(e => parseInt(e))
@@ -28,12 +38,12 @@ export const load = (({params}) => {
             lastKey = undefined
         } else {
             lastKey = part
-            if (![ 'categories', 'tags', 'grades' ].includes(lastKey)) console.error('Invalid filter key ' + lastKey)
+            if (![ 'categories', 'grades' ].includes(lastKey)) console.error('Invalid filter key ' + lastKey)
         }
     }
 
     return {
         filter,
-        rawFilter
+        rawFilter,
     }
 }) satisfies PageLoad

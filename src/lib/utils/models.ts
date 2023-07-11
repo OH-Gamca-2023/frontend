@@ -1,4 +1,4 @@
-import { getApiHost } from '$lib/api/data'
+import { getApiHost } from '$lib/data/api'
 import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
@@ -82,11 +82,16 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			console.debug(`[model ${this.apiUrl}] loading`)
 			this.load()
 		}
-
+		
 		addReconnectListener(() => {
 			// Attempt to reload the model when the connection is re-established
 			console.debug(`[model ${this.apiUrl}] connection re-established, updating`)
 			this.load(true)
+		})
+		
+		this.onLoaded(() => {
+			this.dependencies.forEach((dep) => dep.subscribe(() => {
+				this.triggerUpdated()}))
 		})
 	}
 
@@ -101,9 +106,16 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			if (this.type !== 'partial') this.data.clear()
 			if (this.type === 'list' || this.type === 'partial') {
 				for (const item of data) {
-					this.data.set(item.id.toString(), { ...this.parser(item), fromServer: false })
+					// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
+					const obj = this.parser(item) as T & { fromServer: boolean }
+					obj.fromServer = false
+					this.data.set(item.id.toString(), obj)
 				}
-			} else this.data.set('0', { ...this.parser(data), fromServer: false })
+			} else {
+				const obj = this.parser(data) as T & { fromServer: boolean }
+				obj.fromServer = false
+				this.data.set('0', obj)
+			}
 
 			this.triggerLoaded()
 			console.debug(`[model ${this.apiUrl}] loaded from cache`)
@@ -163,9 +175,16 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 					if (this.type === 'list' || this.type === 'partial') {
 						if (this.type === 'partial') data = data.results
 						for (const item of data) {
-							this.data.set(item.id.toString(), { ...this.parser(item), fromServer: true })
+							// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
+							const obj = this.parser(item) as T & { fromServer: boolean }
+							obj.fromServer = true
+							this.data.set(item.id.toString(), obj)
 						}
-					} else this.data.set('0', { ...this.parser(data), fromServer: true })
+					} else {
+						const obj = this.parser(data) as T & { fromServer: boolean }
+						obj.fromServer = true
+						this.data.set('0', obj)
+					}
 				} else {
 					error(undefined)
 					return
@@ -339,8 +358,10 @@ export class PartialModel<T> extends LoadableModel<T> {
 				if (response.ok) {
 					const data = await response.json()
 					respData = data
-
-					this.data.set(id.toString(), { ...this.parser(data), fromServer: true })
+					// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
+					const obj = this.parser(data) as T & { fromServer: boolean }
+					obj.fromServer = true
+					this.data.set(data.id.toString(), obj)
 				} else {
 					error(undefined)
 					return
@@ -354,6 +375,16 @@ export class PartialModel<T> extends LoadableModel<T> {
 		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id}`)
 
 		this.saveToCache(respData)
+	}
+
+	setRaw(id: string, raw: object, fromServer: boolean) {
+		// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
+		const obj = this.parser(raw) as T & { fromServer: boolean }
+		obj.fromServer = fromServer
+		this.data.set(id, obj)
+		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id} from external call`)
+		this.triggerUpdated()
+		this.saveToCache(raw)
 	}
 
 	public loadMultiple() {

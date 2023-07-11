@@ -1,11 +1,11 @@
 <script lang="ts">
 	import CalendarDisplay from './CalendarDisplay.svelte'
-	import type { Item, Day, Header } from './types'
+	import type { Item, Day, Header } from '$lib/types'
 	import { dayNames, monthNames } from './consts'
-	import { calendarData } from './data'
+	import { calendarData } from '$lib/api/models'
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
-	import { compareDates, initMonthDays } from './utils'
+	import { compareDates, initMonthDays } from '$lib/utils/calendar'
 	import { toast } from '$lib/utils/toasts'
 
 	export let showHeader = true
@@ -20,8 +20,12 @@
 	export let displayedMonth = now.getMonth()
 
 	let days: Day[][] = []
-
 	let items: Item[] = []
+
+	let selected = {
+		items: [] as string[],
+		days: [] as string[],
+	}
 
 	let error: string | undefined
 
@@ -41,34 +45,32 @@
 		let day = days[month].find((d) => compareDates(d.date, e.date))
 		dayClick(day, month)
 
-		items.forEach((i) => (i.selected = false))
-		const index = items.findIndex((i) => i.id == currItemID)
-		if (index >= 0) items[index].selected = true
+		selected.items = [currItemID]
 	}
 
 	function dayClick(e: Day | undefined, month: number) {
 		if (!allowExpanding) return
 
-		days.forEach((m) => m.forEach((d) => (d.selected = false)))
+		selected.days = []
 
 		if (!e || !e.enabled) return
 
-		const index = days[month].findIndex((d) => d.date.getTime() === e.date.getTime())
-		if (index >= 0) days[month][index].selected = true
+		selected.days = [e.id]
 
 		// unselect all items that are not in this day
-		items.forEach((i) => {
-			if (!compareDates(i.date, e.date)) i.selected = false
+		selected.items = selected.items.filter((i) => {
+			const item = items.find((it) => it.id === i)
+			if (!item) return false
+
+			return compareDates(item.date, e.date)
 		})
-		items = items
 	}
 
 	function deselectAll(clickedMonth: number | undefined) {
 		if (clickedMonth != displayedMonth && clickedMonth != undefined) return
 
-		days.forEach((m) => m.forEach((d) => (d.selected = false)))
-		items.forEach((i) => (i.selected = false))
-		;(days = days), (items = items) // trigger update
+		selected.days = []
+		selected.items = []
 	}
 
 	function parseEvents() {
@@ -94,6 +96,7 @@
 		error = undefined
 	}
 	$: $calendarData && parseEvents()
+	$: displayedMonth && deselectAll(undefined)
 
 	calendarData.onLoadError(() => {
 		console.error('Failed to load calendar data')
@@ -150,6 +153,8 @@
 						days={days[i] ?? []}
 						{items}
 						{usedHeaders}
+						{selected}
+						visible={displayedMonth == i}
 						on:dayClick={(e) => dayClick(e.detail, i)}
 						on:itemClick={(e) => itemClick(e.detail, i)}
 						on:clickOutside={() => deselectAll(i)}

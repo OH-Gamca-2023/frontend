@@ -1,5 +1,26 @@
-import type { Clazz, Grade } from '$lib/types'
+import type { Tag, Category, Grade, Clazz } from '$lib/types'
 import { LoadableModel } from '$lib/utils/models'
+
+export const categories = new LoadableModel<Category>(
+	'disciplines/categories',
+	(rawCategory: any) => ({
+		id: rawCategory.id,
+		name: rawCategory.name,
+		calendarClass: rawCategory.calendar_class,
+	}),
+	true,
+	[],
+)
+
+export const tags = new LoadableModel<Tag>(
+	'posts/tags',
+	(rawTag: any) => ({
+		id: rawTag.id,
+		name: rawTag.name,
+	}),
+	true,
+	[],
+)
 
 export const grades = new LoadableModel<Grade>(
 	'user/grades',
@@ -20,7 +41,9 @@ export const clazzes = new LoadableModel<Clazz>(
 	(rawClazz: any) => ({
 		id: rawClazz.id,
 		name: rawClazz.name,
-		grade: grades.get(rawClazz.grade)!,
+		get grade() {
+			return grades.get(rawClazz.grade)!
+		},
 		is_fake: rawClazz.is_fake,
 	}),
 	true,

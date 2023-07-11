@@ -1,9 +1,8 @@
-import { grades } from '$lib/state'
 import type { Discipline } from '$lib/types'
 import { PartialModel } from '$lib/utils/models'
 import { get } from 'svelte/store'
-import { categories, tags } from './data'
-import { getUser, setRawUser } from './users'
+import { categories, grades, tags } from '$lib/api/models/generic'
+import { getUser, setRawUser } from '../../data/users'
 
 class DisciplineModel extends PartialModel<Discipline> {
 	constructor() {

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Item, Day, Header } from './types'
+	import type { Item, Day, Header } from '$lib/types'
 	import { dayNames, monthNames } from './consts'
-	import { calendarData } from './data'
+	import { calendarData } from '$lib/api/models'
 	import { darkTheme } from '$lib/data/prefs'
 	import { onMount } from 'svelte'
-	import { filterItems, initMonthDays } from './utils'
+	import { filterItems, initMonthDays } from '$lib/utils/calendar'
 	import clickOutside from '$lib/utils/clickOutside'
-	import Event from './Event.svelte'
+	import CalendarEvent from './CalendarEvent.svelte'
 
 	export let showHeader = true
 	export let allowExpanding = true
@@ -118,13 +118,13 @@
 				<span class="i-day-name" class:dark={$darkTheme}>{header}</span>
 			{/each}
 			{#each days as day, index}
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
 					class="i-day border-gray-500 dark:border-gray-700"
 					class:disabled={!day.enabled}
 					class:selected={day.selected}
 					class:today={day.today}
 					on:click={() => dayClick(day)}
-					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dayClick(day)}
 				>
 					{#if day.name.split(' ').length == 1}
 						<span class="i-day-number">{day.name.split(' ')[0]} </span>
@@ -157,7 +157,7 @@
 	{#if selectedItems.length > 0}
 		<div class="flex flex-row flex-wrap justify-around gap-3 pt-5">
 			{#each selectedItems as item}
-				<Event {item} />
+				<CalendarEvent {item} />
 			{/each}
 		</div>
 	{/if}

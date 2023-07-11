@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getApiHost } from '$lib/api/data'
+	import { getApiHost } from '$lib/data/api'
 	import type { Cipher } from '$lib/types'
 
 	export let cipher: Cipher

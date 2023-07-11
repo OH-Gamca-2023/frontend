@@ -1,7 +1,7 @@
-import { getApiHost } from '$lib/api/data'
+import { getApiHost } from '$lib/data/api'
 import { toast } from '$lib/utils/toasts'
 import { get } from 'svelte/store'
-import { getAccessToken } from './state/token'
+import { getAccessToken, setAccessToken } from './state/token'
 
 type Check = {
 	time: number
@@ -53,6 +53,31 @@ async function runCheck() {
 		const serverResult = await fetch(getApiHost() + '/status/', { method: 'GET', headers })
 		if (serverResult.status === 200) {
 			lastCheck.server = true
+		} else if (serverResult.status === 401) {
+			try {
+				console.log('Status check returned 401, validating logout...')
+				// User was probably logged out
+				const state = (await import('./state/state')).userState
+				await state.fetchUser()
+				if (!get(state).loggedIn) {
+					toast({
+						title: 'Boli ste odhlásený',
+						type: 'error',
+						duration: 5000,
+					})
+				}
+			} catch (e) {
+				console.error('Failed to validate logout', e)
+				console.error('Forcing local logout for safety reasons...')
+				setAccessToken(undefined)
+				toast({
+					title: 'Boli ste odhlásený',
+					message: 'Počas spracovávania údajov nastala chyba',
+					type: 'error',
+					duration: 5000,
+				})
+			}
+			await runCheck()
 		} else {
 			lastCheck.server = false
 		}

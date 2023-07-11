@@ -8,8 +8,7 @@
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"svelte.enable-ts-plugin": true,
 	"js/ts.implicitProjectConfig.checkJs": true,
-	"eslint.run": "onSave",
+	"eslint.run": "onType",
 	"eslint.lintTask.enable": true,
 	"eslint.packageManager": "npm",
-	"eslint.options": {}
 }

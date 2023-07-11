@@ -1,3 +1,7 @@
 export const loginRequired = false
 export const devOptionsEnabled = false
-export const maxRequestTime = 5000 // in milliseconds, 0 to disable
+
+export const debugMode = {
+    default: true,
+    force: true as boolean | null,
+}

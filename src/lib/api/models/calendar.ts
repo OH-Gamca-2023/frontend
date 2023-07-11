@@ -1,7 +1,7 @@
-import { categories } from '$lib/posts'
-import { grades as gradesModel } from '$lib/state'
+import { categories } from '$lib/api/models'
+import { grades as gradesModel } from './generic'
 import { LoadableModel } from '$lib/utils/models'
-import type { CalendarData, CalendarEvent, CalendarProps } from './types'
+import type { CalendarData, CalendarEvent, CalendarProps } from '$lib/types/calendar'
 
 export const calendarData = new LoadableModel<CalendarData>(
 	'calendar/auto.json',
@@ -15,8 +15,12 @@ export const calendarData = new LoadableModel<CalendarData>(
 			return {
 				...rest,
 				date: new Date(date),
-				category: categories.get(category),
-				grades: grades.map((grade: number) => gradesModel.get(grade)),
+				get category() {
+					return categories.get(category)
+				},
+				get grades() {
+					return grades.map((grade: string) => gradesModel.get(grade))
+				}
 			} as CalendarEvent
 		})
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte'
 	import CipherListObject from '$lib/components/ciphers/CipherListObject.svelte'
-	import { ciphers } from '$lib/data/ciphers'
+	import { ciphers } from '$lib/api/models'
 	import { userState } from '$lib/state'
 
 	$: listCiphers = Object.values($ciphers)
@@ -34,13 +34,13 @@
 	{#await ciphers.load()}
 		<div class="flex flex-row justify-center items-center space-x-2">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
-			<span class="text-xl font-bold">Načítavam šifry...</span>
+			<span class="text-lg md:text-xl font-bold">Načítavam šifry...</span>
 		</div>
 	{:then _}
 		{#if listCiphers.length === 0}
 			<div class="flex flex-row justify-center items-center space-x-2">
 				<Icon icon="mdi:stop-remove-outline" class="w-10 h-10" />
-				<span class="text-xl font-bold">Žiadne šifry aktuálne nie sú dostupné.</span>
+				<span class="text-lg md:text-xl font-bold">Žiadne šifry aktuálne nie sú dostupné.</span>
 			</div>
 		{:else}
 			{#if $userState.loggedIn && $userState.user}
@@ -48,7 +48,9 @@
 					<div class="flex flex-row justify-center items-center space-x-2">
 						<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 						<div class="flex flex-col">
-							<span class="text-xl font-bold">Tvoja trieda sa nezúčastuje tejto šifrovačky.</span>
+							<span class="text-lg md:text-xl font-bold"
+								>Tvoja trieda sa nezúčastuje tejto šifrovačky.</span
+							>
 							{#if solving === 'individual'}
 								<span class="text-sm">Stále však môžeš riešiť šifry individuálne.</span>
 							{/if}

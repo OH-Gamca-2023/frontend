@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
-	import type { Day, Item } from './types'
+	import type { Day, Item } from '$lib/types'
 	import clickOutside from '$lib/utils/clickOutside'
 	import { darkTheme } from '$lib/data/prefs'
-	import { compareDates } from './utils'
-	import Event from './Event.svelte'
+	import { compareDates } from '$lib/utils/calendar'
+	import CalendarEvent from './CalendarEvent.svelte'
 	import { slide } from 'svelte/transition'
 
 	export let days: Day[] = []
 	export let items: Item[] = []
 	export let usedHeaders: string[] = []
+	export let selected: { items: string[]; days: string[] } = { items: [], days: [] }
+	export let visible = false
 
 	$: perDayItems = days.map((day) => items.filter((item) => compareDates(item.date, day.date)))
 
@@ -28,22 +30,22 @@
 		<span class="day-name" class:dark={$darkTheme}>{header}</span>
 	{/each}
 	{#each days as day, index}
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<span
 			class="day"
 			class:day-disabled={!day.enabled}
 			class:day-today={day.today}
-			class:day-selected={day.selected}
+			class:day-selected={selected.days.includes(day.id)}
 			class:dark={$darkTheme}
 			class:row-1={dayPositions[index].row === 1}
 			style="--column: {dayPositions[index].column}; --row: {dayPositions[index].row};"
 			on:click={() => dispatch('dayClick', day)}
-			on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('dayClick', day)}
 		>
 			<div class="details-wrapper">
 				{#each perDayItems[index] as item}
-					{#if item.selected}
-						<div class="details" transition:slide>
-							<Event {item} />
+					{#if selected.items.includes(item.id)}
+						<div class="details" transition:slide={{ duration: 600 }}>
+							<CalendarEvent {item} />
 						</div>
 					{/if}
 				{/each}
@@ -60,13 +62,14 @@
 			--col-w: {perDayItems[index].length > 3 ? 'calc(50% - 5px)' : '100%'};"
 		>
 			{#each perDayItems[index] as item}
-				<section
+				<button
 					on:click={() => dispatch('itemClick', item)}
-					on:keypress={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('itemClick', item)}
 					class="task {item.className}"
-					class:task-selected={item.selected}
+					class:task-selected={selected.items.includes(item.id)}
 					class:task-disabled={!day.enabled}
 					class:dark={$darkTheme}
+					tabindex={visible ? 0 : -1}
+					disabled={!day.enabled}
 				>
 					{item.title}
 					<span class="task-text-cutoff" />
@@ -74,7 +77,7 @@
 						{item.title}
 					</div>
 					<div class="task-overlay task-hover-overlay" />
-				</section>
+				</button>
 			{/each}
 		</section>
 	{/each}

@@ -1,3 +1,3 @@
-export * from './types'
-export { makeApiRequest } from './api'
+export { makeApiRequest } from './requests'
 export * from './endpoints'
+export * from '$lib/types/api'

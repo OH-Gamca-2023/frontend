@@ -10,6 +10,7 @@ export interface Post {
 	id: number
 	title: string
 	content: string
+	redirect: string | null
 	author: Partial<User>
 	date: Date
 
@@ -17,6 +18,4 @@ export interface Post {
 	discipline_categories: Category[]
 	affected_grades: Grade[]
 	tags: Tag[]
-
-	disable_comments: boolean
 }
