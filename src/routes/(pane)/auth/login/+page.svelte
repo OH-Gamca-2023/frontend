@@ -180,6 +180,7 @@
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
 	href="/admin/login"
+	rel="external"
 >
 	<Icon
 		icon="material-symbols:admin-panel-settings"
