@@ -91,7 +91,9 @@
 
 	function microsoftLogin() {
 		loginPending = true
-		window.open(getApiHost() + '/auth/login', '_self')
+		let host = window.location.host
+		if (!(host.startsWith('http://') || host.startsWith('https://'))) host = 'http://' + host
+		window.open(`${getApiHost()}/auth/begin/microsoft/?next=${host}/auth/login/`, '_self')
 	}
 
 	onMount(async () => {
@@ -119,7 +121,9 @@
 
 <h1 class="text-2xl font-bold pb-2">Prihlásenie</h1>
 
-<h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
+{#if error}
+	<h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
+{/if}
 
 <h4 class="text-gray-800 dark:text-gray-100 pb-4">Vyberte si spôsob prihlásenia</h4>
 <button
@@ -153,8 +157,23 @@
 	{/if}
 </button>
 <a
+	id="password-login"
+	class="flex flex-row items-center justify-center font-semibold w-full
+                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
+                    hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer mb-3"
+	class:cursor-pointer={!loginPending}
+	class:pointer-events-none={loginPending}
+	class:disable={loginPending}
+	href="password"
+>
+	<Icon icon="mdi:key" class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}" />
+	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
+		Prihlásiť sa pomocou hesla
+	</h4>
+</a>
+<a
 	id="admin-login"
-	class="flex flex-row items-center justify-center
+	class="flex flex-row items-center justify-center w-full
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
                     hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}
