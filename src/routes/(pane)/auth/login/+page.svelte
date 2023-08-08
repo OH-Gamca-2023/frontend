@@ -74,7 +74,6 @@
 				return
 			}
 			if (serverUser.id == user.id) {
-				setAccessToken(userToken.token)
 				statusDetails = 'Aktualizujem stav prihlásenia'
 
 				await userState.fetchUser()
