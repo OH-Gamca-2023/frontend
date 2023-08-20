@@ -12,7 +12,7 @@
 	export let data: PageData
 
 	$: filter = data.filter as FilterResult
-	let searchQuery: string = ''
+	let searchQuery = ''
 
 	let posts: Post[] = []
 

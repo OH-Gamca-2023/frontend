@@ -64,7 +64,7 @@
 						<Icon icon="carbon:user-profile" class="h-6 w-6" />
 						<span class="ml-2 text-sm font-medium">Profil</span>
 					</a>
-					{#if $userState.user?.type === 'organiser' || $userState.user?.type === 'admin'}
+					{#if $userState.user?.permissions.staff}
 						<a
 							href={`/admin/`}
 							class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"
@@ -74,16 +74,6 @@
 								<Icon icon="carbon:settings" class="h-6 w-6" />
 							</div>
 							<span class="text-sm font-medium text-right">Organizátorské rozhranie</span>
-						</a>
-					{/if}
-					{#if $userState.user?.type === 'admin'}
-						<a
-							href={`/docker/`}
-							class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"
-							on:click={() => (userMenuOpen = false)}
-						>
-							<Icon icon="teenyicons:docker-outline" class="h-6 w-6" />
-							<span class="text-sm font-medium">Docker</span>
 						</a>
 					{/if}
 				</div>

@@ -1,5 +1,4 @@
 import { userState } from '$lib/state'
-import { getAccessToken } from '$lib/state/token'
 import type { Results, Submission, SuccessResponse, User } from '$lib/types'
 import { clazzes, disciplines, grades } from './models'
 import { makeApiRequest } from './requests'

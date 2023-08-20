@@ -3,7 +3,7 @@
 	import 'prismjs/themes/prism.min.css'
 	import '../../../../../markdown.css'
 
-	import { darkTheme } from '$lib/data/prefs'
+	import { darkTheme } from '$lib/data/settings'
 	import { posts } from '$lib/api/models'
 	import { highlightPlugin } from '$lib/prism'
 	import Markdown from 'svelte-exmarkdown'
