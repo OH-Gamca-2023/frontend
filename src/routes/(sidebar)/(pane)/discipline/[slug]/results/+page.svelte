@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { disciplines, grades } from '$lib/api/models'
+	import { disciplines } from '$lib/api/models'
 	import type { Discipline } from '$lib/types'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import { getDisciplineResults } from '$lib/api'

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
-	import { darkTheme } from '$lib/data/prefs'
+	import { darkTheme } from '$lib/data/settings'
 </script>
 
 <div

@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { getUserDetails } from '$lib/api'
-	import { darkTheme, prefs } from '$lib/data/prefs'
+	import { darkTheme, settings } from '$lib/data/settings'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/utils/toasts'
 	import type { PageData } from './$types'
 	import { getApiHost } from '$lib/data/api'
 	import { setAccessToken } from '$lib/state/token'
-	import { loginRequired } from '$lib/data/settings'
 	import { onMount } from 'svelte'
 	import Icon from '$lib/components/Icon.svelte'
 	import type { User } from '$lib/types'
@@ -74,7 +73,6 @@
 				return
 			}
 			if (serverUser.id == user.id) {
-				setAccessToken(userToken.token)
 				statusDetails = 'Aktualizujem stav prihlásenia'
 
 				await userState.fetchUser()
@@ -104,7 +102,7 @@
 				type: 'info',
 				duration: 2000,
 			})
-			goto('/')
+			goto('/auth/profile')
 		}
 	})
 </script>
@@ -113,7 +111,7 @@
 	<title>Prihlásenie</title>
 </svelte:head>
 
-{#if loginRequired}
+{#if $settings.requireLogin.value}
 	<h3 class="text-red-500 font-bold pb-4">
 		Stránka je aktuálne dostupná iba pre prihlásených používateľov.
 	</h3>
@@ -148,7 +146,7 @@
 			{#if loginStatus}
 				<div class="ml-4 flex flex-col">
 					<span>{loginStatus}</span>
-					{#if $prefs.debugMode}
+					{#if $settings.debugMode.value}
 						<span class="text-xs text-gray-600 dark:text-gray-300">{statusDetails}</span>
 					{/if}
 				</div>
@@ -164,7 +162,7 @@
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
-	href="password"
+	href="/auth/login/password"
 >
 	<Icon icon="mdi:key" class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}" />
 	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>

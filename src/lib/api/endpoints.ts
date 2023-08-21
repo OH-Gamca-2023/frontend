@@ -1,5 +1,4 @@
 import { userState } from '$lib/state'
-import { getAccessToken } from '$lib/state/token'
 import type { Results, Submission, SuccessResponse, User } from '$lib/types'
 import { clazzes, disciplines, grades } from './models'
 import { makeApiRequest } from './requests'
@@ -94,6 +93,22 @@ export async function setUserPassword(oldPassword: string | undefined, newPasswo
 // AUTH ENDPOINTS
 
 /**
+ * Log the user in using credentials.
+ * 
+ * @param login the username or email
+ * @param password the password
+ * @returns the API token details
+ * @throws 403 error if the credentials are invalid
+ */
+export async function login(login: string, password: string) {
+	const data = {
+		password: password,
+		[login.includes('@') ? 'email' : 'username']: login,
+	}
+	return makeApiRequest<{ expiry: string; token: string }>('auth/login', 'POST', data, false)
+}
+
+/**
  * Log the user out.
  *
  * @returns server response: 204 No Content if successful and 401 error if not logged in
@@ -133,7 +148,6 @@ export async function getCipherDetails(id: number) {
  * @throws 401 error if not logged in
  */
 export async function getCipherSubmissions(id: number) {
-	if(!getAccessToken()) return []
 	return makeApiRequest<Submission[]>(`ciphers/${id}/submissions`, 'GET', undefined, true)
 }
 

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import Header from '$lib/components/header/Header.svelte'
-	import { darkTheme, prefs } from '$lib/data/prefs'
 	import '../tailwind.css'
 	import '../tooltip.css'
 	import '../global.css'
@@ -10,7 +9,7 @@
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
 	import { startConnectionCheck } from '$lib/connection'
 	import { onMount } from 'svelte'
-	import { debugMode, loginRequired } from '$lib/data/settings'
+	import { darkTheme, settings, isOverridden } from '$lib/data/settings'
 	import { userState } from '$lib/state'
 	import { goto } from '$app/navigation'
 	import { browser } from '$app/environment'
@@ -25,6 +24,8 @@
 	} from '$lib/api/models'
 
 	onMount(startConnectionCheck)
+
+	$: loginRequired = $settings.requireLogin.value
 
 	$: headerAndFooter = !loginRequired || $userState.loggedIn
 	$: showContent = headerAndFooter || $page.url.pathname.includes('auth/login')
@@ -54,10 +55,10 @@
 		<FlatToast {data} />
 	</ToastContainer>
 
-	{#if $prefs.debugMode}
+	{#if $settings.debugMode.value}
 		<div class="fixed bottom-0 right-1/2 transform translate-x-1/2 flex flex-col items-center z-50">
 			<div class="text-xs text-gray-400">
-				Debug Mode Enabled {debugMode.force ? '(forced)' : ''}
+				Debug Mode Enabled {isOverridden('debugMode') ? '(Overriden)' : ''}
 			</div>
 			<div class="text-xs text-gray-400">
 				Ld {$userState.loading ? '1' : '0'} | L {$userState.loggedIn ? '1' : '0'} | U

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { darkTheme, setPrefValue } from '$lib/data/prefs'
+	import { darkTheme, setValue, settings } from '$lib/data/settings'
 	import { categories } from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
@@ -123,10 +123,9 @@
 				id="dark-mode"
 				class="flex flex-col items-center justify-center cursor-pointer"
 				transition:fade
-				on:click={() =>
-					$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')}
+				on:click={() => setValue('darkMode', !$settings.darkMode.value)}
 			>
-				{#if $darkTheme}
+				{#if $settings.darkMode.value}
 					<Icon icon="material-symbols:light-mode" class="h-6 w-6" />
 				{:else}
 					<Icon icon="material-symbols:dark-mode-rounded" class="h-6 w-6" />
@@ -184,10 +183,9 @@
 					id="dark-mode"
 					class="flex flex-col items-center justify-center cursor-pointer"
 					transition:fade
-					on:click={() =>
-						$darkTheme ? setPrefValue('theme', 'light') : setPrefValue('theme', 'dark')}
+					on:click={() => setValue('darkMode', !$settings.darkMode.value)}
 				>
-					{#if $darkTheme}
+					{#if $settings.darkMode.value}
 						<Icon icon="material-symbols:light-mode" class="h-6 w-6" />
 					{:else}
 						<Icon icon="material-symbols:dark-mode-rounded" class="h-6 w-6" />

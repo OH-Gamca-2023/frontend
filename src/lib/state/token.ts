@@ -1,40 +1,27 @@
 import { browser } from '$app/environment'
 import { Buffer } from 'buffer'
 
-function rotateAlphabetically(token: string, rotation: number) {
-	let rotated = ''
-	for (let i = 0; i < token.length; i++) {
-		let charCode = token.charCodeAt(i)
-		let base
-		if (charCode >= 65 && charCode <= 90) {
-			base = 65
-		} else if (charCode >= 97 && charCode <= 122) {
-			base = 97
-		} else {
-			rotated += token[i]
-			continue
-		}
-		charCode = ((((charCode - base + rotation) % 26) + 26) % 26) + base
-		rotated += String.fromCharCode(charCode)
-	}
-	return rotated
-}
-
 function encodeToken(token: string, expiryDate: number) {
-	const rotatedToken = rotateAlphabetically(token, 7)
-	const encryptedToken = Buffer.from(rotatedToken).toString('base64')
-	const encryptedExpiry = Buffer.from(String(expiryDate)).toString('base64')
-	return rotateAlphabetically(encryptedToken + '.' + encryptedExpiry, 3)
+	const base64Token = Buffer.from(token).toString('base64')
+	const tokenString = base64Token + '.' + expiryDate
+	const encodedLayer1 = Buffer.from(tokenString).map((byte) => byte ^ 0x41)
+
+	const random = Math.floor(Math.random() * 256)
+	const encodedLayer2 = Buffer.from(Buffer.from(encodedLayer1).map((byte) => byte ^ random))
+
+	return random + '.' + encodedLayer2.toString('base64')
 }
 
 function decodeToken(rawToken: string) {
-	const decryptedLayer1 = rotateAlphabetically(rawToken, -3)
-	const [encryptedToken, encryptedExpiry] = decryptedLayer1.split('.')
-	const decryptedToken = Buffer.from(encryptedToken, 'base64').toString('ascii')
-	const decryptedExpiry = Buffer.from(encryptedExpiry, 'base64').toString('ascii')
-	const expiryDate = Number(decryptedExpiry)
-	const token = rotateAlphabetically(decryptedToken, -7)
-	return { token, expiryDate }
+	const [random, encodedLayer2] = rawToken.split('.')
+
+	const encodedLayer1 = Buffer.from(encodedLayer2, 'base64').map((byte) => byte ^ Number(random))
+	const tokenString = Buffer.from(encodedLayer1).map((byte) => byte ^ 0x41).toString()
+	
+	const [base64Token, expiryDate] = tokenString.split('.')
+	const token = Buffer.from(base64Token, 'base64').toString()
+
+	return { token, expiryDate: Number(expiryDate) }
 }
 
 let currentAccessToken: string | undefined = undefined

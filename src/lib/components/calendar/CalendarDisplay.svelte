@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte'
 	import type { Day, Item } from '$lib/types'
 	import clickOutside from '$lib/utils/clickOutside'
-	import { darkTheme } from '$lib/data/prefs'
+	import { darkTheme } from '$lib/data/settings'
 	import { compareDates } from '$lib/utils/calendar'
 	import CalendarEvent from './CalendarEvent.svelte'
 	import { slide } from 'svelte/transition'

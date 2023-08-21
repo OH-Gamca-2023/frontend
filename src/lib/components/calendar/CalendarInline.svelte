@@ -2,7 +2,7 @@
 	import type { Item, Day, Header } from '$lib/types'
 	import { dayNames, monthNames } from './consts'
 	import { calendarData } from '$lib/api/models'
-	import { darkTheme } from '$lib/data/prefs'
+	import { darkTheme } from '$lib/data/settings'
 	import { onMount } from 'svelte'
 	import { filterItems, initMonthDays } from '$lib/utils/calendar'
 	import clickOutside from '$lib/utils/clickOutside'

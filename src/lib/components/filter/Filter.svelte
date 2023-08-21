@@ -13,7 +13,7 @@
 		grades as rawGrades,
 	} from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
-	import { darkTheme } from '$lib/data/prefs'
+	import { darkTheme } from '$lib/data/settings'
 	import { slide } from 'svelte/transition'
 	import TagComponent from '../tags/Tag.svelte'
 	import FilterIcon from './FilterIcon.svelte'
@@ -36,7 +36,7 @@
 		tags: [],
 		grades: [],
 	}
-	export let searchQuery: string = ''
+	export let searchQuery = ''
 
 	function toggleSelection(type: 'categories' | 'tags' | 'grades', id: number) {
 		filter[type] = filter[type].includes(id)

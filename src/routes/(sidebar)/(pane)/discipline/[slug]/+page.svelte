@@ -156,7 +156,7 @@
 															<span class="font-medium">{placement.clazz.name}</span>
 														</div>
 													{/each}
-													{#each Array(3 - top3.length) as k, i}
+													{#each Array(3 - top3.length) as _, i}
 														<div class="">
 															<span class="font-semibold pr-2">{i + top3.length + 1}.</span>
 															<span class="font-medium">...</span>
