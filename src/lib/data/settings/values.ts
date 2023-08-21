@@ -112,11 +112,15 @@ function loadServerOverrides() {
 
 function save() {
     if (browser) {
-        // only save user editable settings which are not overridden
+        // get current localStorage settings
+        const storedValues = JSON.parse(localStorage.getItem('settings') ?? '{}');
+        // only save settings that are not overridden and are user editable
         const values = Object.fromEntries(
             Object.entries(settings).filter(([key, setting]) => setting.userEditable && !isOverridden(key)).map(([key, setting]) => [key, setting.value])
         );
-        localStorage.setItem('settings', JSON.stringify(values));
+        // merge with stored values
+        Object.assign(storedValues, values);
+        localStorage.setItem('settings', JSON.stringify(storedValues));
     }
 }
 
