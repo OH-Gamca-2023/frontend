@@ -19,7 +19,9 @@
 			>
 				<div class="flex flex-col flex-grow mr-10">
 					<h2 class="text-xl font-bold">{setting.name}</h2>
-					<p>{setting.description}</p>
+					{#if setting.description}
+						<p>{setting.description}</p>
+					{/if}
 					{#if !setting.userEditable}
 						<p class="text-sm text-red-600 dark:text-red-400 pt-2">
 							Toto nastavenie nie je meniteľné používateľmi.

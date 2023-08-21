@@ -7,8 +7,8 @@ import { Buffer } from 'buffer'
 // Contains default values for settings
 const settings: Settings = {
     'darkMode': {
-        name: 'Dark mode',
-        description: 'Use a dark theme for the UI',
+        name: 'Tmavý režim',
+        description: null,
         userEditable: true,
         type: 'boolean',
 
@@ -16,8 +16,8 @@ const settings: Settings = {
         value: true,
     },
     'debugMode': {
-        name: 'Debug mode',
-        description: 'Show some debug information',
+        name: 'Režim ladenia',
+        description: 'Zapína režim ladenia, ktorý zobrazuje viac informácií o chybách',
         userEditable: true,
         type: 'boolean',
 
@@ -25,8 +25,8 @@ const settings: Settings = {
         value: false,
     },
     'requireLogin': {
-        name: 'Require login',
-        description: 'Require login to use the app',
+        name: 'Vyžadovať prihlásenie',
+        description: 'Ak je zapnuté, stránka sa dá používať iba po prihlásení',
         userEditable: false,
         type: 'boolean',
 

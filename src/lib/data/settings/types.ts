@@ -1,6 +1,6 @@
 export type SettingProps = {
     name: string;
-    description: string;
+    description: string | null;
     userEditable: boolean;
     type: SettingValueType;
 }
