@@ -102,7 +102,7 @@
 				type: 'info',
 				duration: 2000,
 			})
-			goto('/')
+			goto('/auth/profile')
 		}
 	})
 </script>
@@ -162,7 +162,7 @@
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
-	href="password"
+	href="/auth/login/password"
 >
 	<Icon icon="mdi:key" class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}" />
 	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
