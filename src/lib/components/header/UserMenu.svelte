@@ -64,6 +64,14 @@
 						<Icon icon="carbon:user-profile" class="h-6 w-6" />
 						<span class="ml-2 text-sm font-medium">Profil</span>
 					</a>
+					<a
+						href={`/preferences/`}
+						class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1 justify-between"
+						on:click={() => (userMenuOpen = false)}
+					>
+						<Icon icon="ph:wrench" class="h-6 w-6" />
+						<span class="ml-2 text-sm font-medium">Nastavenia</span>
+					</a>
 					{#if $userState.user?.permissions.staff}
 						<a
 							href={`/admin/`}

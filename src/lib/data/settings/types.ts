@@ -2,16 +2,17 @@ export type SettingProps = {
     name: string;
     description: string;
     userEditable: boolean;
+    type: SettingValueType;
 }
 
-export type SettingValueType = boolean | string | number | null;
+export type SettingValueType = 'boolean' | 'string' | 'number';
 
-export type SettingValue<T extends SettingValueType> = {
+export type SettingValue<T> = {
     key: string;
     value: T;
 }
 
-export type Setting<T extends SettingValueType> = SettingProps & SettingValue<T>
+export type Setting<T> = SettingProps & SettingValue<T>
 
 export interface GenericSettings {
     [key: string]: Setting<any>;

@@ -1,4 +1,4 @@
-import { readable } from "svelte/store";
+import { derived, readable, type Writable } from "svelte/store";
 import type { Settings } from "./types";
 import { browser } from "$app/environment";
 import { getApiHost } from "../api";
@@ -10,6 +10,7 @@ const settings: Settings = {
         name: 'Dark mode',
         description: 'Use a dark theme for the UI',
         userEditable: true,
+        type: 'boolean',
 
         key: 'darkMode',
         value: true,
@@ -18,6 +19,7 @@ const settings: Settings = {
         name: 'Debug mode',
         description: 'Show some debug information',
         userEditable: true,
+        type: 'boolean',
 
         key: 'debugMode',
         value: false,
@@ -26,6 +28,7 @@ const settings: Settings = {
         name: 'Require login',
         description: 'Require login to use the app',
         userEditable: false,
+        type: 'boolean',
 
         key: 'requireLogin',
         value: false,
@@ -121,8 +124,6 @@ function setValue(key: string, value: any) {
     if(key in settings && !isOverridden(key)) {
         settings[key].value = value;
         updateTrigger(settings);
-    } else if(isOverridden(key)) {
-        console.warn('Attempted to set overridden setting', key);
     }
 }
 
@@ -150,5 +151,15 @@ const settingsReadable = readable(settings, (set) => {
     return () => {updateTrigger = () => {return}};
 });
 settingsReadable.subscribe(save);
+const settingsArrayReadable = derived(settingsReadable, (settings) => Object.values(settings));
+const settingsObjectReadable = derived(settingsReadable, (settings) => Object.fromEntries(Object.entries(settings).map(([key, setting]) => [key, setting.value])));
+const settingsObjectWritable = {
+    subscribe: settingsObjectReadable.subscribe,
+    set: setValues,
+    update: setValues,
+} as Writable<{[key: string]: any}>;
+
 export { settingsReadable as settings };
+export { settingsArrayReadable as settingsArray };
+export { settingsObjectWritable as settingsObject };
 export { load, save, setValue, setValues, get, getSettings, isOverridden, settingsLoaded };
