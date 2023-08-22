@@ -135,7 +135,7 @@
 	on:click={microsoftLogin}
 >
 	<img
-		src="/assets/microsoft_logo{$darkTheme ? '_dark' : ''}.svg"
+		src="/assets/logos/microsoft{$darkTheme ? '_dark' : ''}.svg"
 		alt="Microsoft logo"
 		class="w-52 h-16"
 		class:opacity-30={loginPending}
