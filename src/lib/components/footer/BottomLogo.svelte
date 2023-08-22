@@ -4,11 +4,13 @@
 </script>
 
 <div
-	class="h-56 flex w-full align-middle p-2 md:p-4 xl:p-8 bg-cover bg-center -z-50 sticky bottom-0 justify-center md:justify-between"
-	style="background-image: url('/assets/footer/background{$darkTheme ? '-dark' : ''}.jpg');"
+	class="h-56 flex w-full align-middle p-2 md:p-4 xl:p-8 cf-bg -z-50 sticky bottom-0 justify-center md:justify-between"
+	class:dark={$darkTheme}
 >
 	<div id="sponsors" class="w-full lmd:w-1/2 h-full flex flex-col m-2 xl:-mt-4">
-		<div class="flex flex-row justify-center items-center text-white font-bold text-2xl pb-2">
+		<div
+			class="flex flex-row justify-center items-center text-zinc-950 dark:text-zinc-50 font-bold text-2xl pb-2"
+		>
 			Naši sponzori:
 		</div>
 		<Sponsors />
