@@ -3,7 +3,9 @@
 </script>
 
 <div class="h-52 flex w-full align-middle justify-center fixed -z-20 cf-bg" class:dark={$darkTheme}>
-	<img src="/assets/logos/vybuch/nobg_color.svg" alt="Logo" class="-my-16" />
+	<div class="flex justify-center h-52 w-80" id="top-logo-wrap">
+		<img src="/assets/logos/vybuch/nobg_color.svg" alt="Logo" class="-my-16" id="top-logo" />
+	</div>
 </div>
 
 <div class="h-52" id="spacer" />
@@ -49,5 +51,26 @@
 		--color-2: rgb(8, 8, 8);
 		--color-3: 0, 0, 0;
 		--color-4: black;
+	}
+
+	#top-logo-wrap {
+		position: relative;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: -10;
+
+			background: radial-gradient(
+				circle,
+				rgba(var(--color-3), 0.6) 0%,
+				rgba(var(--color-3), 0.4) 50%,
+				rgba(var(--color-3), 0) 80%
+			);
+		}
 	}
 </style>
