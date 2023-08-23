@@ -92,10 +92,10 @@
 				<Taglist {discipline} class="justify-center" />
 			</div>
 		</div>
-		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-5">
+		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-2">
 			<div class="flex flex-col basis-1/2 2xl:basis-1/5 2xl:mr-5">
 				<div class="flex flex-col">
-					<span class="text-xl font-bold">Základné informácie</span>
+					<span class="text-xl font-bold">Čas a miesto</span>
 					<div class="flex flex-col space-y-1 pt-1">
 						{#if discipline.date}
 							<div class="flex flex-row space-x-1">
@@ -107,14 +107,22 @@
 								>
 							</div>
 						{/if}
-						{#if discipline.time}
+						{#if discipline.start_time}
 							<div class="flex flex-row space-x-1">
 								<Icon icon="mdi:clock-outline" />
 								<span class="text-sm"
-									>{String(discipline.time.getHours()).padStart(2, '0')}:{String(
-										discipline.time.getMinutes(),
-									).padStart(2, '0')}</span
-								>
+									>{#if discipline.end_time}
+										{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+											discipline.start_time.getMinutes(),
+										).padStart(2, '0')}&nbsp;-&nbsp;{String(
+											discipline.end_time.getHours(),
+										).padStart(2, '0')}:{String(discipline.end_time.getMinutes()).padStart(2, '0')}
+									{:else}
+										{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+											discipline.start_time.getMinutes(),
+										).padStart(2, '0')}
+									{/if}
+								</span>
 							</div>
 						{/if}
 						{#if discipline.location}
@@ -123,8 +131,8 @@
 								<span class="text-sm">{discipline.location}</span>
 							</div>
 						{/if}
-						{#if !(discipline.date || discipline.time || discipline.location)}
-							<div class="text-amber-500 font-bold">Žiadne informácie neboli nájdené</div>
+						{#if !(discipline.date || discipline.start_time || discipline.location)}
+							<div class="text-amber-500 font-bold">Informácie neboli nájdené</div>
 						{/if}
 					</div>
 				</div>
