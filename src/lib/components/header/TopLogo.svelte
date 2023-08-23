@@ -4,7 +4,7 @@
 
 <div class="h-52 flex w-full align-middle justify-center fixed -z-20 cf-bg" class:dark={$darkTheme}>
 	<div class="flex justify-center h-52 w-80" id="top-logo-wrap">
-		<img src="/assets/logos/vybuch/nobg_color.svg" alt="Logo" class="-my-16" id="top-logo" />
+		<img src="/assets/logos/vybuch/nobg_color.svg" alt="Logo" class="-my-10" id="top-logo" />
 	</div>
 </div>
 
@@ -16,6 +16,7 @@
 		--color-2: rgb(247, 247, 247);
 		--color-3: 255, 255, 255;
 		--color-4: white;
+		--opacity-modifier: 0.2;
 
 		background-size: 100% 100%, 20px 20px, 20px 20px, 20px 10px;
 		background-position: 0px 0px, 0px 0px, 10px 10px, 0px 0px;
@@ -51,6 +52,7 @@
 		--color-2: rgb(8, 8, 8);
 		--color-3: 0, 0, 0;
 		--color-4: black;
+		--opacity-modifier: 0;
 	}
 
 	#top-logo-wrap {
@@ -67,9 +69,10 @@
 
 			background: radial-gradient(
 				circle,
-				rgba(var(--color-3), 0.6) 0%,
-				rgba(var(--color-3), 0.4) 50%,
-				rgba(var(--color-3), 0) 80%
+				rgba(var(--color-3), calc(0.6 + var(--opacity-modifier))) 0%,
+				rgba(var(--color-3), calc(0.4 + var(--opacity-modifier))) 60%,
+				rgba(var(--color-3), 0.1) 90%,
+				rgba(var(--color-3), 0) 100%
 			);
 		}
 	}
