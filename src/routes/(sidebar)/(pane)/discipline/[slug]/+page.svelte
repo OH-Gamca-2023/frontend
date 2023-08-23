@@ -4,7 +4,6 @@
 	import '../../../../../markdown.css'
 
 	import { disciplines } from '$lib/api/models'
-	import type { Discipline } from '$lib/types'
 	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
@@ -14,7 +13,7 @@
 
 	export let data: PageData
 
-	$: discipline = $disciplines[data.disciplineId] as Discipline | undefined
+	$: discipline = $disciplines[data.disciplineId]
 
 	if (!discipline) disciplines.loadSingle(data.disciplineId)
 
@@ -74,6 +73,15 @@
 
 <div class="w-full flex flex-col">
 	{#if discipline}
+		{#if !discipline.fromServer}
+			<div
+				class="flex flex-row items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
+				bg-yellow-100 border-yellow-400"
+			>
+				<Icon icon="mdi:alert-circle-outline" class="w-5 h-5 md:w-6 md:h-6" />
+				<span class="text-sm font-medium">Informácie o disciplíne môžu byť neaktuálne</span>
+			</div>
+		{/if}
 		<div class="flex flex-row justify-center items-center pb-5">
 			<div class="flex flex-col justify-center items-center">
 				<span class="text-3xl font-bold pb-1">{discipline.name}</span>
@@ -112,9 +120,7 @@
 							</div>
 						{/if}
 						{#if !(discipline.date || discipline.time || discipline.location)}
-							<div class="text-amber-500 text-lg font-bold text-center">
-								Žiadne informácie neboli nájdené
-							</div>
+							<div class="text-amber-500 font-bold">Žiadne informácie neboli nájdené</div>
 						{/if}
 					</div>
 				</div>
@@ -128,13 +134,11 @@
 								/>
 							{:then resultResponse}
 								{#if resultResponse.error}
-									<div class="text-red-500 text-lg font-bold text-center">
+									<div class="text-red-500 font-bold">
 										Nastala chyba pri načítavaní výsledkov ({resultResponse.status})
 									</div>
 								{:else if !resultResponse.data || resultResponse.data.length === 0}
-									<div class="text-amber-500 text-lg font-bold text-center">
-										Žiadne výsledky neboli nájdené
-									</div>
+									<div class="text-amber-500 font-bold">Žiadne výsledky neboli nájdené</div>
 								{:else}
 									<div
 										class="flex flex-col divide-y-4 divide-zinc-200 dark:divide-slate-500 divide-dotted"
