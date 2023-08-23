@@ -82,6 +82,10 @@
 	let hintOpen = false
 </script>
 
+<svelte:head>
+	<title>Šifra {id} &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col space-y-2 w-full">
 	{#await ciphers.load()}
 		<div class="flex flex-row justify-center items-center space-x-2">
@@ -226,7 +230,6 @@
 				<div
 					class="flex flex-col p-5 flex-1 order-4 2xl:order-2 border-t basis-full 2xl:basis-2/5 border-gray-300 pt-4 mt-4 dark:border-gray-500 md:border-t-0 md:pt-3 md:mt-0"
 				>
-					<span class="text-xl font-bold pb-5">Zadanie</span>
 					<CipherTask {cipher} />
 				</div>
 				<div

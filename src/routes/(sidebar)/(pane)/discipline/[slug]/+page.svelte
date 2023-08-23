@@ -71,6 +71,10 @@
 		: undefined
 </script>
 
+<svelte:head>
+	<title>{discipline?.name ?? 'Disciplína'} &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="w-full flex flex-col">
 	{#if discipline}
 		{#if !discipline.fromServer}
@@ -173,7 +177,7 @@
 												</div>
 												<div class="border-t border-zinc-200 dark:border-slate-500 pt-1 mt-1">
 													<a
-														href="/results"
+														href="/discipline/{discipline.id}/results/"
 														class="text-lg font-bold text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
 														>Kompletné výsledky</a
 													>
@@ -184,7 +188,7 @@
 								{/if}
 							{/await}
 						{:else}
-							<div class="text-red-500 text-xl font-bold text-center">
+							<div class="text-red-500 text-lg font-bold text-center">
 								Stránka sa dostala do neplatného stavu
 							</div>
 						{/if}

@@ -14,6 +14,12 @@
 	let resultPromise = getDisciplineResults(data.disciplineId)
 </script>
 
+<svelte:head>
+	<title
+		>{discipline ? 'Výsledky: ' + discipline.name : 'Výsledky disciplíny'} &centerdot; OH Gamča 2023</title
+	>
+</svelte:head>
+
 <div class="w-full flex flex-col">
 	{#if discipline}
 		{#if !discipline.fromServer}

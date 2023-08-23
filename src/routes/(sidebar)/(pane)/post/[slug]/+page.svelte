@@ -23,6 +23,10 @@
 	$: authorFullName = post?.author.first_name + ' ' + post?.author.last_name
 </script>
 
+<svelte:head>
+	<title>Príspevok &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="w-full flex flex-col">
 	{#if post}
 		{#if !post.fromServer}

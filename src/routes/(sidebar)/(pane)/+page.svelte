@@ -10,6 +10,10 @@
 		.slice(0, 5)
 </script>
 
+<svelte:head>
+	<title>OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col gap-5 w-full">
 	<div class="flex flex-col w-full">
 		<div class="flex flex-col justify-between items-center w-full">
