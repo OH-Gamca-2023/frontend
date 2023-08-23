@@ -23,7 +23,7 @@ export interface Cipher {
 		after_hint: boolean
 		attempts: number
 	} | null
-	submissions: Submission[]
+	submissions: Promise<Submission[]>
 }
 
 export interface Submission {

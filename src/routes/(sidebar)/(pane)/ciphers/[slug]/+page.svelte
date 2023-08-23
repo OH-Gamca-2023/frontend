@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition'
-	import type { Cipher } from '$lib/types/ciphers'
+	import type { Cipher, Submission } from '$lib/types/ciphers'
 	import Icon from '$lib/components/Icon.svelte'
-	import { ciphers, loadCipherSubmissions } from '$lib/api/models/ciphers'
+	import { ciphers, updateCipherSubmissions } from '$lib/api/models/ciphers'
 	import type { PageData } from './$types'
 	import { userState } from '$lib/state'
 	import timeAgo from '$lib/utils/timeago'
@@ -27,15 +27,20 @@
 			: 'none'
 	$: statusData = cipher && $userState.loggedIn && solving !== 'none' ? cipher.data : undefined
 
-	$: solved = cipher?.submissions.some((s) => s.correct)
+	let submissions = [] as Submission[]
+	$: {
+		cipher?.submissions.then((s) => (submissions = s))
+	}
+
+	$: solved = submissions.some((s) => s.correct)
 	$: nextSubmitTime =
-		!cipher || cipher.submissions.length === 0
+		!cipher || submissions.length === 0
 			? 0
-			: cipher.submissions[0].time.getTime() +
+			: submissions[0].time.getTime() +
 			  1000 * cipher.submission_delay * (solving == 'individual' ? 2 : 1)
 	$: canSubmit =
 		!solved &&
-		(!cipher ? false : cipher.submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
+		(!cipher ? false : submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
 
 	let submitting = false
 	let answer = ''
@@ -56,7 +61,7 @@
 		submitting = true
 		const resp = await submitCipherSolution(cipher.id, answer)
 		if (!resp.error) {
-			await loadCipherSubmissions(cipher)
+			await updateCipherSubmissions(cipher.id)
 			answer = ''
 			toast({ type: 'success', title: 'Odpoveď bola odoslaná', duration: 5000 })
 			submitting = false
@@ -280,51 +285,66 @@
 												>Dátum a čas</span
 											>
 										</div>
-										{#each cipher.submissions as submission, i}
+										{#await cipher.submissions}
 											<div
-												class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
+												class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative"
+											/>
+										{:then asubmissions}
+											{#each asubmissions as submission, i}
+												<div
+													class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
 												border-b border-gray-300 dark:border-gray-500"
-												class:bg-green-500={submission.correct}
-												class:bg-red-500={!submission.correct}
-												class:rounded-b-md={i === cipher.submissions.length - 1}
-											>
-												<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
-													>{submission.answer}</span
+													class:bg-green-500={submission.correct}
+													class:bg-red-500={!submission.correct}
+													class:rounded-b-md={i === asubmissions.length - 1}
 												>
-												<span class="text-sm 2xl:text-md font-bold">
-													{#if submission.after_hint}
-														<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
-													{:else}
-														<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-gray-500" />
-													{/if}
-												</span>
-												<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
-													<span class="pr-1"
-														>{String(submission.time.getDate()).padStart(2, '0')}. {String(
-															submission.time.getMonth() + 1,
-														).padStart(2, '0')}.</span
+													<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
+														>{submission.answer}</span
 													>
-													<span
-														>{String(submission.time.getHours()).padStart(2, '0')}:{String(
-															submission.time.getMinutes(),
-														).padStart(2, '0')}</span
-													>
-												</span>
-											</div>
-										{:else}
+													<span class="text-sm 2xl:text-md font-bold">
+														{#if submission.after_hint}
+															<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
+														{:else}
+															<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-gray-500" />
+														{/if}
+													</span>
+													<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
+														<span class="pr-1"
+															>{String(submission.time.getDate()).padStart(2, '0')}. {String(
+																submission.time.getMonth() + 1,
+															).padStart(2, '0')}.</span
+														>
+														<span
+															>{String(submission.time.getHours()).padStart(2, '0')}:{String(
+																submission.time.getMinutes(),
+															).padStart(2, '0')}</span
+														>
+													</span>
+												</div>
+											{:else}
+												<div
+													class="flex flex-row justify-between items-center bg-opacity-40 p-2
+												border-b border-gray-300 dark:border-gray-500"
+												>
+													<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
+												</div>
+											{/each}
+										{:catch error}
 											<div
 												class="flex flex-row justify-between items-center bg-opacity-40 p-2
 												border-b border-gray-300 dark:border-gray-500"
 											>
-												<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
+												<i class="text-red-700 dark:text-red-500"
+													>Nastala chyba pri načítavaní odoslaných riešení</i
+												>
 											</div>
-										{/each}
+										{/await}
 									</div>
 								</div>
 								<div class="flex flex-col">
 									<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
 									<form>
-										<label for="answer" class="text-md font-bold text-red-500 dark:text-red-400">
+										<label for="answer" class="text-sm font-bold text-red-500 dark:text-red-400">
 											{#if !canSubmit && solved}
 												Nemôžete odoslať ďalšie riešenie,<br />keďže ste už šifru vyriešili.
 											{:else if !canSubmit && nextSubmitTime}
