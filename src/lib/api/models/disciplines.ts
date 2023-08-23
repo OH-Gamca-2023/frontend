@@ -55,7 +55,7 @@ class DisciplineModel extends PartialModel<Discipline> {
 					},
 				} as Discipline
 			},
-			false,
+			true,
 			[tags, categories, grades],
 			true,
 		)

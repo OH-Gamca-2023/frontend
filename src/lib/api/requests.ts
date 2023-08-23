@@ -125,7 +125,7 @@ export async function makeApiRequest<T>(
 		console.warn('Connection error', e)
 	}
 	return {
-		status: 500,
+		status: 599,
 		error: true,
 		data: {
 			error: 'Connection error',
