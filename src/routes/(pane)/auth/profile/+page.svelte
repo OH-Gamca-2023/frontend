@@ -30,6 +30,7 @@
 			email = $userState.user?.email ?? ''
 			username = $userState.user?.username ?? ''
 			phone = $userState.user?.phone_number ?? ''
+			discord_id = $userState.user?.discord_id ?? ''
 		} else {
 			title = 'Profil · Neprihlásený'
 		}
@@ -40,6 +41,7 @@
 	let email = ''
 	let username = ''
 	let phone = ''
+	let discord_id = ''
 
 	let savingProfile = false
 
@@ -107,6 +109,17 @@
 				changes.phone_number = phone
 			}
 		}
+
+		if (discord_id !== $userState.user?.discord_id) {
+			if (!editPermissions.discord_id) {
+				errorToast('Nemáte oprávnenie zmeniť ID Discord účtu')
+				return
+			} else {
+				console.log('discord_id', discord_id)
+				changes.discord_id = discord_id
+			}
+		}
+		console.log(discord_id, $userState.user?.discord_id, changes)
 
 		savingProfile = true
 
@@ -319,6 +332,16 @@
 				</div>
 				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
 					<div class="flex flex-col">
+						<span class="text-md font-medium pb-1"> ID Discord účtu </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							type="text"
+							autocomplete="off"
+							disabled={!editPermissions.discord_id}
+							bind:value={discord_id}
+						/>
+					</div>
+					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 						<span class="text-md font-medium pb-1"> Microsoft účet </span>
 						<input
 							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
