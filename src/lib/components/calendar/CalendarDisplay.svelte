@@ -27,7 +27,7 @@
 
 <div class="calendar" use:clickOutside={() => dispatch('clickOutside')} class:dark={$darkTheme}>
 	{#each usedHeaders as header}
-		<span class="day-name" class:dark={$darkTheme}>{header}</span>
+		<span class="day-name text-red-400" class:dark={$darkTheme}>{header}</span>
 	{/each}
 	{#each days as day, index}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -84,50 +84,6 @@
 </div>
 
 <style lang="scss">
-	.day {
-		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-		border-right: 1px solid rgba(166, 168, 179, 0.12);
-		color: #98a0a6;
-		background-color: white;
-
-		&.dark {
-			color: #ccd3d8;
-			background-color: #374151;
-			border-color: rgba(255, 255, 255, 0.148);
-		}
-	}
-
-	.day-name {
-		color: #e9a1a7;
-		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-		background-color: white;
-		display: none;
-
-		&.dark {
-			background-color: #374151;
-			color: #f36974;
-		}
-
-		@media (max-width: 1100px) {
-			display: block;
-		}
-	}
-
-	.day-disabled {
-		&::after {
-			cursor: not-allowed;
-			background-color: rgba(152, 160, 166, 0.2);
-		}
-	}
-
-	.task.task-disabled {
-		.task-hover-overlay {
-			cursor: not-allowed;
-			background-color: rgba(152, 160, 166, 0.4) !important;
-			opacity: 1 !important;
-		}
-	}
-
 	.day-today {
 		color: #767c81;
 
@@ -243,6 +199,15 @@
 		-ms-user-select: none;
 		user-select: none;
 
+		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
+		border-right: 1px solid rgba(166, 168, 179, 0.12);
+		color: #98a0a6;
+
+		&.dark {
+			color: #ccd3d8;
+			border-color: rgba(255, 255, 255, 0.148);
+		}
+
 		.day-text {
 			z-index: 1;
 			position: relative;
@@ -295,15 +260,20 @@
 	.day-name {
 		font-size: 12px;
 		text-transform: uppercase;
-		color: #e9a1a7;
 		text-align: center;
-		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
 		line-height: 50px;
 		font-weight: 500;
 
 		-webkit-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
+
+		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
+		display: none;
+
+		@media (max-width: 1100px) {
+			display: block;
+		}
 	}
 
 	.day-tasks {
@@ -400,6 +370,21 @@
 			width: 100%;
 			height: 100%;
 			z-index: 5;
+		}
+	}
+
+	.day-disabled {
+		&::after {
+			cursor: not-allowed;
+			background-color: rgba(152, 160, 166, 0.2);
+		}
+	}
+
+	.task.task-disabled {
+		.task-hover-overlay {
+			cursor: not-allowed;
+			background-color: rgba(152, 160, 166, 0.4) !important;
+			opacity: 1 !important;
 		}
 	}
 </style>

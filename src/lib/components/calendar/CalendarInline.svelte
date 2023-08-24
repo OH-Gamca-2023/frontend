@@ -126,16 +126,7 @@
 					class:today={day.today}
 					on:click={() => dayClick(day)}
 				>
-					{#if day.name.split(' ').length == 1}
-						<span class="i-day-number">{day.name.split(' ')[0]} </span>
-					{:else}
-						<span class="i-day-month-name" class:ln={day.name.split(' ')[1].length > 1}
-							>{day.name.split(' ')[0]}
-						</span>
-						<span class="i-day-number has-mn" class:ln={day.name.split(' ')[1].length > 1}
-							>{day.name.split(' ')[1]}
-						</span>
-					{/if}
+					<span class="i-day-number">{day.name.split(' ').slice(-1)[0]}</span>
 					<div
 						class="i-event-indicators"
 						style="--indicators: {perDayItems[index].length}; --m-multiple: {perDayItems[index]
