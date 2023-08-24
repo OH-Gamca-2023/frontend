@@ -56,7 +56,11 @@ sw.addEventListener('fetch', (event) => {
 		const cache = await caches.open(CACHE_NAME)
 
 		if (CACHE_FILES.includes(url.pathname)) {
-			return (await cache.match(url.pathname)) || Response.error()
+			const response = await cache.match(event.request)
+			if (response) return response
+			
+			console.error("SW cache error")
+			return Response.error()
 		}
 
 		try {
@@ -66,7 +70,10 @@ sw.addEventListener('fetch', (event) => {
 			}
 			return response
 		} catch (error) {
-			return (await cache.match(event.request)) || Response.error()
+			const resp = (await cache.match(event.request))
+			if (resp) return resp
+			console.error("SW fetch error: ", error)
+			return Response.error()
 		}
 	}
 
