@@ -227,18 +227,18 @@
 	<title>{title}</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 pb-2">Profil</h1>
+<h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-200 pb-2">Profil</h1>
 
 {#await userState.loaded}
 	<div class="flex justify-center items-center pt-5">
 		<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
-		<h3 class="text-gray-800 dark:text-gray-200 pl-5">Načítavam...</h3>
+		<h3 class="text-neutral-800 dark:text-neutral-200 pl-5">Načítavam...</h3>
 	</div>
 {:then}
 	{#if $userState.loggedIn}
 		<div class="pb-4 flex" />
 		<div
-			class="flex flex-col text-gray-800 dark:text-gray-200 divide-y divide-gray-300 dark:divide-gray-600"
+			class="flex flex-col text-neutral-800 dark:text-neutral-200 divide-y divide-neutral-300 dark:divide-neutral-600"
 		>
 			<div class="flex flex-row items-center justify-center pb-2">
 				<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="w-16 h-16 mr-2" />
@@ -254,7 +254,7 @@
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Meno </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 							type="text"
 							autocomplete="given-name"
 							disabled={!editPermissions.first_name}
@@ -264,7 +264,7 @@
 					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 						<span class="text-md font-medium pb-1"> Priezvisko </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 							type="text"
 							autocomplete="family-name"
 							disabled={!editPermissions.last_name}
@@ -276,7 +276,7 @@
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Email </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 							type="text"
 							autocomplete="email"
 							disabled={!editPermissions.email}
@@ -286,7 +286,7 @@
 					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 						<span class="text-md font-medium pb-1"> Používateľské meno </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 							type="text"
 							autocomplete="username"
 							disabled={!editPermissions.username}
@@ -298,7 +298,7 @@
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Telefónne číslo </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed w-auto"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed w-auto"
 							type="tel"
 							autocomplete="tel"
 							disabled={!editPermissions.phone_number}
@@ -308,7 +308,7 @@
 					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 						<span class="text-md font-medium pb-1"> Trieda </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 							type="text"
 							autocomplete="off"
 							value={($userState.user?.clazz?.name ?? '') +
@@ -321,7 +321,7 @@
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Microsoft účet </span>
 						<input
-							class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 							type="text"
 							autocomplete="off"
 							value={$userState.user?.microsoft_user ?? ''}
@@ -342,8 +342,9 @@
 					{#if Object.values(editPermissions).some((x) => x)}
 						<div class="flex flex-row items-center justify-center">
 							<button
-								class="flex flex-row items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
-								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700"
+								class="flex flex-row items-center justify-center bg-green-500
+								dark:bg-greean-600 hover:bg-green-600 text-zinc-100 font-bold py-2 px-4 rounded mt-4
+								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700 shadow-md"
 								on:click={saveProfile}
 								disabled={savingProfile}
 							>
@@ -361,7 +362,7 @@
 			</form>
 			<form>
 				<div class="flex flex-col items-center justify-center pt-5 pb-2">
-					<h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 pb-2">Zmena hesla</h2>
+					<h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-200 pb-2">Zmena hesla</h2>
 					<div class="flex flex-col md:flex-row items-start justify-center pb-2">
 						<div class="flex flex-col">
 							<input
@@ -373,13 +374,13 @@
 							/>
 							<span class="text-md font-medium pb-1"> Staré heslo </span>
 							<input
-								class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+								class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 								type="password"
 								autocomplete="current-password"
 								disabled={!editPermissions.password || !$userState.user?.has_password}
 								bind:value={oldPassword}
 							/>
-							<span class="text-xs md:text-sm font-medium text-gray-500 dark:text-gray-400">
+							<span class="text-xs md:text-sm font-medium text-neutral-500 dark:text-neutral-400">
 								{#if $userState.user?.has_password}
 									Zadajte staré heslo, ak chcete zmeniť heslo.
 								{:else}
@@ -390,7 +391,7 @@
 						<div class="flex flex-col mt-2 md:mt-0 md:ml-4 justify-start">
 							<span class="text-md font-medium pb-1"> Nové heslo </span>
 							<input
-								class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+								class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 								type="password"
 								autocomplete="new-password"
 								disabled={!editPermissions.password}
@@ -399,7 +400,7 @@
 							<div class="pb-2" />
 							<span class="text-md font-medium pb-1"> Nové heslo znova </span>
 							<input
-								class="text-lg font-bold pl-2 rounded bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 disabled:cursor-not-allowed"
+								class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
 								type="password"
 								autocomplete="new-password"
 								disabled={!editPermissions.password}
@@ -414,8 +415,8 @@
 					{:else}
 						<div class="flex flex-row items-center justify-center pb-2">
 							<button
-								class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
-								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700"
+								class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-zinc-100 font-bold py-2 px-4 rounded mt-4
+								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700 shadow-md"
 								on:click={changePassword}
 								disabled={changingPassword}
 							>
@@ -434,8 +435,8 @@
 			<div class="flex flex-col items-center justify-center pt-3">
 				<span class="text-lg font-bold pb-3"> Odhlásiť sa zo všetkých zariadení </span>
 				<button
-					class="flex flex-row items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ml-2
-					disabled:bg-red-400 disabled:hover:bg-red-400 dark:disabled:bg-red-700 dark:disabled:hover:bg-red-700"
+					class="flex flex-row items-center justify-center bg-red-500 hover:bg-red-600 text-zinc-100 font-bold py-2 px-4 rounded ml-2
+					disabled:bg-red-400 disabled:hover:bg-red-400 dark:disabled:bg-red-700 dark:disabled:hover:bg-red-700 shadow-md"
 					on:click={logoutAll}
 					disabled={loggingOutAll}
 				>
@@ -450,7 +451,7 @@
 			</div>
 		</div>
 	{:else}
-		<h3 class="text-gray-800 dark:text-gray-200 pb-4">Neprihlásený</h3>
+		<h3 class="text-neutral-800 dark:text-neutral-200 pb-4">Neprihlásený</h3>
 		<a
 			class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
 			href="/auth/login">Prihlásiť</a

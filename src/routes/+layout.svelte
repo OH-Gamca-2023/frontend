@@ -56,22 +56,25 @@
 	</ToastContainer>
 
 	{#if $settings.debugMode.value}
-		<div class="fixed bottom-0 right-1/2 transform translate-x-1/2 flex flex-col items-center z-50">
-			<div class="text-xs text-gray-400">
+		<div
+			class="fixed bottom-0 right-1/2 transform translate-x-1/2 flex flex-col items-center z-50
+					text-neutral-800 dark:text-neutral-400"
+		>
+			<div class="text-xs">
 				Debug Mode Enabled {isOverridden('debugMode') ? '(Overriden)' : ''}
 			</div>
-			<div class="text-xs text-gray-400">
+			<div class="text-xs">
 				Ld {$userState.loading ? '1' : '0'} | L {$userState.loggedIn ? '1' : '0'} | U
 				{$userState.user ? $userState.user.id : 'null'} | T {$userState.user
 					? $userState.user.type
 					: 'null'}
 			</div>
-			<div class="text-xs text-gray-400">
+			<div class="text-xs">
 				{$page.url.pathname} | P {Object.keys($page.params).length > 0
 					? Object.keys($page.params).map((k) => `${k}: ${$page.params[k]}`)
 					: 'null'}
 			</div>
-			<div class="text-xs text-gray-400">
+			<div class="text-xs">
 				G {#await grades.load()}...{:then}{Object.keys($grades).length}{:catch}e{/await}
 				| Cl {#await clazzes.load()}...{:then}{Object.keys($clazzes).length}{:catch}e{/await}
 				| T {#await tags.load()}...{:then}{Object.keys($tags).length}{:catch}e{/await}

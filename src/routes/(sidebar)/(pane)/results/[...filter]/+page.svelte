@@ -58,7 +58,7 @@
 {#each disciplines as discipline}
 	<a
 		href="/discipline/{discipline.id}/results"
-		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-col"
+		class="border-b border-neutral-400 dark:border-neutral-500 border-dotted flex py-2 w-full flex-col"
 	>
 		<div class="flex justify-between">
 			<h3 class="text-lg font-semibold">{discipline.name}</h3>

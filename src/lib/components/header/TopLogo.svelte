@@ -16,7 +16,7 @@
 		--color-2: rgb(247, 247, 247);
 		--color-3: 255, 255, 255;
 		--color-4: white;
-		--opacity-modifier: 0.2;
+		--opacity-modifier: 0.1;
 
 		background-size: 100% 100%, 20px 20px, 20px 20px, 20px 10px;
 		background-position: 0px 0px, 0px 0px, 10px 10px, 0px 0px;
@@ -55,25 +55,15 @@
 		--opacity-modifier: 0;
 	}
 
-	#top-logo-wrap {
-		position: relative;
-
-		&::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			z-index: -10;
-
-			background: radial-gradient(
-				circle,
-				rgba(var(--color-3), calc(0.6 + var(--opacity-modifier))) 0%,
-				rgba(var(--color-3), calc(0.4 + var(--opacity-modifier))) 60%,
-				rgba(var(--color-3), 0.1) 90%,
-				rgba(var(--color-3), 0) 100%
-			);
-		}
+	#top-logo {
+		background: radial-gradient(
+			circle,
+			rgba(var(--color-3), calc(0.7 + var(--opacity-modifier))) 0%,
+			rgba(var(--color-3), calc(0.4 + var(--opacity-modifier))) 50%,
+			rgba(var(--color-3), 0.1) 65%,
+			rgba(var(--color-3), 0) 60%
+		);
+		background-position: -22px -10px;
+		background-repeat: no-repeat;
 	}
 </style>

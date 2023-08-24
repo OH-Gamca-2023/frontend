@@ -18,8 +18,8 @@ module.exports = {
 				lmd: '860px',
 			},
 			colors: {
-				gray: {
-					950: '#030712',
+				zinc: {
+					350: '#c3c3ca',
 				},
 			},
 		},

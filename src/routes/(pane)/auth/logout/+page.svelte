@@ -42,8 +42,8 @@
 	<title>Odhlásenie</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 pb-2">Odhlásenie</h1>
+<h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-200 pb-2">Odhlásenie</h1>
 
 <h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
 
-<h4 class="text-gray-800 dark:text-gray-200 pb-4">{message}</h4>
+<h4 class="text-neutral-800 dark:text-neutral-200 pb-4">{message}</h4>

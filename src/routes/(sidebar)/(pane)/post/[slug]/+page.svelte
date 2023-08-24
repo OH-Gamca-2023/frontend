@@ -57,7 +57,7 @@
 		<div id="content" class="markdown" class:dark={$darkTheme}>
 			{#if post.redirect}
 				<div class="flex flex-col items-center justify-center w-full h-12 relative mt-6">
-					<div class="absolute bg-gray-200 dark:bg-slate-600 rounded animate-pulse w-full h-12" />
+					<div class="absolute bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse w-full h-12" />
 					<span class="text-lg font-bold z-10">Prebieha presmerovanie...</span>
 				</div>
 			{:else}
@@ -65,6 +65,6 @@
 			{/if}
 		</div>
 	{:else}
-		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
+		<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />
 	{/if}
 </div>

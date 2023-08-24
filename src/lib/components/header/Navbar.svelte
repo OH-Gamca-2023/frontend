@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { darkTheme, setValue, settings } from '$lib/data/settings'
+	import { setValue, settings } from '$lib/data/settings'
 	import { categories } from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'
@@ -18,10 +18,10 @@
 
 <navbar
 	class="h-14 p-2 flex flex-row
-        bg-gradient-to-b from-gray-100 to-gray-200
-        dark:from-gray-800 dark:to-gray-900
-        border-b border-gray-300 dark:border-gray-700
-        text-gray-800 dark:text-gray-200 pl-4 pr-4
+        bg-gradient-to-b from-zinc-100 to-zinc-200
+        dark:from-zinc-800 dark:to-zinc-900
+        border-b border-zinc-300 dark:border-zinc-700
+        text-zinc-800 dark:text-zinc-200 pl-4 pr-4
         shadow-md sticky top-0 z-50"
 >
 	<div id="computer" class="hidden lmd:flex flex-row items-center justify-between flex-1 w-full">
@@ -33,12 +33,12 @@
 			</div>
 			<div
 				id="links"
-				class="flex flex-row justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-gray-300 dark:divide-gray-700 divide-x"
+				class="flex flex-row justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-zinc-300 dark:divide-zinc-700 divide-x"
 			>
 				<div>
 					<a
 						href="/news"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
 					>
 						<Icon icon="tabler:news" class="h-6 w-6" />
 						<span>Novinky</span>
@@ -66,15 +66,15 @@
 						{#if categoriesOpen}
 							<div
 								class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
-								from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
-								bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
+								from-zinc-200 to-zinc-300 dark:from-zinc-900 dark:to-zinc-950 z-10
+								bg-gradient-to-b border border-zinc-300 dark:border-zinc-700 border-t-0"
 								style="top: -1px"
 								transition:slide={{ duration: 500 }}
 							>
 								{#each categoriesIterable as category}
 									<a
 										href={`/disciplines/categories/${category.id}`}
-										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
+										class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md p-1"
 									>
 										<span>{category.name}</span>
 									</a>
@@ -86,7 +86,7 @@
 				<div>
 					<a
 						href="/results"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
 						<span>Výsledky</span>
@@ -95,7 +95,7 @@
 				<div>
 					<a
 						href="/calendar"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
 						<span>Kalendár</span>
@@ -104,7 +104,7 @@
 				<div>
 					<a
 						href="/ciphers"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
 					>
 						<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
 						<span>Šifrovačka</span>
@@ -115,7 +115,7 @@
 		<div
 			id="right"
 			class="flex flex-row items-center justify-end divide-x
-				divide-gray-300 dark:divide-gray-700
+				divide-zinc-300 dark:divide-zinc-700
 				[&>*]:pr-2 [&>*]:pl-2"
 		>
 			<UserMenu />
@@ -137,11 +137,8 @@
 		<button
 			id="hamburger"
 			class="flex flex-row items-center justify-start
-							bg-gradient-to-br from-gray-200 to-zinc-200
-							dark:from-gray-800 dark:to-slate-800
-							border border-gray-300 dark:border-gray-700
-							text-gray-800 dark:text-gray-200
-							shadow-inner rounded-md py-1 px-2"
+				   bg-gradient-to-br border border-zinc-300
+				   dark:border-zinc-700 shadow-inner rounded-md py-1 px-2"
 			on:click={() => (sidebarOpen = !sidebarOpen)}
 		>
 			<Hamburger open={sidebarOpen} class="h-6 w-6" />
@@ -149,7 +146,7 @@
 		<div
 			id="right"
 			class="flex flex-row items-center justify-end divide-x
-				divide-gray-300 dark:divide-gray-700
+				divide-zinc-300 dark:divide-zinc-700
 				[&>*]:pr-2 [&>*]:pl-2"
 		>
 			<UserMenu />
@@ -161,12 +158,11 @@
 		<div
 			id="sidebar"
 			class="h-min w-full left-0 z-50
-				bg-gradient-to-br from-gray-200 to-zinc-200
-				dark:from-gray-800 dark:to-slate-800
-				text-gray-800 dark:text-gray-200
-				shadow-md sticky top-0 flex flex-col justify-start items-start
+				bg-gradient-to-br bg-zinc-200 dark:bg-zinc-800
+				text-zinc-800 dark:text-zinc-200 shadow-md
+				sticky top-0 flex flex-col justify-start items-start
 				[&>*]:w-full [&>*]:py-3 [&>*]:px-4 divide-y
-				divide-gray-300 dark:divide-gray-700"
+				divide-zinc-300 dark:divide-zinc-700"
 			transition:slide
 		>
 			<div class="flex flex-row justify-between">
@@ -218,7 +214,7 @@
 					<div class="flex flex-col space-y-2" transition:slide>
 						<div
 							class="pt-2 px-8 divide-y
-							divide-gray-300 dark:divide-gray-700"
+							divide-zinc-300 dark:divide-zinc-700"
 						>
 							{#each categoriesIterable as category}
 								<a

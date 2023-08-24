@@ -123,12 +123,12 @@
 	<h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
 {/if}
 
-<h4 class="text-gray-800 dark:text-gray-100 pb-4">Vyberte si spôsob prihlásenia</h4>
+<h4 class="text-neutral-800 dark:text-neutral-100 pb-4">Vyberte si spôsob prihlásenia</h4>
 <button
 	id="microsoft-login"
 	class="flex flex-row items-center justify-center
-                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2 mb-6
-                    hover:bg-gray-200 dark:hover:bg-gray-900 relative"
+			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-lg px-4 py-2 mb-6
+			hover:bg-neutral-200 dark:hover:bg-neutral-900 relative"
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
@@ -147,7 +147,7 @@
 				<div class="ml-4 flex flex-col">
 					<span>{loginStatus}</span>
 					{#if $settings.debugMode.value}
-						<span class="text-xs text-gray-600 dark:text-gray-300">{statusDetails}</span>
+						<span class="text-xs text-neutral-600 dark:text-neutral-300">{statusDetails}</span>
 					{/if}
 				</div>
 			{/if}
@@ -157,23 +157,26 @@
 <a
 	id="password-login"
 	class="flex flex-row items-center justify-center font-semibold w-full
-                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
-                    hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer mb-3"
+			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-lg px-4 py-2
+			hover:bg-neutral-200 dark:hover:bg-neutral-900 cursor-pointer mb-3"
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
 	href="/auth/login/password"
 >
 	<Icon icon="mdi:key" class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}" />
-	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
+	<h4
+		class="text-neutral-800 dark:text-neutral-200 text-sm md:text-md"
+		class:opacity-30={loginPending}
+	>
 		Prihlásiť sa pomocou hesla
 	</h4>
 </a>
 <a
 	id="admin-login"
 	class="flex flex-row items-center justify-center w-full
-                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
-                    hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer"
+			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-lg px-4 py-2
+			hover:bg-neutral-200 dark:hover:bg-neutral-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
@@ -184,7 +187,10 @@
 		icon="material-symbols:admin-panel-settings"
 		class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}"
 	/>
-	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
+	<h4
+		class="text-neutral-800 dark:text-neutral-200 text-sm md:text-md"
+		class:opacity-30={loginPending}
+	>
 		Prihlásiť sa ako administrátor
 	</h4>
 </a>

@@ -51,17 +51,17 @@
 			<input
 				type="text"
 				id="search"
-				class="bg-gray-200 dark:bg-slate-800 disabled:bg-gray-400 disabled:dark:bg-gray-500 rounded-md p-2
-				flex-1 placeholder-gray-600 dark:placeholder-gray-400 pl-11"
+				class="bg-neutral-200 dark:bg-zinc-800 disabled:bg-neutral-400 disabled:dark:bg-neutral-500 rounded-md p-2
+				flex-1 placeholder-neutral-600 dark:placeholder-neutral-400 pl-11"
 				bind:value={searchQuery}
 				placeholder="Vyhľadávanie"
 			/>
 			<Icon
 				icon="material-symbols:search"
-				class="absolute h-7 w-7 left-[4.5rem] top-2 rounded-sm dark:text-gray-400 text-gray-600"
+				class="absolute h-7 w-7 left-[4.5rem] top-2 rounded-sm dark:text-neutral-400 text-neutral-600"
 			/>
 			<button
-				class="absolute h-7 w-7 right-[4.5rem] top-2 rounded-sm dark:text-gray-400 text-gray-600"
+				class="absolute h-7 w-7 right-[4.5rem] top-2 rounded-sm dark:text-neutral-400 text-neutral-600"
 				on:click={() => (expanded = !expanded)}
 			>
 				<FilterIcon bind:expanded />
