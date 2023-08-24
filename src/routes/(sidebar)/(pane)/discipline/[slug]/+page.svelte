@@ -285,7 +285,7 @@
 							{/if}
 						</div>
 					</div>
-					<div class="flex flex-col pt-4">
+					<div class="hidden flex-col pt-4">
 						<span class="text-xl font-bold">Učiteľský dozor</span>
 						<div
 							class="flex flex-col rounded-md border border-b-0 border-gray-300 dark:border-gray-500 mt-5"
