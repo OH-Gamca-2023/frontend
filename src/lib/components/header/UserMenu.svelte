@@ -17,7 +17,15 @@
 	let userMenuOpen = false
 
 	$: !$userState.loggedIn && (userMenuOpen = false)
+
+	function handleBodyClick(e: MouseEvent) {
+		if (userMenuOpen && !(e.target as HTMLElement).closest('#user-menu')) {
+			userMenuOpen = false
+		}
+	}
 </script>
+
+<svelte:body on:click={handleBodyClick} />
 
 {#if $userState.loading}
 	<div id="user-menu" class="flex flex-row items-center justify-center">

@@ -12,9 +12,16 @@
 	$: categoriesOpen = sidebarOpen && false
 
 	$: categoriesIterable = Object.values($categories)
+
+	function handleBodyClick(event: MouseEvent) {
+		if (!sidebarOpen && !(event.target as HTMLElement).closest('#categories')) {
+			categoriesOpen = false
+		}
+	}
 </script>
 
 <svelte:window on:resize={() => window.innerWidth > 860 && (sidebarOpen = false)} />
+<svelte:body on:click={handleBodyClick} />
 
 <navbar
 	class="h-14 p-2 flex flex-row
@@ -44,7 +51,7 @@
 						<span>Novinky</span>
 					</a>
 				</div>
-				<div class="relative">
+				<div class="relative" id="categories">
 					<button
 						class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
 						on:click={() => (categoriesOpen = !categoriesOpen)}
