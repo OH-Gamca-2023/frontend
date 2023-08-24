@@ -190,7 +190,7 @@ export async function modifyPrimaryOrganisers(disciplineId: string, operation: O
 	if(resp.status == 200) {
 		if(!resp.data) {
 			console.error('Received status 200 but no data from primary organisers endpoint')
-		} else disciplines.setRaw(disciplineId, resp.data, false)
+		} else disciplines.setRaw(disciplineId, resp.data, true)
 	}
 	return resp
 }
@@ -215,7 +215,7 @@ export async function modifyTeacherSupervisors(disciplineId: string, operation: 
 	if(resp.status == 200) {
 		if(!resp.data) {
 			console.error('Received status 200 but no data from teacher supervisors endpoint')
-		} else disciplines.setRaw(disciplineId, resp.data, false)
+		} else disciplines.setRaw(disciplineId, resp.data, true)
 	}
 	return resp
 }
