@@ -14,8 +14,12 @@
 	export let data: PageData
 
 	$: discipline = $disciplines[data.disciplineId]
-
-	if (!discipline) disciplines.loadSingle(data.disciplineId)
+	let loadingFailed = false
+	let notFound = false
+	if (!discipline)
+		disciplines
+			.loadSingle(data.disciplineId)
+			.catch((e) => ((loadingFailed = true), (notFound = `${e}`.includes('not found'))))
 
 	$: is_primary =
 		discipline?.primary_organisers?.map((e) => e.id).includes($userState.user?.id) ?? false
@@ -355,6 +359,17 @@
 					</div>
 				</div>
 			{/if}
+		</div>
+	{:else if loadingFailed}
+		<div class="w-full h-12 relative flex items-center justify-center">
+			<div class="text-red-500 font-bold text-lg z-10">
+				{#if notFound}
+					Disciplína nebola nájdená
+				{:else}
+					Nastala chyba pri načítavaní údajov
+				{/if}
+			</div>
+			<div class="absolute inset-0 bg-gray-200 dark:bg-slate-600 rounded animate-pulse" />
 		</div>
 	{:else}
 		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
