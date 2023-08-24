@@ -81,7 +81,7 @@
 								{#each categoriesIterable as category}
 									<a
 										href={`/disciplines/categories/${category.id}`}
-										class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md p-1"
+										class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 									>
 										<span>{category.name}</span>
 									</a>
@@ -93,7 +93,7 @@
 				<div>
 					<a
 						href="/results"
-						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
 						<span>Výsledky</span>
@@ -102,7 +102,7 @@
 				<div>
 					<a
 						href="/calendar"
-						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
 						<span>Kalendár</span>
@@ -111,7 +111,7 @@
 				<div>
 					<a
 						href="/ciphers"
-						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
+						class="flex flex-row space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
 						<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
 						<span>Šifrovačka</span>

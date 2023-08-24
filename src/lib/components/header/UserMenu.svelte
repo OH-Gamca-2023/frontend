@@ -66,7 +66,7 @@
 				>
 					<a
 						href={`/auth/profile/`}
-						class="flex flex-row space-x-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md p-1 justify-between"
+						class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 justify-between"
 						on:click={() => (userMenuOpen = false)}
 					>
 						<Icon icon="carbon:user-profile" class="h-6 w-6" />
@@ -74,7 +74,7 @@
 					</a>
 					<a
 						href={`/preferences/`}
-						class="flex flex-row space-x-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md p-1 justify-between"
+						class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 justify-between"
 						on:click={() => (userMenuOpen = false)}
 					>
 						<Icon icon="ph:wrench" class="h-6 w-6" />
@@ -83,7 +83,7 @@
 					{#if $userState.user?.permissions.staff}
 						<a
 							href={`/admin/`}
-							class="flex flex-row space-x-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md p-1 justify-between"
+							class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 justify-between"
 							on:click={() => (userMenuOpen = false)}
 						>
 							<div class="flex flex-row items-center justify-center">
