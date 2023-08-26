@@ -30,6 +30,10 @@
 			: 'none'
 </script>
 
+<svelte:head>
+	<title>Šifrovačka &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col space-y-2 w-full">
 	{#await ciphers.load()}
 		<div class="flex flex-row justify-center items-center space-x-2">

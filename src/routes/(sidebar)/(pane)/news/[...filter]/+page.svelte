@@ -59,6 +59,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Novinky &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col justify-between items-center w-full">
 	<h1 class="text-2xl font-semibold pb-5">Príspevky</h1>
 

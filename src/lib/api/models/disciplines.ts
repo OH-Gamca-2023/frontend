@@ -31,7 +31,8 @@ class DisciplineModel extends PartialModel<Discipline> {
 					details: rawDiscipline.details,
 
 					date: rawDiscipline.date ? new Date(rawDiscipline.date) : null,
-					time: rawDiscipline.time ? new Date("1970-01-01T" + rawDiscipline.time) : null,
+					start_time: rawDiscipline.start_time ? new Date("1970-01-01T" + rawDiscipline.start_time) : null,
+					end_time: rawDiscipline.end_time ? new Date("1970-01-01T" + rawDiscipline.end_time) : null,
 					location: rawDiscipline.location,
 
 					get category() {
@@ -55,7 +56,7 @@ class DisciplineModel extends PartialModel<Discipline> {
 					},
 				} as Discipline
 			},
-			false,
+			true,
 			[tags, categories, grades],
 			true,
 		)

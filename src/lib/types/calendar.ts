@@ -36,7 +36,8 @@ export type CalendarEvent = {
 		short: string
 	}
 	date: Date
-	time: string
+	start_time: string
+	end_time: string
 	location: string
 	category: Category
 	grades: Grade[]

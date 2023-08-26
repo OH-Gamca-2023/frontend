@@ -22,10 +22,16 @@
 				).padStart(2, '0')}.&nbsp;{item.date.getFullYear()}</span
 			>
 		</div>
-		{#if event.time}
+		{#if event.start_time}
 			<div class="flex flex-row justify-between items-center">
 				<Icon icon="mdi:clock-outline" class="h-4 w-4" />
-				<span class="text-sm">{event.time}</span>
+				<span class="text-sm"
+					>{#if event.end_time}
+						{event.start_time}&nbsp;-&nbsp;{event.end_time}
+					{:else}
+						{event.start_time}
+					{/if}
+				</span>
 			</div>
 		{/if}
 		{#if event.location}

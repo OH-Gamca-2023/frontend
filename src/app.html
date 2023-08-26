@@ -13,13 +13,22 @@
 			gtag('config', 'G-H5XG3DB676')
 		</script>
 
+		<!-- MSAL -->
+		<script src="https://alcdn.msauth.net/browser/2.26.0/js/msal-browser.js"
+			integrity="sha384-fitpJWrpyl840mvd9nBFLGulqR4BJzvim0fzrXQKdsVh2AQzE4rTTJ0o5o+x+dRK"
+			crossorigin="anonymous"></script>
+		
+		<!-- To help ensure reliability, Microsoft provides a second CDN -->
+		<script type="text/javascript">
+			if (typeof Msal === 'undefined') document.write(unescape("%3Cscript src='https://alcdn.msftauth.net/browser/2.26.0/js/msal-browser.js' type='text/javascript' crossorigin='anonymous' %3E%3C/script%3E"));
+		</script>
+
 		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="icon" href="/favicon.jpg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="theme-color" content="#000" />
 		<link rel="manifest" href="/manifest.webmanifest" />
-		<link rel="shortcut icon" type="image/svg" href="/favicon.png" />
-		<link rel="apple-touch-icon" href="/favicon.png" />
+		<link rel="apple-touch-icon" href="/favicon.jpg" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 		<meta name="apple-mobile-web-app-title" content="OH Gamča 2023" />

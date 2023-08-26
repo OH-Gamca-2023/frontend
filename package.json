@@ -38,6 +38,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@azure/msal-browser": "^3.0.2",
 		"@sveltejs/adapter-static": "^2.0.1",
 		"buffer": "^6.0.3",
 		"eslint-plugin-svelte": "^2.27.2",

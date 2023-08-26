@@ -46,10 +46,10 @@ export function getAccessToken(): string | undefined {
 	return currentAccessToken
 }
 
-export function setAccessToken(token: string | undefined) {
+export function setAccessToken(token: string | undefined, expiry?: string) {
 	if (!browser) return
 	if (token) {
-		const expires = new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+		const expires = expiry ? new Date(expiry).getTime() : new Date().getTime() + 1000 * 60 * 60 * 24 * 7
 		localStorage.setItem('token', encodeToken(token, expires))
 		currentTokenExpiry = expires
 	} else {

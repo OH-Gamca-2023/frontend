@@ -13,7 +13,8 @@ export interface Discipline {
 	details: string
 
 	date: Date | null
-	time: Date | null
+	start_time: Date | null
+	end_time: Date | null
 	location: string
 
 	category: Category
