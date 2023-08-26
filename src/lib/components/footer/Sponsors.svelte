@@ -10,7 +10,7 @@
 	})
 </script>
 
-<div class="flex flex-row w-full h-full space-x-10 flex-1 justify-center">
+<div class="flex w-full h-full space-x-10 flex-1 justify-center">
 	{#each columns as column}
 		<div class="flex flex-col justify-around space-y-5">
 			{#each column as sponsor}

@@ -72,7 +72,7 @@
 {/each}
 
 {#if disciplines.length === 0}
-	<div class="flex py-2 w-full flex-row justify-center items-center text-center gap-2">
+	<div class="flex py-2 w-full justify-center items-center text-center gap-2">
 		<p class="text-lg font-bold">Žiadne výsledky vyhovujúce filtru neboli nájdené</p>
 	</div>
 {/if}

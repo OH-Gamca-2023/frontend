@@ -83,17 +83,17 @@
 	{#if discipline}
 		{#if !discipline.fromServer}
 			<div
-				class="flex flex-row items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
+				class="flex items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
 				bg-yellow-100 border-yellow-400"
 			>
 				<Icon icon="mdi:alert-circle-outline" class="w-5 h-5 md:w-6 md:h-6" />
 				<span class="text-sm font-medium">Informácie o disciplíne môžu byť neaktuálne</span>
 			</div>
 		{/if}
-		<div class="flex flex-row justify-center items-center pb-5">
+		<div class="flex justify-center items-center pb-5">
 			<div class="flex flex-col justify-center items-center">
 				<span class="text-3xl font-bold pb-1">{discipline.name}</span>
-				<Taglist {discipline} class="justify-center" />
+				<Taglist {discipline} alwaysBig={true} class="justify-center" />
 			</div>
 		</div>
 		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-2">
@@ -102,7 +102,7 @@
 					<span class="text-xl font-bold">Čas a miesto</span>
 					<div class="flex flex-col space-y-1 pt-1">
 						{#if discipline.date}
-							<div class="flex flex-row space-x-1">
+							<div class="flex space-x-1">
 								<Icon icon="mdi:calendar" />
 								<span class="text-sm"
 									>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
@@ -112,7 +112,7 @@
 							</div>
 						{/if}
 						{#if discipline.start_time}
-							<div class="flex flex-row space-x-1">
+							<div class="flex space-x-1">
 								<Icon icon="mdi:clock-outline" />
 								<span class="text-sm"
 									>{#if discipline.end_time}
@@ -130,7 +130,7 @@
 							</div>
 						{/if}
 						{#if discipline.location}
-							<div class="flex flex-row space-x-1">
+							<div class="flex space-x-1">
 								<Icon icon="mdi:map-marker" />
 								<span class="text-sm">{discipline.location}</span>
 							</div>
@@ -230,7 +230,7 @@
 								{#each discipline.primary_organisers as organiser}
 									{#if organiser}
 										<div
-											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex flex-row"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex"
 										>
 											<Person
 												user={organiser}
@@ -242,7 +242,7 @@
 								{/each}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
+									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500"
 								>
 									<Icon icon="octicon:x-12" />
@@ -253,7 +253,7 @@
 							{#if $userState.user.clazz.grade.is_organiser}
 								{#if primary_loading}
 									<div
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 						border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 									>
 										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
@@ -261,7 +261,7 @@
 									</div>
 								{:else if is_primary}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
@@ -270,7 +270,7 @@
 									</button>
 								{:else}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
@@ -280,7 +280,7 @@
 								{/if}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-20 p-2 bg-gray-400
+									class="flex justify-between items-center bg-opacity-20 p-2 bg-gray-400
 							border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
@@ -298,7 +298,7 @@
 								{#each discipline.teacher_supervisors as teacher}
 									{#if teacher}
 										<div
-											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex flex-row"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex"
 										>
 											<Person
 												user={teacher}
@@ -310,7 +310,7 @@
 								{/each}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
+									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500"
 								>
 									<Icon icon="octicon:x-12" />
@@ -321,7 +321,7 @@
 							{#if $userState.user.clazz.grade.is_teacher}
 								{#if supervisor_loading}
 									<div
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 						border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 									>
 										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
@@ -329,7 +329,7 @@
 									</div>
 								{:else if is_supervisor}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
@@ -338,7 +338,7 @@
 									</button>
 								{:else}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
 								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
@@ -348,7 +348,7 @@
 								{/if}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-20 p-2 bg-gray-400
+									class="flex justify-between items-center bg-opacity-20 p-2 bg-gray-400
 							border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />

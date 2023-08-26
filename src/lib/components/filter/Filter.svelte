@@ -47,7 +47,7 @@
 
 <div class="flex flex-col items-center justify-center w-full">
 	{#if search}
-		<div class="flex flex-col px-16 w-full md:max-w-2xl relative h-11 mb-4">
+		<div class="flex flex-col px-4 lg:px-16 w-full md:max-w-2xl relative h-11 mb-4">
 			<input
 				type="text"
 				id="search"
@@ -58,10 +58,10 @@
 			/>
 			<Icon
 				icon="material-symbols:search"
-				class="absolute h-7 w-7 left-[4.5rem] top-2 rounded-sm dark:text-gray-400 text-gray-600"
+				class="absolute h-7 w-7 left-6 lg:left-[4.5rem] top-2 rounded-sm dark:text-gray-400 text-gray-600"
 			/>
 			<button
-				class="absolute h-7 w-7 right-[4.5rem] top-2 rounded-sm dark:text-gray-400 text-gray-600"
+				class="absolute h-7 w-7 right-6 lg:right-[4.5rem] top-2 rounded-sm dark:text-gray-400 text-gray-600"
 				on:click={() => (expanded = !expanded)}
 			>
 				<FilterIcon bind:expanded />
@@ -69,7 +69,7 @@
 		</div>
 	{/if}
 	{#if expanded || !search}
-		<div class="flex flex-row gap-2 mb-4" transition:slide>
+		<div class="flex gap-2 mb-4" transition:slide|global>
 			{#if category}
 				<div class="flex flex-col gap-1">
 					{#each Object.values(categories) as cat}

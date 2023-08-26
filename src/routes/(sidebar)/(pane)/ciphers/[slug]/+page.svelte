@@ -88,7 +88,7 @@
 
 <div class="flex flex-col space-y-2 w-full">
 	{#await ciphers.load()}
-		<div class="flex flex-row justify-center items-center space-x-2">
+		<div class="flex justify-center items-center space-x-2">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			<span class="text-xl font-bold">Načítavam šifry...</span>
 		</div>
@@ -96,7 +96,7 @@
 		{#if $userState.loggedIn && $userState.user}
 			{#if !$userState.user.clazz.grade.cipher_competing}
 				<div
-					class="flex flex-row justify-center items-center space-x-2 border-b border-gray-300 pb-4 mb-4 dark:border-gray-500 w-full"
+					class="flex justify-center items-center space-x-2 border-b border-gray-300 pb-4 mb-4 dark:border-gray-500 w-full"
 				>
 					<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 					<div class="flex flex-col">
@@ -109,7 +109,7 @@
 			{/if}
 		{:else}
 			<div
-				class="flex flex-row justify-center items-center space-x-2 border-b border-gray-300 pb-4 mb-4 dark:border-gray-500 w-full"
+				class="flex justify-center items-center space-x-2 border-b border-gray-300 pb-4 mb-4 dark:border-gray-500 w-full"
 			>
 				<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 				<span class="text-xl font-bold">Musíš byť prihlásený na to, aby si mohol riešiť šifry.</span
@@ -117,7 +117,7 @@
 			</div>
 		{/if}
 		{#if !cipher || !cipher.started}
-			<div class="flex flex-row justify-center items-center space-x-2 pb-4">
+			<div class="flex justify-center items-center space-x-2 pb-4">
 				<Icon icon="mdi:stop-remove-outline" class="w-10 h-10 mr-2" />
 				<span class="text-xl font-bold">Nepodarilo sa nájsť šifru.</span>
 			</div>
@@ -195,7 +195,7 @@
 							class="flex flex-col border-t border-gray-300 pt-4 mt-4 dark:border-gray-500 justify-center items-center"
 						>
 							<button
-								class="flex flex-row w-full justify-between items-center space-x-2 cursor-pointer"
+								class="flex w-full justify-between items-center space-x-2 cursor-pointer"
 								on:click={() => (hintOpen = !hintOpen)}
 							>
 								<Icon
@@ -213,7 +213,7 @@
 							{#if hintOpen}
 								<div
 									class="flex flex-col mt-4 bg-gray-900 bg-opacity-25 p-4 rounded-lg"
-									transition:slide={{ duration: 300 }}
+									transition:slide|global={{ duration: 300 }}
 								>
 									{#if cipher.hint}
 										<span class="text-lg font-bold">{cipher.hint}</span>
@@ -278,7 +278,7 @@
 										class="flex flex-col rounded-md border border-gray-300 dark:border-gray-500 mt-5"
 									>
 										<div
-											class="flex flex-row justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
+											class="flex justify-between items-center p-2 bg-gray-100 dark:bg-gray-700
 											border-b border-gray-300 dark:border-gray-500 rounded-t-md"
 										>
 											<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left">Riešenie</span
@@ -295,7 +295,7 @@
 										{:then asubmissions}
 											{#each asubmissions as submission, i}
 												<div
-													class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
+													class="flex justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
 												border-b border-gray-300 dark:border-gray-500"
 													class:bg-green-500={submission.correct}
 													class:bg-red-500={!submission.correct}
@@ -326,7 +326,7 @@
 												</div>
 											{:else}
 												<div
-													class="flex flex-row justify-between items-center bg-opacity-40 p-2
+													class="flex justify-between items-center bg-opacity-40 p-2
 												border-b border-gray-300 dark:border-gray-500"
 												>
 													<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
@@ -334,7 +334,7 @@
 											{/each}
 										{:catch error}
 											<div
-												class="flex flex-row justify-between items-center bg-opacity-40 p-2
+												class="flex justify-between items-center bg-opacity-40 p-2
 												border-b border-gray-300 dark:border-gray-500"
 											>
 												<i class="text-red-700 dark:text-red-500"

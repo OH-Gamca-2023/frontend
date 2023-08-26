@@ -1,3 +1,3 @@
-export * from './types';
-export * from './values';
-export * from './other';
+export * from './types'
+export * from './values'
+export * from './other'

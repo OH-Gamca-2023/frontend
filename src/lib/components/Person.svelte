@@ -11,7 +11,7 @@
 </script>
 
 <div class="flex flex-col flex-1">
-	<div class="flex flex-row justify-between items-center">
+	<div class="flex justify-between items-center">
 		<Icon icon="mdi:account" />
 		{#if real_name}
 			<span class="text-md">{user.first_name} {user.last_name}</span>
@@ -20,7 +20,7 @@
 		{/if}
 	</div>
 	{#if email && user.email}
-		<div class="flex flex-row justify-between items-center">
+		<div class="flex justify-between items-center">
 			<Icon icon="entypo:email" />
 			<a
 				class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
@@ -29,7 +29,7 @@
 		</div>
 	{/if}
 	{#if phone && user.phone_number}
-		<div class="flex flex-row justify-between items-center">
+		<div class="flex justify-between items-center">
 			<Icon icon="ph:phone-bold" />
 			<a
 				class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"

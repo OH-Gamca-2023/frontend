@@ -10,6 +10,7 @@
 	import { onMount } from 'svelte'
 	import Icon from '$lib/components/Icon.svelte'
 	import type { User } from '$lib/types'
+	import { browser } from '$app/environment'
 
 	export let data: PageData
 
@@ -17,6 +18,8 @@
 	let loginStatus = ''
 	let statusDetails = ''
 	let error = ''
+
+	$: !$settings.backupMicrosoftOAuth?.value && browser && goto('/auth/login/')
 
 	if (loginPending) {
 		loginStatus = 'Overujem údaje...'
@@ -120,14 +123,14 @@
 	<h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
 {/if}
 
-<h4 class="text-gray-800 dark:text-gray-100 pb-1">Záložné Microsoft prihlásenie</h4>
+<h4 class="text-gray-800 dark:text-gray-100 pb-1">Alternatívne prihlasovanie pre Microsoft</h4>
 <p class="pb-4 text-gray-500 dark:text-gray-400 text-center">
 	Táto možnosť vám môže pomôcť ak<br />váš prehliadač blokuje vyskakovacie okná.
 </p>
 
 <button
 	id="microsoft-login"
-	class="flex flex-row items-center justify-center
+	class="flex items-center justify-center
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2 mb-6
                     hover:bg-gray-200 dark:hover:bg-gray-900 relative"
 	class:cursor-pointer={!loginPending}
@@ -142,7 +145,7 @@
 		class:opacity-30={loginPending}
 	/>
 	{#if loginPending}
-		<div class="absolute w-full h-full flex flex-row items-center justify-center">
+		<div class="absolute w-full h-full flex items-center justify-center">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			{#if loginStatus}
 				<div class="ml-4 flex flex-col">
@@ -155,17 +158,37 @@
 		</div>
 	{/if}
 </button>
-
 <a
-	id="back"
-	class="flex flex-row items-center justify-center
+	id="password-login"
+	class="flex items-center justify-center font-semibold w-full
+                    bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
+                    hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer mb-3"
+	class:cursor-pointer={!loginPending}
+	class:pointer-events-none={loginPending}
+	class:disable={loginPending}
+	href="/auth/login/password"
+>
+	<Icon icon="mdi:key" class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}" />
+	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
+		Prihlásiť sa pomocou hesla
+	</h4>
+</a>
+<a
+	id="admin-login"
+	class="flex items-center justify-center w-full
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
                     hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}
 	class:pointer-events-none={loginPending}
 	class:disable={loginPending}
-	href="/auth/login"
+	href="/admin/login"
+	rel="external"
 >
-	<Icon icon="mdi:arrow-left" class="w-6 h-6" />
-	<span class="ml-2">Prihlásiť sa iným spôsobom</span>
+	<Icon
+		icon="material-symbols:admin-panel-settings"
+		class="w-8 h-8 mr-4 {loginPending ? 'opacity-30' : ''}"
+	/>
+	<h4 class="text-gray-800 dark:text-gray-200 text-sm md:text-md" class:opacity-30={loginPending}>
+		Prihlásiť sa ako administrátor
+	</h4>
 </a>

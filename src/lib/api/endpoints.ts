@@ -94,7 +94,7 @@ export async function setUserPassword(oldPassword: string | undefined, newPasswo
 
 /**
  * Log the user in using credentials.
- * 
+ *
  * @param login the username or email
  * @param password the password
  * @returns the API token details
@@ -165,14 +165,13 @@ export async function submitCipherSolution(id: number, solution: string) {
 	return makeApiRequest<Submission>(`ciphers/${id}/submissions`, 'POST', { answer: solution }, true)
 }
 
-
 // DISCIPLINE ENDPOINTS
 
 type Operation = 'add' | 'remove'
 
 /**
  * Add or remove user from primary organisers
- * 
+ *
  * @param disciplineId the discipline ID
  * @param operation the operation to execute
  * @param user the user to add to or remove from primary organisers,
@@ -183,12 +182,21 @@ type Operation = 'add' | 'remove'
  * @throws 404 error if target user was not found
  * @throws 400 error if target user violates requirements
  */
-export async function modifyPrimaryOrganisers(disciplineId: string, operation: Operation, user: string | undefined = undefined) {
-	const resp = await makeApiRequest<object>(`disciplines/${disciplineId}/primary_organisers`, operation == 'add' ? 'PUT' : 'DELETE', {
-		organiser: user ? user : 'me'
-	}, true)
-	if(resp.status == 200) {
-		if(!resp.data) {
+export async function modifyPrimaryOrganisers(
+	disciplineId: string,
+	operation: Operation,
+	user: string | undefined = undefined,
+) {
+	const resp = await makeApiRequest<object>(
+		`disciplines/${disciplineId}/primary_organisers`,
+		operation == 'add' ? 'PUT' : 'DELETE',
+		{
+			organiser: user ? user : 'me',
+		},
+		true,
+	)
+	if (resp.status == 200) {
+		if (!resp.data) {
 			console.error('Received status 200 but no data from primary organisers endpoint')
 		} else disciplines.setRaw(disciplineId, resp.data, true)
 	}
@@ -197,7 +205,7 @@ export async function modifyPrimaryOrganisers(disciplineId: string, operation: O
 
 /**
  * Add or remove user from teacher supervisors
- * 
+ *
  * @param disciplineId the discipline ID
  * @param operation the operation to execute
  * @param user the user to add to or remove from teacher supervisors,
@@ -208,12 +216,21 @@ export async function modifyPrimaryOrganisers(disciplineId: string, operation: O
  * @throws 404 error if target user was not found
  * @throws 400 error if target user violates requirements
  */
-export async function modifyTeacherSupervisors(disciplineId: string, operation: Operation, user: string | undefined = undefined) {
-	const resp = await makeApiRequest<object>(`disciplines/${disciplineId}/teacher_supervisors`, operation == 'add' ? 'PUT' : 'DELETE', {
-		teacher: user ? user : 'me'
-	}, true)
-	if(resp.status == 200) {
-		if(!resp.data) {
+export async function modifyTeacherSupervisors(
+	disciplineId: string,
+	operation: Operation,
+	user: string | undefined = undefined,
+) {
+	const resp = await makeApiRequest<object>(
+		`disciplines/${disciplineId}/teacher_supervisors`,
+		operation == 'add' ? 'PUT' : 'DELETE',
+		{
+			teacher: user ? user : 'me',
+		},
+		true,
+	)
+	if (resp.status == 200) {
+		if (!resp.data) {
 			console.error('Received status 200 but no data from teacher supervisors endpoint')
 		} else disciplines.setRaw(disciplineId, resp.data, true)
 	}
@@ -222,17 +239,22 @@ export async function modifyTeacherSupervisors(disciplineId: string, operation: 
 
 /**
  * Get results for a discipline.
- * 
+ *
  * @param disciplineId the discipline ID
  * @returns the results
  * @throws 404 error if discipline was not found
  */
 export async function getDisciplineResults(disciplineId: string) {
-	const resp = await makeApiRequest<Results[]>(`disciplines/${disciplineId}/results`, 'GET', undefined, false)  
+	const resp = await makeApiRequest<Results[]>(
+		`disciplines/${disciplineId}/results`,
+		'GET',
+		undefined,
+		false,
+	)
 
-	if(!resp.error) {
+	if (!resp.error) {
 		const data = [] as Results[]
-		for(const result of (resp as SuccessResponse<any[]>).data) {
+		for (const result of (resp as SuccessResponse<any[]>).data) {
 			data.push({
 				id: result.id,
 				name: result.name,
@@ -243,14 +265,15 @@ export async function getDisciplineResults(disciplineId: string) {
 					return disciplines.get(result.discipline)
 				},
 
-				placements: result.placements.map((p: any) => {return {
-					get clazz() {
-						return clazzes.get(p.clazz)
-					},
-					place: p.place,
-					participated: p.participated,
-				}}),
-
+				placements: result.placements.map((p: any) => {
+					return {
+						get clazz() {
+							return clazzes.get(p.clazz)
+						},
+						place: p.place,
+						participated: p.participated,
+					}
+				}),
 			} as Results)
 		}
 		resp.data = data

@@ -253,7 +253,7 @@
 		<div
 			class="flex flex-col text-gray-800 dark:text-gray-200 divide-y divide-gray-300 dark:divide-gray-600"
 		>
-			<div class="flex flex-row items-center justify-center pb-2">
+			<div class="flex items-center justify-center pb-2">
 				<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="w-16 h-16 mr-2" />
 				<div class="flex flex-col">
 					<div class="text-sm font-medium">Typ účtu</div>
@@ -363,9 +363,9 @@
 						</div>
 					{/if}
 					{#if Object.values(editPermissions).some((x) => x)}
-						<div class="flex flex-row items-center justify-center">
+						<div class="flex items-center justify-center">
 							<button
-								class="flex flex-row items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
+								class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4
 								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700"
 								on:click={saveProfile}
 								disabled={savingProfile}
@@ -435,9 +435,9 @@
 							Pre váš typ účtu nie je povolená zmena hesla.
 						</div>
 					{:else}
-						<div class="flex flex-row items-center justify-center pb-2">
+						<div class="flex items-center justify-center pb-2">
 							<button
-								class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
+								class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4
 								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700"
 								on:click={changePassword}
 								disabled={changingPassword}
@@ -457,7 +457,7 @@
 			<div class="flex flex-col items-center justify-center pt-3">
 				<span class="text-lg font-bold pb-3"> Odhlásiť sa zo všetkých zariadení </span>
 				<button
-					class="flex flex-row items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ml-2
+					class="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ml-2
 					disabled:bg-red-400 disabled:hover:bg-red-400 dark:disabled:bg-red-700 dark:disabled:hover:bg-red-700"
 					on:click={logoutAll}
 					disabled={loggingOutAll}
