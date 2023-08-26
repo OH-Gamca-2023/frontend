@@ -1,11 +1,13 @@
 <script lang="ts">
 	export let name: string
 	export let styleClass = ''
+
+	export let alwaysBig = false
 </script>
 
-<div class="ampule {styleClass}">
+<div class="ampule {styleClass}" class:shrinkable={!alwaysBig}>
 	<span class="dot" />
-	<span class="text-sm font-bold">{name}</span>
+	<span class="{alwaysBig ? '' : 'text-xs lg:'}text-sm font-bold">{name}</span>
 </div>
 
 <style lang="scss">
@@ -14,14 +16,27 @@
 		padding: 5px 8px 5px 5px;
 		border-radius: 15rem;
 		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
 		align-items: center;
 
 		white-space: nowrap;
 
 		background: hsl(0, 0%, 84%);
 		color: hsl(0, 0%, 31%);
+
+		&.shrinkable {
+			@media (max-width: 1023px) {
+				height: 1.25rem;
+				padding: 3px 7px 3.025px 5px;
+			}
+
+			.dot {
+				@media (max-width: 1023px) {
+					width: 10px;
+					height: 10px;
+					margin: 0px 3px 0px 2px;
+				}
+			}
+		}
 
 		.dot {
 			width: 12px;

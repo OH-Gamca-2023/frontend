@@ -13,7 +13,15 @@ const CACHE_NAME = `cache-${version}`
 // Create a list of all the files we want to cache
 const CACHE_FILES = [...build, ...files]
 
-const IGNORED_PATHS = ['/api', '/admin', '/docker', '/admin_static', '/robots.txt', '/uploads', '/staticfiles']
+const IGNORED_PATHS = [
+	'/api',
+	'/admin',
+	'/docker',
+	'/admin_static',
+	'/robots.txt',
+	'/uploads',
+	'/staticfiles',
+]
 
 // Install the service worker
 sw.addEventListener('install', (event) => {
@@ -56,7 +64,11 @@ sw.addEventListener('fetch', (event) => {
 		const cache = await caches.open(CACHE_NAME)
 
 		if (CACHE_FILES.includes(url.pathname)) {
-			return (await cache.match(url.pathname)) || Response.error()
+			const response = await cache.match(event.request)
+			if (response) return response
+
+			console.error('SW cache error')
+			return Response.error()
 		}
 
 		try {
@@ -66,7 +78,10 @@ sw.addEventListener('fetch', (event) => {
 			}
 			return response
 		} catch (error) {
-			return (await cache.match(event.request)) || Response.error()
+			const resp = await cache.match(event.request)
+			if (resp) return resp
+			console.error('SW fetch error: ', error)
+			return Response.error()
 		}
 	}
 

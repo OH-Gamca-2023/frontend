@@ -18,14 +18,27 @@
 
 	if (!post) posts.loadSingle(data.postId)
 
-	$: browser && post.redirect && goto(post.redirect)
+	$: browser && post?.redirect && goto(post.redirect)
 
 	$: authorFullName = post?.author.first_name + ' ' + post?.author.last_name
 </script>
 
+<svelte:head>
+	<title>Príspevok &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="w-full flex flex-col">
 	{#if post}
-		<div id="info" class="flex flex-row justify-between items-center">
+		{#if !post.fromServer}
+			<div
+				class="flex items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
+				bg-yellow-100 border-yellow-400"
+			>
+				<Icon icon="mdi:alert-circle-outline" class="w-5 h-5 md:w-6 md:h-6" />
+				<span class="text-sm font-medium">Obsah tohto príspevku môže byť neaktuálny</span>
+			</div>
+		{/if}
+		<div id="info" class="flex justify-between items-center mb-4">
 			<div class="flex flex-col md:flex-row md:items-center justify-between w-full">
 				<div class="flex flex-col pb-2 md:pb-0 whitespace-break-spaces">
 					<span class="text-3xl font-bold">{post.title}</span>

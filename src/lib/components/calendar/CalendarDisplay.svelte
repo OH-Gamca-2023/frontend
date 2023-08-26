@@ -30,7 +30,6 @@
 		<span class="day-name text-red-400" class:dark={$darkTheme}>{header}</span>
 	{/each}
 	{#each days as day, index}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<span
 			class="day"
 			class:day-disabled={!day.enabled}
@@ -44,7 +43,7 @@
 			<div class="details-wrapper">
 				{#each perDayItems[index] as item}
 					{#if selected.items.includes(item.id)}
-						<div class="details" transition:slide={{ duration: 600 }}>
+						<div class="details" transition:slide|global={{ duration: 600 }}>
 							<CalendarEvent {item} />
 						</div>
 					{/if}

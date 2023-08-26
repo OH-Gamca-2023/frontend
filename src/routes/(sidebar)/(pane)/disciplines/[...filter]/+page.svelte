@@ -49,6 +49,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Disciplíny &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col justify-between items-center w-full">
 	<h1 class="text-2xl font-semibold pb-5">Disciplíny</h1>
 
@@ -68,7 +72,7 @@
 {/each}
 
 {#if disciplines.length === 0}
-	<div class="flex py-2 w-full flex-row justify-center items-center text-center gap-2">
+	<div class="flex py-2 w-full justify-center items-center text-center gap-2">
 		<p class="text-lg font-bold">Žiadne disciplíny vyhovujúce filtru neboli nájdené</p>
 	</div>
 {/if}

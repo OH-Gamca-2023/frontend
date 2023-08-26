@@ -51,9 +51,22 @@
 	scrollbar-width: thin;
 }
 .markdown {
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji',
-		'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+	font-family:
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		'Roboto',
+		'Oxygen',
+		'Ubuntu',
+		'Cantarell',
+		'Fira Sans',
+		'Droid Sans',
+		'Helvetica Neue',
+		'Segoe UI Emoji',
+		'Apple Color Emoji',
+		'Noto Color Emoji',
+		sans-serif;
 	line-height: 1.4;
 	padding: 0 10px;
 	word-wrap: break-word;
@@ -62,19 +75,28 @@
 	text-rendering: optimizeLegibility;
 }
 .markdown button {
-	transition: background-color var(--animation-duration) linear,
-		border-color var(--animation-duration) linear, color var(--animation-duration) linear,
-		box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+	transition:
+		background-color var(--animation-duration) linear,
+		border-color var(--animation-duration) linear,
+		color var(--animation-duration) linear,
+		box-shadow var(--animation-duration) linear,
+		transform var(--animation-duration) ease;
 }
 .markdown input {
-	transition: background-color var(--animation-duration) linear,
-		border-color var(--animation-duration) linear, color var(--animation-duration) linear,
-		box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+	transition:
+		background-color var(--animation-duration) linear,
+		border-color var(--animation-duration) linear,
+		color var(--animation-duration) linear,
+		box-shadow var(--animation-duration) linear,
+		transform var(--animation-duration) ease;
 }
 .markdown textarea {
-	transition: background-color var(--animation-duration) linear,
-		border-color var(--animation-duration) linear, color var(--animation-duration) linear,
-		box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+	transition:
+		background-color var(--animation-duration) linear,
+		border-color var(--animation-duration) linear,
+		color var(--animation-duration) linear,
+		box-shadow var(--animation-duration) linear,
+		transform var(--animation-duration) ease;
 }
 .markdown h1 {
 	font-size: 2.2em;
@@ -387,7 +409,9 @@
 	border-radius: 3px;
 }
 .markdown input[type='range']::-webkit-slider-thumb {
-	box-shadow: 0 1px 1px #000, 0 0 1px #0d0d0d;
+	box-shadow:
+		0 1px 1px #000,
+		0 0 1px #0d0d0d;
 	height: 20px;
 	width: 20px;
 	border-radius: 50%;
@@ -407,7 +431,9 @@
 	border-radius: 3px;
 }
 .markdown input[type='range']::-moz-range-thumb {
-	box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+	box-shadow:
+		1px 1px 1px #000,
+		0 0 1px #0d0d0d;
 	height: 20px;
 	width: 20px;
 	border-radius: 50%;
@@ -425,16 +451,22 @@
 	background: var(--background);
 	border: 0.2px solid #010101;
 	border-radius: 3px;
-	box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+	box-shadow:
+		1px 1px 1px #000,
+		0 0 1px #0d0d0d;
 }
 .markdown input[type='range']::-ms-fill-upper {
 	background: var(--background);
 	border: 0.2px solid #010101;
 	border-radius: 3px;
-	box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+	box-shadow:
+		1px 1px 1px #000,
+		0 0 1px #0d0d0d;
 }
 .markdown input[type='range']::-ms-thumb {
-	box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+	box-shadow:
+		1px 1px 1px #000,
+		0 0 1px #0d0d0d;
 	border: 1px solid #000;
 	height: 20px;
 	width: 20px;

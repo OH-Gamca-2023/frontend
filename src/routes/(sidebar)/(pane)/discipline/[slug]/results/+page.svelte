@@ -1,23 +1,37 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 	import { disciplines } from '$lib/api/models'
-	import type { Discipline } from '$lib/types'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import { getDisciplineResults } from '$lib/api'
 	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 
-	$: discipline = $disciplines[data.disciplineId] as Discipline | undefined
+	$: discipline = $disciplines[data.disciplineId]
 
 	if (!discipline) disciplines.loadSingle(data.disciplineId)
 
 	let resultPromise = getDisciplineResults(data.disciplineId)
 </script>
 
+<svelte:head>
+	<title
+		>{discipline ? 'Výsledky: ' + discipline.name : 'Výsledky disciplíny'} &centerdot; OH Gamča 2023</title
+	>
+</svelte:head>
+
 <div class="w-full flex flex-col">
 	{#if discipline}
-		<div class="flex flex-row justify-center items-center pb-5">
+		{#if !discipline.fromServer}
+			<div
+				class="flex items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
+			bg-yellow-100 border-yellow-400"
+			>
+				<Icon icon="mdi:alert-circle-outline" class="w-5 h-5 md:w-6 md:h-6" />
+				<span class="text-sm font-medium">Informácie o disciplíne môžu byť neaktuálne</span>
+			</div>
+		{/if}
+		<div class="flex justify-center items-center pb-5">
 			<div class="flex flex-col justify-center items-center">
 				<a href="/disciplines/{discipline.id}">
 					<Icon icon="ph:arrow-left-bold" class="w-10 h-10 lg:ml-5" />
@@ -29,7 +43,7 @@
 				>
 				<span class="text-lg font-bold ml-5 md:hidden">Výsledky:</span>
 				<span class="text-lg font-medium ml-5 pb-1 md:hidden">{discipline.name}</span>
-				<Taglist {discipline} class="justify-center" />
+				<Taglist {discipline} alwaysBig={true} class="justify-center" />
 			</div>
 		</div>
 		<div class="flex flex-col w-full justify-center items-center">
@@ -64,7 +78,7 @@
 									</div>
 									<div class="flex flex-col justify-center items-center">
 										{#each result.placements.filter((p) => p.participated) as placement}
-											<div class="flex flex-row justify-center items-center text-xl">
+											<div class="flex justify-center items-center text-xl">
 												<span class="font-bold">
 													{placement.place}.
 												</span>

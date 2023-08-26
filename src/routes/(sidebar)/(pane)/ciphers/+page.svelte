@@ -30,22 +30,26 @@
 			: 'none'
 </script>
 
+<svelte:head>
+	<title>Šifrovačka &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col space-y-2 w-full">
 	{#await ciphers.load()}
-		<div class="flex flex-row justify-center items-center space-x-2">
+		<div class="flex justify-center items-center space-x-2">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			<span class="text-lg md:text-xl font-bold">Načítavam šifry...</span>
 		</div>
 	{:then _}
 		{#if listCiphers.length === 0}
-			<div class="flex flex-row justify-center items-center space-x-2">
+			<div class="flex justify-center items-center space-x-2">
 				<Icon icon="mdi:stop-remove-outline" class="w-10 h-10" />
 				<span class="text-lg md:text-xl font-bold">Žiadne šifry aktuálne nie sú dostupné.</span>
 			</div>
 		{:else}
 			{#if $userState.loggedIn && $userState.user}
 				{#if !$userState.user.clazz.grade.cipher_competing}
-					<div class="flex flex-row justify-center items-center space-x-2">
+					<div class="flex justify-center items-center space-x-2">
 						<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 						<div class="flex flex-col">
 							<span class="text-lg md:text-xl font-bold"

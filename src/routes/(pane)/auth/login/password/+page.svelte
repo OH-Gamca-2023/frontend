@@ -88,7 +88,7 @@
 		/>
 	</label>
 	<button
-		class="flex flex-row gap-2 items-center justify-center font-bold h-10
+		class="flex gap-2 items-center justify-center font-bold h-10
 				bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-md px-4 py-2 mt-3
 				hover:bg-neutral-200 dark:hover:bg-neutral-900 relative"
 		class:cursor-pointer={!loginPending}
@@ -112,7 +112,7 @@
 
 <a
 	id="back"
-	class="flex flex-row items-center justify-center
+	class="flex items-center justify-center
 			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-md px-4 py-2
 			hover:bg-neutral-200 dark:hover:bg-neutral-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}

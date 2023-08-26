@@ -30,6 +30,7 @@
 			email = $userState.user?.email ?? ''
 			username = $userState.user?.username ?? ''
 			phone = $userState.user?.phone_number ?? ''
+			discord_id = $userState.user?.discord_id ?? ''
 		} else {
 			title = 'Profil · Neprihlásený'
 		}
@@ -40,6 +41,7 @@
 	let email = ''
 	let username = ''
 	let phone = ''
+	let discord_id = ''
 
 	let savingProfile = false
 
@@ -107,6 +109,17 @@
 				changes.phone_number = phone
 			}
 		}
+
+		if (discord_id !== $userState.user?.discord_id) {
+			if (!editPermissions.discord_id) {
+				errorToast('Nemáte oprávnenie zmeniť ID Discord účtu')
+				return
+			} else {
+				console.log('discord_id', discord_id)
+				changes.discord_id = discord_id
+			}
+		}
+		console.log(discord_id, $userState.user?.discord_id, changes)
 
 		savingProfile = true
 
@@ -240,7 +253,7 @@
 		<div
 			class="flex flex-col text-neutral-800 dark:text-neutral-200 divide-y divide-neutral-300 dark:divide-neutral-600"
 		>
-			<div class="flex flex-row items-center justify-center pb-2">
+			<div class="flex items-center justify-center pb-2">
 				<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="w-16 h-16 mr-2" />
 				<div class="flex flex-col">
 					<div class="text-sm font-medium">Typ účtu</div>
@@ -319,6 +332,16 @@
 				</div>
 				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
 					<div class="flex flex-col">
+						<span class="text-md font-medium pb-1"> ID Discord účtu </span>
+						<input
+							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
+							type="text"
+							autocomplete="off"
+							disabled={!editPermissions.discord_id}
+							bind:value={discord_id}
+						/>
+					</div>
+					<div class="flex flex-col mt-2 md:mt-0 md:ml-4">
 						<span class="text-md font-medium pb-1"> Microsoft účet </span>
 						<input
 							class="text-lg font-bold pl-2 rounded bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350 disabled:dark:bg-neutral-500 disabled:cursor-not-allowed"
@@ -340,11 +363,10 @@
 						</div>
 					{/if}
 					{#if Object.values(editPermissions).some((x) => x)}
-						<div class="flex flex-row items-center justify-center">
+						<div class="flex items-center justify-center">
 							<button
-								class="flex flex-row items-center justify-center bg-green-500
-								dark:bg-greean-600 hover:bg-green-600 text-zinc-100 font-bold py-2 px-4 rounded mt-4
-								disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700 shadow-md"
+								class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-zinc-100 font-bold py-2 px-4 rounded
+									   mt-4 disabled:bg-green-400 disabled:hover:bg-green-400 dark:disabled:bg-green-700 dark:hover:bg-green-700 shadow-md"
 								on:click={saveProfile}
 								disabled={savingProfile}
 							>
@@ -413,9 +435,9 @@
 							Pre váš typ účtu nie je povolená zmena hesla.
 						</div>
 					{:else}
-						<div class="flex flex-row items-center justify-center pb-2">
+						<div class="flex items-center justify-center pb-2">
 							<button
-								class="flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600 text-zinc-100 font-bold py-2 px-4 rounded mt-4
+								class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-zinc-100 font-bold py-2 px-4 rounded mt-4
 								disabled:bg-blue-400 disabled:hover:bg-blue-400 dark:disabled:bg-blue-700 dark:hover:bg-blue-700 shadow-md"
 								on:click={changePassword}
 								disabled={changingPassword}
@@ -435,7 +457,7 @@
 			<div class="flex flex-col items-center justify-center pt-3">
 				<span class="text-lg font-bold pb-3"> Odhlásiť sa zo všetkých zariadení </span>
 				<button
-					class="flex flex-row items-center justify-center bg-red-500 hover:bg-red-600 text-zinc-100 font-bold py-2 px-4 rounded ml-2
+					class="flex items-center justify-center bg-red-500 hover:bg-red-600 text-zinc-100 font-bold py-2 px-4 rounded ml-2
 					disabled:bg-red-400 disabled:hover:bg-red-400 dark:disabled:bg-red-700 dark:disabled:hover:bg-red-700 shadow-md"
 					on:click={logoutAll}
 					disabled={loggingOutAll}

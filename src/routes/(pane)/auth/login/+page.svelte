@@ -1,97 +1,97 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
-	import { getUserDetails } from '$lib/api'
 	import { darkTheme, settings } from '$lib/data/settings'
 	import { userState } from '$lib/state'
 	import { toast } from '$lib/utils/toasts'
-	import type { PageData } from './$types'
-	import { getApiHost } from '$lib/data/api'
-	import { setAccessToken } from '$lib/state/token'
 	import { onMount } from 'svelte'
 	import Icon from '$lib/components/Icon.svelte'
-	import type { User } from '$lib/types'
+	import { getProfile, msalInitialization, signIn } from '$lib/auth'
+	import { BrowserAuthError } from '@azure/msal-browser'
+	import { getApiHost } from '$lib/data/api'
+	import { setAccessToken } from '$lib/state/token'
+	import { browser } from '$app/environment'
 
-	export let data: PageData
-
-	let loginPending = data.status !== 'none'
+	let loginPending = false
 	let loginStatus = ''
 	let statusDetails = ''
 	let error = ''
 
-	if (loginPending) {
-		loginStatus = 'Overujem údaje...'
-		statusDetails = 'Spracovávam odpoveď zo serveru'
+	$: $settings.backupMicrobackupsoftOAuth?.value && browser && goto('/auth/login/backup/')
 
-		const response = data.params
-		if (response.status === 'error') {
-			console.warn('Login error', response)
-			if (response.error.startsWith('STRERROR')) {
-				error = 'Nastala chyba pri prihlasovaní: ' + response.error.split(':', 2)[1]
-			} else {
-				error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
-			}
-			;(loginPending = false), (loginStatus = ''), (statusDetails = '')
-		} else if (response.status === 'success') {
+	function clearStatus() {
+		;(loginPending = false), (loginStatus = ''), (statusDetails = ''), (error = '')
+	}
+
+	async function microsoftLogin() {
+		clearStatus()
+		;(loginPending = true), (statusDetails = 'Pripravujem prihlásenie')
+		await msalInitialization
+		const respP = signIn()
+		statusDetails = 'Bolo otvorené prihlasovacie okno'
+		try {
+			const resp = await respP
+			;(loginStatus = 'Spracúvam údaje...'), (statusDetails = 'Získavam údaje o používateľovi')
 			try {
-				parseData(response)
-			} catch (e) {
-				console.error('Failed to parse login data', e)
-				error = 'Nastala chyba pri spracovaní údajov. Skúste to prosím znovu.'
-				;(loginPending = false), (loginStatus = ''), (statusDetails = '')
-			}
-		} else {
-			console.error('Unknown login response', response)
-			error = 'Nastala chyba pri komunikácii so serverom. Skúste to prosím znovu.'
-			;(loginPending = false), (loginStatus = ''), (statusDetails = '')
-		}
-	}
-
-	async function parseData(response: any) {
-		const rawUserToken = JSON.parse(response.user_token)
-		const userToken = {
-			token: rawUserToken.token,
-			expires: new Date(rawUserToken.expiry),
-		}
-		const user = JSON.parse(response.logged_user) as User
-
-		loginStatus = 'Overujem prihlásenie...'
-		statusDetails = 'Zisťujem prihláseného používateľa'
-
-		setAccessToken(userToken.token)
-
-		const serverStatus = await getUserDetails()
-		if (serverStatus.error) {
-			;(loginPending = false), (loginStatus = ''), (statusDetails = '')
-			error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
-			console.error('Error getting user details', serverStatus)
-		} else {
-			const serverUser = serverStatus.data
-			if (!serverUser) {
-				;(loginPending = false), (loginStatus = ''), (statusDetails = '')
-				error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
-				console.error('Received invalid user details', serverStatus)
-				return
-			}
-			if (serverUser.id == user.id) {
-				statusDetails = 'Aktualizujem stav prihlásenia'
-
-				await userState.fetchUser()
-				;(loginPending = false), (loginStatus = ''), (statusDetails = '')
-				toast({
-					title: 'Prihlásenie úspešné',
-					type: 'success',
-					duration: 3000,
+				const { user, accessToken } = await getProfile()
+				statusDetails = 'Údaje boli úspešne získané'
+				const serverUrl = `${getApiHost()}/auth/verify/microsoft/`
+				const serverReq = fetch(serverUrl, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						access_token: accessToken,
+						user,
+					}),
 				})
-				goto('/')
+				;(loginStatus = 'Overujem údaje...'), (statusDetails = 'Údaje boli odoslané na server')
+				const serverResp = await serverReq
+				if (serverResp.status == 200) {
+					const data = await serverResp.json()
+					if (data.status == 'success') {
+						statusDetails = 'Údaje boli úspešne overené'
+						setAccessToken(data.user_token.token, data.user_token.expiry)
+						await userState.fetchUser()
+						toast({
+							title: 'Prihlásenie úspešné',
+							type: 'success',
+							duration: 3000,
+						})
+						goto('/')
+					} else {
+						clearStatus()
+						console.error('Login error', data)
+						if (data.error.startsWith('STRERROR')) {
+							error = data.error.split(':', 2)[1]
+						} else {
+							error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+						}
+					}
+				} else {
+					clearStatus()
+					console.error('Login error', serverResp)
+					error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+				}
+			} catch (e) {
+				clearStatus()
+				console.error('Login error', e)
+				error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+			}
+		} catch (e) {
+			clearStatus()
+			if (e instanceof BrowserAuthError) {
+				if (e.errorCode == 'user_cancelled') {
+					error = 'Prihlásenie bolo zrušené'
+				} else {
+					console.error('Login error', e)
+					error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+				}
+			} else {
+				console.error('Login error', e)
+				error = 'Pri prihlasovaní nastala neznáma chyba.<br>Skúste to prosím znovu.'
 			}
 		}
-	}
-
-	function microsoftLogin() {
-		loginPending = true
-		let host = window.location.host
-		if (!(host.startsWith('http://') || host.startsWith('https://'))) host = 'http://' + host
-		window.open(`${getApiHost()}/auth/begin/microsoft/?next=${host}/auth/login/`, '_self')
 	}
 
 	onMount(async () => {
@@ -120,13 +120,13 @@
 <h1 class="text-2xl font-bold pb-2">Prihlásenie</h1>
 
 {#if error}
-	<h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
+	<h3 class="text-red-500 dark:text-red-400 font-semibold text-center pb-4">{@html error}</h3>
 {/if}
 
 <h4 class="text-neutral-800 dark:text-neutral-100 pb-4">Vyberte si spôsob prihlásenia</h4>
 <button
 	id="microsoft-login"
-	class="flex flex-row items-center justify-center
+	class="flex items-center justify-center
 			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-lg px-4 py-2 mb-6
 			hover:bg-neutral-200 dark:hover:bg-neutral-900 relative"
 	class:cursor-pointer={!loginPending}
@@ -141,9 +141,9 @@
 		class:opacity-30={loginPending}
 	/>
 	{#if loginPending}
-		<div class="absolute w-full h-full flex flex-row items-center justify-center">
+		<div class="absolute w-full h-full flex items-center justify-center">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
-			{#if loginStatus}
+			{#if loginStatus || $settings.debugMode.value}
 				<div class="ml-4 flex flex-col">
 					<span>{loginStatus}</span>
 					{#if $settings.debugMode.value}
@@ -156,7 +156,7 @@
 </button>
 <a
 	id="password-login"
-	class="flex flex-row items-center justify-center font-semibold w-full
+	class="flex items-center justify-center font-semibold w-full
 			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-lg px-4 py-2
 			hover:bg-neutral-200 dark:hover:bg-neutral-900 cursor-pointer mb-3"
 	class:cursor-pointer={!loginPending}
@@ -174,7 +174,7 @@
 </a>
 <a
 	id="admin-login"
-	class="flex flex-row items-center justify-center w-full
+	class="flex items-center justify-center w-full
 			bg-neutral-50 dark:bg-neutral-800 rounded-lg shadow-lg px-4 py-2
 			hover:bg-neutral-200 dark:hover:bg-neutral-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}

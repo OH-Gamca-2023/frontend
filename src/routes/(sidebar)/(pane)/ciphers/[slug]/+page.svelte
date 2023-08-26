@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition'
-	import type { Cipher } from '$lib/types/ciphers'
+	import type { Cipher, Submission } from '$lib/types/ciphers'
 	import Icon from '$lib/components/Icon.svelte'
-	import { ciphers, loadCipherSubmissions } from '$lib/api/models/ciphers'
+	import { ciphers, updateCipherSubmissions } from '$lib/api/models/ciphers'
 	import type { PageData } from './$types'
 	import { userState } from '$lib/state'
 	import timeAgo from '$lib/utils/timeago'
@@ -27,15 +27,20 @@
 			: 'none'
 	$: statusData = cipher && $userState.loggedIn && solving !== 'none' ? cipher.data : undefined
 
-	$: solved = cipher?.submissions.some((s) => s.correct)
+	let submissions = [] as Submission[]
+	$: {
+		cipher?.submissions.then((s) => (submissions = s))
+	}
+
+	$: solved = submissions.some((s) => s.correct)
 	$: nextSubmitTime =
-		!cipher || cipher.submissions.length === 0
+		!cipher || submissions.length === 0
 			? 0
-			: cipher.submissions[0].time.getTime() +
+			: submissions[0].time.getTime() +
 			  1000 * cipher.submission_delay * (solving == 'individual' ? 2 : 1)
 	$: canSubmit =
 		!solved &&
-		(!cipher ? false : cipher.submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
+		(!cipher ? false : submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
 
 	let submitting = false
 	let answer = ''
@@ -56,7 +61,7 @@
 		submitting = true
 		const resp = await submitCipherSolution(cipher.id, answer)
 		if (!resp.error) {
-			await loadCipherSubmissions(cipher)
+			await updateCipherSubmissions(cipher.id)
 			answer = ''
 			toast({ type: 'success', title: 'Odpoveď bola odoslaná', duration: 5000 })
 			submitting = false
@@ -77,9 +82,13 @@
 	let hintOpen = false
 </script>
 
+<svelte:head>
+	<title>Šifra {id} &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="flex flex-col space-y-2 w-full">
 	{#await ciphers.load()}
-		<div class="flex flex-row justify-center items-center space-x-2">
+		<div class="flex justify-center items-center space-x-2">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			<span class="text-xl font-bold">Načítavam šifry...</span>
 		</div>
@@ -87,7 +96,7 @@
 		{#if $userState.loggedIn && $userState.user}
 			{#if !$userState.user.clazz.grade.cipher_competing}
 				<div
-					class="flex flex-row justify-center items-center space-x-2 border-b border-neutral-400 pb-4 mb-4 dark:border-neutral-500 w-full"
+					class="flex justify-center items-center space-x-2 border-b border-neutral-400 pb-4 mb-4 dark:border-neutral-500 w-full"
 				>
 					<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 					<div class="flex flex-col">
@@ -100,7 +109,7 @@
 			{/if}
 		{:else}
 			<div
-				class="flex flex-row justify-center items-center space-x-2 border-b border-neutral-400 pb-4 mb-4 dark:border-neutral-500 w-full"
+				class="flex justify-center items-center space-x-2 border-b border-neutral-400 pb-4 mb-4 dark:border-neutral-500 w-full"
 			>
 				<Icon icon="mdi:emoticon-sad-outline" class="w-10 h-10 mr-2" />
 				<span class="text-xl font-bold">Musíš byť prihlásený na to, aby si mohol riešiť šifry.</span
@@ -108,7 +117,7 @@
 			</div>
 		{/if}
 		{#if !cipher || !cipher.started}
-			<div class="flex flex-row justify-center items-center space-x-2 pb-4">
+			<div class="flex justify-center items-center space-x-2 pb-4">
 				<Icon icon="mdi:stop-remove-outline" class="w-10 h-10 mr-2" />
 				<span class="text-xl font-bold">Nepodarilo sa nájsť šifru.</span>
 			</div>
@@ -186,7 +195,7 @@
 							class="flex flex-col border-t border-neutral-400 pt-4 mt-4 dark:border-neutral-500 justify-center items-center"
 						>
 							<button
-								class="flex flex-row w-full justify-between items-center space-x-2 cursor-pointer"
+								class="flex w-full justify-between items-center space-x-2 cursor-pointer"
 								on:click={() => (hintOpen = !hintOpen)}
 							>
 								<Icon
@@ -204,7 +213,7 @@
 							{#if hintOpen}
 								<div
 									class="flex flex-col mt-4 bg-neutral-900 bg-opacity-25 p-4 rounded-lg"
-									transition:slide={{ duration: 300 }}
+									transition:slide|global={{ duration: 300 }}
 								>
 									{#if cipher.hint}
 										<span class="text-lg font-bold">{cipher.hint}</span>
@@ -221,7 +230,6 @@
 				<div
 					class="flex flex-col p-5 flex-1 order-4 3xl:order-2 border-t basis-full 3xl:basis-2/5 border-neutral-400 pt-4 mt-4 dark:border-neutral-500 md:border-t-0 md:pt-3 md:mt-0"
 				>
-					<span class="text-xl font-bold pb-5">Zadanie</span>
 					<CipherTask {cipher} />
 				</div>
 				<div class="hidden 2xl:block 3xl:hidden flex-grow order-2" />
@@ -277,7 +285,7 @@
 										class="flex flex-col rounded-md border border-neutral-400 dark:border-neutral-500 mt-5"
 									>
 										<div
-											class="flex flex-row justify-between items-center p-2 bg-neutral-100 dark:bg-neutral-700
+											class="flex justify-between items-center p-2 bg-neutral-100 dark:bg-neutral-700
 											border-b border-neutral-400 dark:border-neutral-500 rounded-t-md h-10"
 										>
 											<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left">Riešenie</span
@@ -288,45 +296,60 @@
 											>
 										</div>
 										<div class="flex flex-col max-h-60 overflow-y-scroll">
-											{#each cipher.submissions as submission, i}
+											{#await cipher.submissions}
 												<div
-													class="flex flex-row justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
-												border-b border-neutral-400 dark:border-neutral-500 h-10"
-													class:bg-green-500={submission.correct}
-													class:bg-red-500={!submission.correct}
-													class:rounded-b-md={i === cipher.submissions.length - 1}
+													class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative"
+												/>
+											{:then submissionsL}
+												{#each submissionsL as submission, i}
+													<div
+															class="flex justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
+													border-b border-neutral-400 dark:border-neutral-500 h-10"
+															class:bg-green-500={submission.correct}
+															class:bg-red-500={!submission.correct}
+															class:rounded-b-md={i === submissionsL.length - 1}
+														>
+															<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
+																>{submission.answer}</span
+															>
+															<span class="text-sm 2xl:text-md font-bold">
+																{#if submission.after_hint}
+																	<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
+																{:else}
+																	<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-neutral-500" />
+																{/if}
+															</span>
+															<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
+																<span class="pr-1"
+																	>{String(submission.time.getDate()).padStart(2, '0')}. {String(
+																		submission.time.getMonth() + 1,
+																	).padStart(2, '0')}.</span
+																>
+																<span
+																	>{String(submission.time.getHours()).padStart(2, '0')}:{String(
+																		submission.time.getMinutes(),
+																	).padStart(2, '0')}</span
+																>
+															</span>
+														</div>
+													{:else}
+														<div
+															class="flex justify-between items-center bg-opacity-40 p-2
+													border-b border-neutral-400 dark:border-neutral-500"
+														>
+															<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
+														</div>
+													{/each}
+											{:catch error}
+												<div
+													class="flex justify-between items-center bg-opacity-40 p-2
+													border-b border-neutral-400 dark:border-neutral-500"
 												>
-													<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
-														>{submission.answer}</span
+													<i class="text-red-700 dark:text-red-500"
+														>Nastala chyba pri načítavaní odoslaných riešení</i
 													>
-													<span class="text-sm 2xl:text-md font-bold">
-														{#if submission.after_hint}
-															<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
-														{:else}
-															<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-neutral-500" />
-														{/if}
-													</span>
-													<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
-														<span class="pr-1"
-															>{String(submission.time.getDate()).padStart(2, '0')}. {String(
-																submission.time.getMonth() + 1,
-															).padStart(2, '0')}.</span
-														>
-														<span
-															>{String(submission.time.getHours()).padStart(2, '0')}:{String(
-																submission.time.getMinutes(),
-															).padStart(2, '0')}</span
-														>
-													</span>
 												</div>
-											{:else}
-												<div
-													class="flex flex-row justify-between items-center bg-opacity-40 p-2
-												border-b border-neutral-400 dark:border-neutral-500"
-												>
-													<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
-												</div>
-											{/each}
+											{/await}
 										</div>
 									</div>
 								</div>
@@ -334,7 +357,7 @@
 									<div class="flex flex-col">
 										<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
 										<form>
-											<label for="answer" class="text-md font-bold text-red-500 dark:text-red-400">
+											<label for="answer" class="text-sm font-bold text-red-500 dark:text-red-400">
 												{#if !canSubmit && nextSubmitTime}
 													{#key $subSeconds}
 														Ďalšie riešenie môžete odoslať {String(

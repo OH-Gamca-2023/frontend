@@ -49,7 +49,7 @@ class PostModel extends PartialModel<Post> {
 					},
 				}
 			},
-			false,
+			true,
 			[tags, categories, grades, clazzes],
 		)
 	}

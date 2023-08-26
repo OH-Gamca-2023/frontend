@@ -146,7 +146,7 @@
 	</div>
 
 	{#if selectedItems.length > 0}
-		<div class="flex flex-row flex-wrap justify-around gap-3 pt-5">
+		<div class="flex flex-wrap justify-around gap-3 pt-5">
 			{#each selectedItems as item}
 				<CalendarEvent {item} />
 			{/each}

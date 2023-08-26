@@ -28,13 +28,13 @@
 <svelte:body on:click={handleBodyClick} />
 
 {#if $userState.loading}
-	<div id="user-menu" class="flex flex-row items-center justify-center">
+	<div id="user-menu" class="flex items-center justify-center">
 		<Icon icon="mdi:loading" class="w-12 h-12 animate-spin" />
 	</div>
 {:else if $userState.loggedIn}
-	<div id="user-menu" class="flex flex-row items-center justify-center relative">
+	<div id="user-menu" class="flex items-center justify-center relative">
 		<button
-			class="flex flex-row items-center justify-center cursor-pointer"
+			class="flex items-center justify-center cursor-pointer"
 			on:click={() => (userMenuOpen = !userMenuOpen)}
 		>
 			<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
@@ -50,7 +50,7 @@
 		<a
 			id="logout"
 			href="/auth/logout"
-			class="flex flex-row items-center justify-center"
+			class="flex items-center justify-center"
 			data-tooltip="Odhlásiť sa"
 		>
 			<Icon icon="carbon:logout" class="h-6 w-6 ml-2" />
@@ -60,13 +60,14 @@
 				<div
 					class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
 						from-zinc-200 to-zinc-300 dark:from-zinc-900 dark:to-zinc-950 z-10
-						bg-gradient-to-b border border-zinc-300 dark:border-zinc-700 border-t-0"
+						bg-gradient-to-b border border-zinc-300 dark:border-zinc-700 border-t-0
+						[&>*]:justify-between [&>*]:items-center"
 					style="top: -3px"
-					transition:slide={{ duration: 500 }}
+					transition:slide|global={{ duration: 500 }}
 				>
 					<a
 						href={`/auth/profile/`}
-						class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 justify-between"
+						class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 						on:click={() => (userMenuOpen = false)}
 					>
 						<Icon icon="carbon:user-profile" class="h-6 w-6" />
@@ -74,7 +75,7 @@
 					</a>
 					<a
 						href={`/preferences/`}
-						class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 justify-between"
+						class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 						on:click={() => (userMenuOpen = false)}
 					>
 						<Icon icon="ph:wrench" class="h-6 w-6" />
@@ -83,12 +84,10 @@
 					{#if $userState.user?.permissions.staff}
 						<a
 							href={`/admin/`}
-							class="flex flex-row space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 justify-between"
+							class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 							on:click={() => (userMenuOpen = false)}
 						>
-							<div class="flex flex-row items-center justify-center">
-								<Icon icon="carbon:settings" class="h-6 w-6" />
-							</div>
+							<Icon icon="carbon:settings" class="h-8 w-8" />
 							<span class="text-sm font-medium text-right">Organizátorské rozhranie</span>
 						</a>
 					{/if}
@@ -97,7 +96,7 @@
 		</div>
 	</div>
 {:else}
-	<a id="login" href="/auth/login" class="flex flex-row items-center justify-center cursor-pointer">
+	<a id="login" href="/auth/login" class="flex items-center justify-center cursor-pointer">
 		<Icon icon="carbon:login" class="h-6 w-6 mr-2" />
 		Prihlásiť sa
 	</a>

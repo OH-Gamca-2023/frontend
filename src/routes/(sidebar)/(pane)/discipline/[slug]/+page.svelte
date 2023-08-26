@@ -4,7 +4,6 @@
 	import '../../../../../markdown.css'
 
 	import { disciplines } from '$lib/api/models'
-	import type { Discipline } from '$lib/types'
 	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
@@ -14,9 +13,13 @@
 
 	export let data: PageData
 
-	$: discipline = $disciplines[data.disciplineId] as Discipline | undefined
-
-	if (!discipline) disciplines.loadSingle(data.disciplineId)
+	$: discipline = $disciplines[data.disciplineId]
+	let loadingFailed = false
+	let notFound = false
+	if (!discipline)
+		disciplines
+			.loadSingle(data.disciplineId)
+			.catch((e) => ((loadingFailed = true), (notFound = `${e}`.includes('not found'))))
 
 	$: is_primary =
 		discipline?.primary_organisers?.map((e) => e.id).includes($userState.user?.id) ?? false
@@ -72,21 +75,34 @@
 		: undefined
 </script>
 
+<svelte:head>
+	<title>{discipline?.name ?? 'Disciplína'} &centerdot; OH Gamča 2023</title>
+</svelte:head>
+
 <div class="w-full flex flex-col">
 	{#if discipline}
-		<div class="flex flex-row justify-center items-center pb-5">
+		{#if !discipline.fromServer}
+			<div
+				class="flex items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
+				bg-yellow-100 border-yellow-400"
+			>
+				<Icon icon="mdi:alert-circle-outline" class="w-5 h-5 md:w-6 md:h-6" />
+				<span class="text-sm font-medium">Informácie o disciplíne môžu byť neaktuálne</span>
+			</div>
+		{/if}
+		<div class="flex justify-center items-center pb-5">
 			<div class="flex flex-col justify-center items-center">
 				<span class="text-3xl font-bold pb-1">{discipline.name}</span>
-				<Taglist {discipline} class="justify-center" />
+				<Taglist {discipline} alwaysBig={true} class="justify-center" />
 			</div>
 		</div>
-		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-5">
+		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-2">
 			<div class="flex flex-col basis-1/2 2xl:basis-1/5 2xl:mr-5">
 				<div class="flex flex-col">
-					<span class="text-xl font-bold">Základné informácie</span>
+					<span class="text-xl font-bold">Čas a miesto</span>
 					<div class="flex flex-col space-y-1 pt-1">
 						{#if discipline.date}
-							<div class="flex flex-row space-x-1">
+							<div class="flex space-x-1">
 								<Icon icon="mdi:calendar" />
 								<span class="text-sm"
 									>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
@@ -95,26 +111,32 @@
 								>
 							</div>
 						{/if}
-						{#if discipline.time}
-							<div class="flex flex-row space-x-1">
+						{#if discipline.start_time}
+							<div class="flex space-x-1">
 								<Icon icon="mdi:clock-outline" />
 								<span class="text-sm"
-									>{String(discipline.time.getHours()).padStart(2, '0')}:{String(
-										discipline.time.getMinutes(),
-									).padStart(2, '0')}</span
-								>
+									>{#if discipline.end_time}
+										{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+											discipline.start_time.getMinutes(),
+										).padStart(2, '0')}&nbsp;-&nbsp;{String(
+											discipline.end_time.getHours(),
+										).padStart(2, '0')}:{String(discipline.end_time.getMinutes()).padStart(2, '0')}
+									{:else}
+										{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+											discipline.start_time.getMinutes(),
+										).padStart(2, '0')}
+									{/if}
+								</span>
 							</div>
 						{/if}
 						{#if discipline.location}
-							<div class="flex flex-row space-x-1">
+							<div class="flex space-x-1">
 								<Icon icon="mdi:map-marker" />
 								<span class="text-sm">{discipline.location}</span>
 							</div>
 						{/if}
-						{#if !(discipline.date || discipline.time || discipline.location)}
-							<div class="text-amber-500 text-lg font-bold text-center">
-								Žiadne informácie neboli nájdené
-							</div>
+						{#if !(discipline.date || discipline.start_time || discipline.location)}
+							<div class="text-amber-500 font-bold">Informácie neboli nájdené</div>
 						{/if}
 					</div>
 				</div>
@@ -128,13 +150,11 @@
 								/>
 							{:then resultResponse}
 								{#if resultResponse.error}
-									<div class="text-red-500 text-lg font-bold text-center">
+									<div class="text-red-500 font-bold">
 										Nastala chyba pri načítavaní výsledkov ({resultResponse.status})
 									</div>
 								{:else if !resultResponse.data || resultResponse.data.length === 0}
-									<div class="text-amber-500 text-lg font-bold text-center">
-										Žiadne výsledky neboli nájdené
-									</div>
+									<div class="text-amber-500 font-bold">Žiadne výsledky neboli nájdené</div>
 								{:else}
 									<div
 										class="flex flex-col divide-y-4 divide-zinc-200 dark:divide-zinc-500 divide-dotted"
@@ -169,7 +189,7 @@
 												</div>
 												<div class="border-t border-zinc-200 dark:border-zinc-500 pt-1 mt-1">
 													<a
-														href="/results"
+														href="/discipline/{discipline.id}/results/"
 														class="text-lg font-bold text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
 														>Kompletné výsledky</a
 													>
@@ -180,7 +200,7 @@
 								{/if}
 							{/await}
 						{:else}
-							<div class="text-red-500 text-xl font-bold text-center">
+							<div class="text-red-500 text-lg font-bold text-center">
 								Stránka sa dostala do neplatného stavu
 							</div>
 						{/if}
@@ -210,7 +230,7 @@
 								{#each discipline.primary_organisers as organiser}
 									{#if organiser}
 										<div
-											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400 border-b border-neutral-400 dark:border-neutral-500 flex flex-row"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400 border-b border-neutral-400 dark:border-neutral-500 flex"
 										>
 											<Person
 												user={organiser}
@@ -222,7 +242,7 @@
 								{/each}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
+									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500"
 								>
 									<Icon icon="octicon:x-12" />
@@ -233,7 +253,7 @@
 							{#if $userState.user.clazz.grade.is_organiser}
 								{#if primary_loading}
 									<div
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
 						border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 									>
 										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
@@ -241,7 +261,7 @@
 									</div>
 								{:else if is_primary}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
@@ -250,7 +270,7 @@
 									</button>
 								{:else}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
@@ -260,7 +280,7 @@
 								{/if}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-20 p-2 bg-neutral-400
+									class="flex justify-between items-center bg-opacity-20 p-2 bg-neutral-400
 							border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
@@ -278,7 +298,7 @@
 								{#each discipline.teacher_supervisors as teacher}
 									{#if teacher}
 										<div
-											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400 border-b border-neutral-400 dark:border-neutral-500 flex flex-row"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400 border-b border-neutral-400 dark:border-neutral-500 flex"
 										>
 											<Person
 												user={teacher}
@@ -290,7 +310,7 @@
 								{/each}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
+									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500"
 								>
 									<Icon icon="octicon:x-12" />
@@ -301,7 +321,7 @@
 							{#if $userState.user.clazz.grade.is_teacher}
 								{#if supervisor_loading}
 									<div
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
 						border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 									>
 										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
@@ -309,7 +329,7 @@
 									</div>
 								{:else if is_supervisor}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
@@ -318,7 +338,7 @@
 									</button>
 								{:else}
 									<button
-										class="flex flex-row justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
@@ -328,7 +348,7 @@
 								{/if}
 							{:else}
 								<div
-									class="flex flex-row justify-between items-center bg-opacity-20 p-2 bg-neutral-400
+									class="flex justify-between items-center bg-opacity-20 p-2 bg-neutral-400
 							border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
@@ -339,6 +359,17 @@
 					</div>
 				</div>
 			{/if}
+		</div>
+	{:else if loadingFailed}
+		<div class="w-full h-12 relative flex items-center justify-center">
+			<div class="text-red-500 font-bold text-lg z-10">
+				{#if notFound}
+					Disciplína nebola nájdená
+				{:else}
+					Nastala chyba pri načítavaní údajov
+				{/if}
+			</div>
+			<div class="absolute inset-0 bg-gray-200 dark:bg-slate-600 rounded animate-pulse" />
 		</div>
 	{:else}
 		<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />

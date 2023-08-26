@@ -26,9 +26,9 @@
 	class:cursors-not-allowed={!cipher.started}
 >
 	<div class="flex flex-col flex-1">
-		<div class="flex flex-row">
+		<div class="flex">
 			<div class="flex flex-col justify-center mr-1 w-10">
-				<div class="flex flex-row justify-center">
+				<div class="flex justify-center">
 					<span
 						class="rounded-full w-3 h-3 bg-gradient-to-tr"
 						class:from-green-500={cipher.started && !cipher.hint_visible && !cipher.has_ended}
@@ -44,9 +44,9 @@
 				{cipher.name}
 			</span>
 		</div>
-		<div class="flex flex-row pt-2">
+		<div class="flex pt-2">
 			<div class="flex flex-col justify-center mr-3 w-10">
-				<div class="flex flex-row justify-center">
+				<div class="flex justify-center">
 					<span class="text-2xl font-bold text-neutral-400 dark:text-neutral-500 w-10 inline-block"
 						>#{cipher.id}</span
 					>
@@ -110,7 +110,7 @@
 			>
 		{/if}
 	</div>
-	<div class="flex-row justify-between flex sm:hidden pt-2">
+	<div class="flex justify-between sm:hidden pt-2">
 		{#if $userState.loggedIn && userClass}
 			<div class="flex flex-col">
 				{#if solving == 'none'}

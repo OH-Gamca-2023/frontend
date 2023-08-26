@@ -82,16 +82,19 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			console.debug(`[model ${this.apiUrl}] loading`)
 			this.load()
 		}
-		
+
 		addReconnectListener(() => {
 			// Attempt to reload the model when the connection is re-established
 			console.debug(`[model ${this.apiUrl}] connection re-established, updating`)
 			this.load(true)
 		})
-		
+
 		this.onLoaded(() => {
-			this.dependencies.forEach((dep) => dep.subscribe(() => {
-				this.triggerUpdated()}))
+			this.dependencies.forEach((dep) =>
+				dep.subscribe(() => {
+					this.triggerUpdated()
+				}),
+			)
 		})
 	}
 
@@ -333,10 +336,6 @@ export class PartialModel<T> extends LoadableModel<T> {
 		await this.dependencyLoadingPromise
 		await this.loadingPromise
 
-		const error = (e: any) => {
-			console.warn(`[partial m. ${this.apiUrl}] single object load error:`, e)
-			return
-		}
 		let respData: unknown
 		try {
 			let url = this.apiUrl
@@ -362,19 +361,54 @@ export class PartialModel<T> extends LoadableModel<T> {
 					const obj = this.parser(data) as T & { fromServer: boolean }
 					obj.fromServer = true
 					this.data.set(data.id.toString(), obj)
+				} else if (response.status === 404) {
+					if (this.data.has(id.toString()))
+						console.debug(`[partial m. ${this.apiUrl}] deleting object ${id}`)
+					this.data.delete(id.toString())
+
+					this.removeCached(id.toString())
+
+					this.triggerUpdated()
+					throw new Error('[E]Object not found')
 				} else {
-					error(undefined)
-					return
+					console.warn(`[partial m. ${this.apiUrl}] single object load error:`, response)
+					throw new Error('[E]' + response.status + ' ' + response.statusText)
 				}
-		} catch (e) {
-			error(e)
-			return
+		} catch (e: any) {
+			console.warn(`[partial m. ${this.apiUrl}] single object load error:`, e)
+			if (e.message.startsWith('[E]')) {
+				throw new Error('Error loading data for model ' + this.apiUrl + ': ' + e.message.slice(3))
+			}
+			throw new Error('Error loading data for model ' + this.apiUrl + ': ' + e)
 		}
 
 		this.triggerUpdated()
 		console.debug(`[partial m. ${this.apiUrl}] loaded or updated object ${id}`)
 
 		this.saveToCache(respData)
+	}
+
+	removeCached(id: string) {
+		if (!browser) return
+		if (!this.cache) return
+
+		try {
+			const currentCache = localStorage.getItem('cache_' + this.apiUrl)
+			if (currentCache) {
+				const currentCacheData = JSON.parse(currentCache)
+				const currentKeys = currentCacheData.map((i: any) => i.id)
+				if (currentKeys.includes(id)) {
+					console.debug(`[partial m. ${this.apiUrl}] removing object ${id} from cache`)
+					currentCacheData.splice(currentKeys.indexOf(id), 1)
+				}
+				localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(currentCacheData))
+			}
+		} catch (e) {
+			console.warn(`[partial m. ${this.apiUrl}] error removing object ${id} from cache\n`, e)
+			// Cache is probably corrupted, clear it. Will be automatically regenerated on next load
+			console.debug(`[partial m. ${this.apiUrl}] clearing cache for suspected corruption`)
+			localStorage.removeItem('cache_' + this.apiUrl)
+		}
 	}
 
 	setRaw(id: string, raw: object, fromServer: boolean) {

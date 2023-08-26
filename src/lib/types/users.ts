@@ -24,6 +24,7 @@ export interface User {
 	phone_number: string
 	clazz: Clazz
 	microsoft_user: string
+	discord_id: string
 	type: 'student' | 'teacher' | 'organiser' | 'admin' | 'alumni' | 'unknown'
 	has_password: boolean
 
@@ -34,7 +35,7 @@ export interface User {
 		teacher: boolean
 		superuser: boolean
 		type: 'student' | 'teacher' | 'organiser' | 'admin' | 'alumni' | 'unknown'
-		profile_edit: ProfileEditPermissions 
+		profile_edit: ProfileEditPermissions
 		permissions: string[]
 	}
 }
@@ -46,6 +47,7 @@ export interface ProfileEditPermissions {
 	email: boolean
 	phone_number: boolean
 	password: boolean
+	discord_id: boolean
 }
 
 export interface UserState {

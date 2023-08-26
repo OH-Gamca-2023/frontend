@@ -9,7 +9,7 @@
 >
 	<div id="sponsors" class="w-full lmd:w-1/2 h-full flex flex-col m-2 xl:-mt-4">
 		<div
-			class="flex flex-row justify-center items-center text-zinc-950 dark:text-zinc-50 font-bold text-2xl pb-2"
+			class="flex justify-center items-center text-zinc-950 dark:text-zinc-50 font-bold text-2xl pb-2"
 		>
 			Naši sponzori:
 		</div>

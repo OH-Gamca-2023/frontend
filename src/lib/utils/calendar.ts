@@ -40,7 +40,7 @@ export function initMonthDays(month: number, year: number) {
 			enabled: true,
 			date: d,
 			today: i == now.getDate() - 1 && month == now.getMonth(),
-			id: getDayID(d, month)
+			id: getDayID(d, month),
 		})
 	}
 
