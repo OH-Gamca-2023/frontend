@@ -44,7 +44,7 @@
 			<div class="details-wrapper">
 				{#each perDayItems[index] as item}
 					{#if selected.items.includes(item.id)}
-						<div class="details" transition:slide={{ duration: 600 }}>
+						<div class="details" transition:slide|global={{ duration: 600 }}>
 							<CalendarEvent {item} />
 						</div>
 					{/if}

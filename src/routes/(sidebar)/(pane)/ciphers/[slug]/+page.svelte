@@ -213,7 +213,7 @@
 							{#if hintOpen}
 								<div
 									class="flex flex-col mt-4 bg-gray-900 bg-opacity-25 p-4 rounded-lg"
-									transition:slide={{ duration: 300 }}
+									transition:slide|global={{ duration: 300 }}
 								>
 									{#if cipher.hint}
 										<span class="text-lg font-bold">{cipher.hint}</span>

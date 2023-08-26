@@ -26,7 +26,7 @@
 >
 	<div id="computer" class="hidden lmd:flex items-center justify-between flex-1 w-full">
 		<div id="left" class="flex items-center justify-start">
-			<div id="home" transition:fade>
+			<div id="home" transition:fade|global>
 				<a href="/">
 					<Icon icon="carbon:home" class="h-6 w-6" />
 				</a>
@@ -69,7 +69,7 @@
 								from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
 								bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
 								style="top: -1px"
-								transition:slide={{ duration: 500 }}
+								transition:slide|global={{ duration: 500 }}
 							>
 								{#each categoriesIterable as category}
 									<a
@@ -122,7 +122,7 @@
 			<button
 				id="dark-mode"
 				class="flex flex-col items-center justify-center cursor-pointer"
-				transition:fade
+				transition:fade|global
 				on:click={() => setValue('darkMode', !$settings.darkMode.value)}
 			>
 				{#if $settings.darkMode.value}
@@ -167,7 +167,7 @@
 				shadow-md sticky top-0 flex flex-col justify-start items-start
 				[&>*]:w-full [&>*]:py-3 [&>*]:px-4 divide-y
 				divide-gray-300 dark:divide-gray-700"
-			transition:slide
+			transition:slide|global
 		>
 			<div class="flex justify-between">
 				<a
@@ -182,7 +182,7 @@
 				<button
 					id="dark-mode"
 					class="flex flex-col items-center justify-center cursor-pointer"
-					transition:fade
+					transition:fade|global
 					on:click={() => setValue('darkMode', !$settings.darkMode.value)}
 				>
 					{#if $settings.darkMode.value}
@@ -215,7 +215,7 @@
 					<span>Kategórie</span>
 				</button>
 				{#if categoriesOpen}
-					<div class="flex flex-col space-y-2" transition:slide>
+					<div class="flex flex-col space-y-2" transition:slide|global>
 						<div
 							class="pt-2 px-8 divide-y
 							divide-gray-300 dark:divide-gray-700"

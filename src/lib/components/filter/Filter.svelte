@@ -69,7 +69,7 @@
 		</div>
 	{/if}
 	{#if expanded || !search}
-		<div class="flex gap-2 mb-4" transition:slide>
+		<div class="flex gap-2 mb-4" transition:slide|global>
 			{#if category}
 				<div class="flex flex-col gap-1">
 					{#each Object.values(categories) as cat}

@@ -55,7 +55,7 @@
 						bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0
 						[&>*]:justify-between [&>*]:items-center"
 					style="top: -3px"
-					transition:slide={{ duration: 500 }}
+					transition:slide|global={{ duration: 500 }}
 				>
 					<a
 						href={`/auth/profile/`}
