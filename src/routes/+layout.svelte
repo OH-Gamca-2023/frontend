@@ -27,7 +27,8 @@
 
 	$: loginRequired = $settings.requireLogin.value
 
-	$: headerAndFooter = !loginRequired || $userState.loggedIn
+	$: headerAndFooter =
+		(!loginRequired || $userState.loggedIn) && !$page.url.pathname.includes('auth/login/callback')
 	$: showContent = headerAndFooter || $page.url.pathname.includes('auth/login')
 	$: if (loginRequired && !$userState.loggedIn && !$userState.loading) {
 		if (!$page.url.pathname.includes('auth/login')) {
