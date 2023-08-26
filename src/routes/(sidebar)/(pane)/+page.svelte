@@ -26,7 +26,7 @@
 </svelte:head>
 
 <div class="flex flex-col gap-5 w-full">
-	<div class="flex flex-col w-full border-b border-gray-300 dark:border-gray-500 pb-2 px-4">
+	<div class="flex flex-col w-full border-b border-neutral-400 dark:border-neutral-500 pb-2 px-4">
 		<div class="flex flex-col justify-between items-center w-full">
 			<h1 class="text-2xl font-semibold pb-3">Najnovšie príspevky</h1>
 		</div>

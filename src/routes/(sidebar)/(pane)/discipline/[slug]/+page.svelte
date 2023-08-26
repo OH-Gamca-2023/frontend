@@ -369,7 +369,7 @@
 					Nastala chyba pri načítavaní údajov
 				{/if}
 			</div>
-			<div class="absolute inset-0 bg-gray-200 dark:bg-slate-600 rounded animate-pulse" />
+			<div class="absolute inset-0 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse" />
 		</div>
 	{:else}
 		<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />

@@ -298,7 +298,7 @@
 										<div class="flex flex-col max-h-60 overflow-y-scroll">
 											{#await cipher.submissions}
 												<div
-													class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative"
+													class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative"
 												/>
 											{:then submissionsL}
 												{#each submissionsL as submission, i}
