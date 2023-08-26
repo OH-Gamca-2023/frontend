@@ -72,7 +72,7 @@
 {#each posts as post}
 	<a
 		href={post.redirect ? post.redirect : '/post/' + post.id}
-		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full flex-row"
+		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full"
 	>
 		<div class="flex flex-col justify-between flex-1 items-left">
 			<h3 class="text-lg font-bold">{post.title}</h3>
@@ -102,7 +102,7 @@
 {/each}
 
 {#if posts.length === 0}
-	<div class="flex py-2 w-full flex-row justify-center items-center text-center gap-2">
+	<div class="flex py-2 w-full justify-center items-center text-center gap-2">
 		<p class="text-lg font-bold">Žiadne príspevky vyhovujúce filtru neboli nájdené</p>
 	</div>
 {/if}

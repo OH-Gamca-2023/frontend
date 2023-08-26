@@ -17,15 +17,15 @@
 <svelte:window on:resize={() => window.innerWidth > 860 && (sidebarOpen = false)} />
 
 <navbar
-	class="h-14 p-2 flex flex-row
+	class="h-14 p-2 flex
         bg-gradient-to-b from-gray-100 to-gray-200
         dark:from-gray-800 dark:to-gray-900
         border-b border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200 pl-4 pr-4
         shadow-md sticky top-0 z-50"
 >
-	<div id="computer" class="hidden lmd:flex flex-row items-center justify-between flex-1 w-full">
-		<div id="left" class="flex flex-row items-center justify-start">
+	<div id="computer" class="hidden lmd:flex items-center justify-between flex-1 w-full">
+		<div id="left" class="flex items-center justify-start">
 			<div id="home" transition:fade>
 				<a href="/">
 					<Icon icon="carbon:home" class="h-6 w-6" />
@@ -33,12 +33,12 @@
 			</div>
 			<div
 				id="links"
-				class="flex flex-row justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-gray-300 dark:divide-gray-700 divide-x"
+				class="flex justify-start pl-5 [&>*]:pr-2 [&>*]:pl-2 divide-gray-300 dark:divide-gray-700 divide-x"
 			>
 				<div>
 					<a
 						href="/news"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
 					>
 						<Icon icon="tabler:news" class="h-6 w-6" />
 						<span>Novinky</span>
@@ -46,7 +46,7 @@
 				</div>
 				<div class="relative">
 					<button
-						class="flex flex-row space-x-1 cursor-pointer rounded-md p-1 relative"
+						class="flex space-x-1 cursor-pointer rounded-md p-1 relative"
 						on:click={() => (categoriesOpen = !categoriesOpen)}
 					>
 						<Icon icon="iconamoon:category" class="h-6 w-6" />
@@ -74,7 +74,7 @@
 								{#each categoriesIterable as category}
 									<a
 										href={`/disciplines/categories/${category.id}`}
-										class="flex flex-row space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
+										class="flex space-x-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md p-1"
 									>
 										<span>{category.name}</span>
 									</a>
@@ -86,7 +86,7 @@
 				<div>
 					<a
 						href="/results"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
 						<span>Výsledky</span>
@@ -95,7 +95,7 @@
 				<div>
 					<a
 						href="/calendar"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
 					>
 						<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
 						<span>Kalendár</span>
@@ -104,7 +104,7 @@
 				<div>
 					<a
 						href="/ciphers"
-						class="flex flex-row space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
+						class="flex space-x-1 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-md p-1"
 					>
 						<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
 						<span>Šifrovačka</span>
@@ -114,7 +114,7 @@
 		</div>
 		<div
 			id="right"
-			class="flex flex-row items-center justify-end divide-x
+			class="flex items-center justify-end divide-x
 				divide-gray-300 dark:divide-gray-700
 				[&>*]:pr-2 [&>*]:pl-2"
 		>
@@ -133,10 +133,10 @@
 			</button>
 		</div>
 	</div>
-	<div id="mobile" class="flex flex-row justify-between items-center w-full lmd:hidden">
+	<div id="mobile" class="flex justify-between items-center w-full lmd:hidden">
 		<button
 			id="hamburger"
-			class="flex flex-row items-center justify-start
+			class="flex items-center justify-start
 							bg-gradient-to-br from-gray-200 to-zinc-200
 							dark:from-gray-800 dark:to-slate-800
 							border border-gray-300 dark:border-gray-700
@@ -148,7 +148,7 @@
 		</button>
 		<div
 			id="right"
-			class="flex flex-row items-center justify-end divide-x
+			class="flex items-center justify-end divide-x
 				divide-gray-300 dark:divide-gray-700
 				[&>*]:pr-2 [&>*]:pl-2"
 		>
@@ -169,11 +169,11 @@
 				divide-gray-300 dark:divide-gray-700"
 			transition:slide
 		>
-			<div class="flex flex-row justify-between">
+			<div class="flex justify-between">
 				<a
 					id="home"
 					href="/"
-					class="flex flex-row items-center justify-start px-2 -py-1"
+					class="flex items-center justify-start px-2 -py-1"
 					on:click={() => (sidebarOpen = !sidebarOpen)}
 				>
 					<Icon icon="tabler:home" class="h-7 w-7 cursor-pointer" />
@@ -192,13 +192,13 @@
 					{/if}
 				</button>
 			</div>
-			<a href="/news" class="flex flex-row space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
+			<a href="/news" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="tabler:news" class="h-6 w-6" />
 				<span>Novinky</span>
 			</a>
 			<div class="flex flex-col space-y-1">
 				<button
-					class="flex flex-row space-x-1 cursor-pointer"
+					class="flex space-x-1 cursor-pointer"
 					on:click={() => categories.isLoaded && (categoriesOpen = !categoriesOpen)}
 				>
 					{#await categories.load()}
@@ -223,7 +223,7 @@
 							{#each categoriesIterable as category}
 								<a
 									href={`/disciplines/categories/${category.id}`}
-									class="flex flex-row p-1 pr-0"
+									class="flex p-1 pr-0"
 									on:click={() => (sidebarOpen = !sidebarOpen)}
 								>
 									<span>{category.name}</span>
@@ -233,27 +233,15 @@
 					</div>
 				{/if}
 			</div>
-			<a
-				href="/results"
-				class="flex flex-row space-x-1"
-				on:click={() => (sidebarOpen = !sidebarOpen)}
-			>
+			<a href="/results" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
 				<span>Výsledky</span>
 			</a>
-			<a
-				href="/calendar"
-				class="flex flex-row space-x-1"
-				on:click={() => (sidebarOpen = !sidebarOpen)}
-			>
+			<a href="/calendar" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
 				<span>Kalendár</span>
 			</a>
-			<a
-				href="/ciphers"
-				class="flex flex-row space-x-1"
-				on:click={() => (sidebarOpen = !sidebarOpen)}
-			>
+			<a href="/ciphers" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
 				<span>Šifrovačka</span>
 			</a>

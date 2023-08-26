@@ -7,7 +7,7 @@
 	class="h-40 flex w-full align-middle justify-center lg:justify-start p-2 md:p-4 xl:p-8 bg-cover bg-center fixed -z-20"
 	style="background-image: url('/assets/header/background{$darkTheme ? '-dark' : ''}.jpg');"
 >
-	<div class="flex flex-row space-x-10 items-center">
+	<div class="flex space-x-10 items-center">
 		<img
 			id="top-logo-image"
 			src="/assets/header/horcica.jpg"

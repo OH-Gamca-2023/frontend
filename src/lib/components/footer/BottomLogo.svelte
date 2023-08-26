@@ -8,7 +8,7 @@
 	style="background-image: url('/assets/footer/background{$darkTheme ? '-dark' : ''}.jpg');"
 >
 	<div id="sponsors" class="w-full lmd:w-1/2 h-full flex flex-col m-2 xl:-mt-4">
-		<div class="flex flex-row justify-center items-center text-white font-bold text-2xl pb-2">
+		<div class="flex justify-center items-center text-white font-bold text-2xl pb-2">
 			Naši sponzori:
 		</div>
 		<Sponsors />

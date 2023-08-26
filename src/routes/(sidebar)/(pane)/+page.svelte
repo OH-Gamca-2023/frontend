@@ -34,7 +34,7 @@
 		{#each posts as post}
 			<a
 				href="/post/{post.id}"
-				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-1 w-full flex-row"
+				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-1 w-full"
 			>
 				<div class="flex flex-col justify-between flex-1 items-left">
 					<h3 class="text-lg font-bold">{post.title}</h3>
@@ -62,7 +62,7 @@
 			</a>
 		{:else}
 			<div
-				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex flex-row py-2 w-full justify-center"
+				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full justify-center"
 			>
 				<p class="text-lg font-medium">Nenašli sa žiadne príspevky</p>
 			</div>
@@ -83,7 +83,7 @@
 		{#each disciplines as discipline}
 			<a
 				href="/discipline/{discipline.id}"
-				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-1 w-full flex-row"
+				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-1 w-full"
 			>
 				<div class="flex flex-col flex-grow justify-between">
 					<h3 class="text-lg font-semibold">{discipline.name}</h3>
@@ -129,7 +129,7 @@
 			</a>
 		{:else}
 			<div
-				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex flex-row py-2 w-full justify-center"
+				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full justify-center"
 			>
 				<p class="text-lg font-medium">Nenašli sa žiadne disciplíny</p>
 			</div>

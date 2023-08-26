@@ -126,7 +126,7 @@
 <h4 class="text-gray-800 dark:text-gray-100 pb-4">Vyberte si spôsob prihlásenia</h4>
 <button
 	id="microsoft-login"
-	class="flex flex-row items-center justify-center
+	class="flex items-center justify-center
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2 mb-6
                     hover:bg-gray-200 dark:hover:bg-gray-900 relative"
 	class:cursor-pointer={!loginPending}
@@ -141,7 +141,7 @@
 		class:opacity-30={loginPending}
 	/>
 	{#if loginPending}
-		<div class="absolute w-full h-full flex flex-row items-center justify-center">
+		<div class="absolute w-full h-full flex items-center justify-center">
 			<Icon icon="mdi:loading" class="w-10 h-10 animate-spin" />
 			{#if loginStatus || $settings.debugMode.value}
 				<div class="ml-4 flex flex-col">
@@ -156,7 +156,7 @@
 </button>
 <a
 	id="password-login"
-	class="flex flex-row items-center justify-center font-semibold w-full
+	class="flex items-center justify-center font-semibold w-full
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
                     hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer mb-3"
 	class:cursor-pointer={!loginPending}
@@ -171,7 +171,7 @@
 </a>
 <a
 	id="admin-login"
-	class="flex flex-row items-center justify-center w-full
+	class="flex items-center justify-center w-full
                     bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg px-4 py-2
                     hover:bg-gray-200 dark:hover:bg-gray-900 cursor-pointer"
 	class:cursor-pointer={!loginPending}

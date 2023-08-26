@@ -10,11 +10,11 @@
 </script>
 
 <div class="flex flex-col rounded-2xl p-1 event {item.className}">
-	<div class="flex flex-row justify-start items-center header pl-2">
+	<div class="flex justify-start items-center header pl-2">
 		<span class="text-lg font-bold">{item.title}</span>
 	</div>
 	<div class="flex flex-col body p-2 rounded-xl">
-		<div class="flex flex-row justify-between items-center">
+		<div class="flex justify-between items-center">
 			<Icon icon="mdi:calendar" class="h-4 w-4" />
 			<span class="text-sm"
 				>{String(item.date.getDate()).padStart(2, '0')}.&nbsp;{String(
@@ -23,7 +23,7 @@
 			>
 		</div>
 		{#if event.start_time}
-			<div class="flex flex-row justify-between items-center">
+			<div class="flex justify-between items-center">
 				<Icon icon="mdi:clock-outline" class="h-4 w-4" />
 				<span class="text-sm"
 					>{#if event.end_time}
@@ -35,13 +35,13 @@
 			</div>
 		{/if}
 		{#if event.location}
-			<div class="flex flex-row justify-between items-center">
+			<div class="flex justify-between items-center">
 				<Icon icon="mdi:map-marker" class="h-4 w-4" />
 				<span class="text-sm">{event.location}</span>
 			</div>
 		{/if}
 		{#if discipline && (discipline.details_published || discipline.results_published)}
-			<div class="flex flex-row justify-between items-center">
+			<div class="flex justify-between items-center">
 				<Icon icon="mdi:book-open-page-variant" class="mr-5" />
 				<a
 					href={`/discipline/${discipline.id}`}

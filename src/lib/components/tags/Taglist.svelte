@@ -7,33 +7,39 @@
 	export let tags: string[] | undefined = undefined
 
 	export let wrapper = true
+
+	export let alwaysBig = false
 </script>
 
 {#if wrapper}
-	<div class="flex flex-row pt-2 flex-wrap gap-2 {$$props.class}">
-		<svelte:self {post} {discipline} {tags} wrapper={false} />
+	<div class="flex pt-2 flex-wrap gap-2 {$$props.class}">
+		<svelte:self {post} {discipline} {tags} wrapper={false} {alwaysBig} />
 	</div>
 {:else}
 	{#if post}
 		{#each post.discipline_categories as category}
-			<Tag name={category?.name} styleClass={category?.calendarClass} />
+			<Tag name={category?.name} styleClass={category?.calendarClass} {alwaysBig} />
 		{/each}
 		{#each post.affected_grades as grade}
-			<Tag name={grade?.name} />
+			<Tag name={grade?.name} {alwaysBig} />
 		{/each}
 		{#each post.tags as tag}
-			<Tag name={tag?.name} />
+			<Tag name={tag?.name} {alwaysBig} />
 		{/each}
 	{/if}
 	{#if discipline}
-		<Tag name={discipline.category?.name} styleClass={discipline.category?.calendarClass} />
+		<Tag
+			name={discipline.category?.name}
+			styleClass={discipline.category?.calendarClass}
+			{alwaysBig}
+		/>
 		{#each discipline.target_grades as grade}
-			<Tag name={grade?.name} />
+			<Tag name={grade?.name} {alwaysBig} />
 		{/each}
 	{/if}
 	{#if tags}
 		{#each tags as tag}
-			<Tag name={tag} />
+			<Tag name={tag} {alwaysBig} />
 		{/each}
 	{/if}
 {/if}
