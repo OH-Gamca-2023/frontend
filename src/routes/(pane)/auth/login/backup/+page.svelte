@@ -19,7 +19,7 @@
 	let statusDetails = ''
 	let error = ''
 
-	$: !$settings.backupMicrosoftOAuth && browser && goto('/auth/login/')
+	$: !$settings.backupMicrosoftOAuth?.value && browser && goto('/auth/login/')
 
 	if (loginPending) {
 		loginStatus = 'Overujem údaje...'
