@@ -3,7 +3,7 @@ import { graphConfig, loginRequest, msalConfig, tokenRequest } from "./authConfi
 import { callMSGraph } from "./graph";
 
 const msalApp = new PublicClientApplication(msalConfig);
-await msalApp.initialize();
+export const msalInitialization = msalApp.initialize();
 
 export async function signIn() {
     if(msalApp.getAllAccounts().length > 0) {

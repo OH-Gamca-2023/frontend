@@ -5,7 +5,7 @@
 	import { toast } from '$lib/utils/toasts'
 	import { onMount } from 'svelte'
 	import Icon from '$lib/components/Icon.svelte'
-	import { getProfile, signIn } from '$lib/auth'
+	import { getProfile, msalInitialization, signIn } from '$lib/auth'
 	import { BrowserAuthError } from '@azure/msal-browser'
 	import { getApiHost } from '$lib/data/api'
 	import { setAccessToken } from '$lib/state/token'
@@ -22,6 +22,7 @@
 	async function microsoftLogin() {
 		clearStatus()
 		;(loginPending = true), (statusDetails = 'Pripravujem prihlásenie')
+		await msalInitialization
 		const respP = signIn()
 		statusDetails = 'Bolo otvorené prihlasovacie okno'
 		try {
