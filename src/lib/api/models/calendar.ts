@@ -20,7 +20,7 @@ export const calendarData = new LoadableModel<CalendarData>(
 				},
 				get grades() {
 					return grades.map((grade: string) => gradesModel.get(grade))
-				}
+				},
 			} as CalendarEvent
 		})
 

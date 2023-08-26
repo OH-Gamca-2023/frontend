@@ -16,8 +16,10 @@ function decodeToken(rawToken: string) {
 	const [random, encodedLayer2] = rawToken.split('.')
 
 	const encodedLayer1 = Buffer.from(encodedLayer2, 'base64').map((byte) => byte ^ Number(random))
-	const tokenString = Buffer.from(encodedLayer1).map((byte) => byte ^ 0x41).toString()
-	
+	const tokenString = Buffer.from(encodedLayer1)
+		.map((byte) => byte ^ 0x41)
+		.toString()
+
 	const [base64Token, expiryDate] = tokenString.split('.')
 	const token = Buffer.from(base64Token, 'base64').toString()
 
@@ -49,7 +51,9 @@ export function getAccessToken(): string | undefined {
 export function setAccessToken(token: string | undefined, expiry?: string) {
 	if (!browser) return
 	if (token) {
-		const expires = expiry ? new Date(expiry).getTime() : new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+		const expires = expiry
+			? new Date(expiry).getTime()
+			: new Date().getTime() + 1000 * 60 * 60 * 24 * 7
 		localStorage.setItem('token', encodeToken(token, expires))
 		currentTokenExpiry = expires
 	} else {

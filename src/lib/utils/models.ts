@@ -82,16 +82,19 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 			console.debug(`[model ${this.apiUrl}] loading`)
 			this.load()
 		}
-		
+
 		addReconnectListener(() => {
 			// Attempt to reload the model when the connection is re-established
 			console.debug(`[model ${this.apiUrl}] connection re-established, updating`)
 			this.load(true)
 		})
-		
+
 		this.onLoaded(() => {
-			this.dependencies.forEach((dep) => dep.subscribe(() => {
-				this.triggerUpdated()}))
+			this.dependencies.forEach((dep) =>
+				dep.subscribe(() => {
+					this.triggerUpdated()
+				}),
+			)
 		})
 	}
 
@@ -359,7 +362,8 @@ export class PartialModel<T> extends LoadableModel<T> {
 					obj.fromServer = true
 					this.data.set(data.id.toString(), obj)
 				} else if (response.status === 404) {
-					if (this.data.has(id.toString())) console.debug(`[partial m. ${this.apiUrl}] deleting object ${id}`)
+					if (this.data.has(id.toString()))
+						console.debug(`[partial m. ${this.apiUrl}] deleting object ${id}`)
 					this.data.delete(id.toString())
 
 					this.removeCached(id.toString())

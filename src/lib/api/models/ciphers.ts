@@ -19,17 +19,19 @@ export const ciphers = new LoadableModel<Cipher>(
 			end: new Date(rawData.end),
 			has_ended: rawData.has_ended,
 			get submissions() {
-				if(!this.started) return Promise.resolve([])
+				if (!this.started) return Promise.resolve([])
 				if (!submissionPromiseCache.has(this.id)) {
 					submissionPromiseCache.set(this.id, loadCipherSubmissions(this.id))
 				}
 				return submissionPromiseCache.get(this.id)
 			},
-			data: rawData.data ? {
-				solved: rawData.data.solved,
-				after_hint: rawData.data.after_hint,
-				attempts: rawData.data.attempts,
-			} : null,
+			data: rawData.data
+				? {
+						solved: rawData.data.solved,
+						after_hint: rawData.data.after_hint,
+						attempts: rawData.data.attempts,
+				  }
+				: null,
 		} as Cipher
 
 		if (rawData.hint_publish_time) {
@@ -57,11 +59,10 @@ export const ciphers = new LoadableModel<Cipher>(
 export async function loadCipherSubmissions(id: number): Promise<Submission[]> {
 	const submissions = await getCipherSubmissions(id)
 	if (submissions.error) {
-		console.error(
-			(submissions as ErrorResponse).status,
-			(submissions as ErrorResponse).data,
+		console.error((submissions as ErrorResponse).status, (submissions as ErrorResponse).data)
+		throw new Error(
+			`Error loading submissions for cipher ${id}: ${(submissions as ErrorResponse).data?.message}`,
 		)
-		throw new Error(`Error loading submissions for cipher ${id}: ${(submissions as ErrorResponse).data?.message}`)
 	}
 	if (!submissions.data) {
 		console.error('No submissions data received for cipher', id)
@@ -73,7 +74,7 @@ export async function loadCipherSubmissions(id: number): Promise<Submission[]> {
 			...raw,
 			time: new Date(raw.time),
 		} as Submission
-	}) 
+	})
 	parsedSubmissions.sort((a, b) => b.time.getTime() - a.time.getTime())
 	return parsedSubmissions
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { darkTheme, setValue, settings } from '$lib/data/settings'
+	import { setValue, settings } from '$lib/data/settings'
 	import { categories } from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
 	import { fade, slide } from 'svelte/transition'

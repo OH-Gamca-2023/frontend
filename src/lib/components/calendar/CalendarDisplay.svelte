@@ -30,7 +30,6 @@
 		<span class="day-name" class:dark={$darkTheme}>{header}</span>
 	{/each}
 	{#each days as day, index}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<span
 			class="day"
 			class:day-disabled={!day.enabled}
