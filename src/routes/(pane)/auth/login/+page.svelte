@@ -16,7 +16,7 @@
 	let statusDetails = ''
 	let error = ''
 
-	$: $settings.backupMicrobackupsoftOAuth?.value && browser && goto('/auth/login/backup/')
+	$: $settings.backupMicrosoftOAuth.value && browser && goto('/auth/login/backup/')
 
 	function clearStatus() {
 		;(loginPending = false), (loginStatus = ''), (statusDetails = ''), (error = '')
