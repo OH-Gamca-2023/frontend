@@ -24,6 +24,16 @@ const settings: Settings = {
         key: 'debugMode',
         value: false,
     },
+    'backupMicrosoftOAuth': {   
+        name: 'Alternatívne prihlasovanie pre Microsoft',
+        description: 'Ak je zapnuté, použije sa prihlasovací systém na základe presmerovania namiesto štandardného SPA systému. '
+                    + 'Neodporúča sa používať ale vie pomôcť pri niektorých problémoch s prihlásením.',
+        userEditable: true,
+        type: 'boolean',
+
+        key: 'backupMicrosoftOAuth',
+        value: false,
+    },
     'requireLogin': {
         name: 'Vyžadovať prihlásenie',
         description: 'Ak je zapnuté, stránka sa dá používať iba po prihlásení',

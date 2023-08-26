@@ -9,11 +9,14 @@
 	import { BrowserAuthError } from '@azure/msal-browser'
 	import { getApiHost } from '$lib/data/api'
 	import { setAccessToken } from '$lib/state/token'
+	import { browser } from '$app/environment'
 
 	let loginPending = false
 	let loginStatus = ''
 	let statusDetails = ''
 	let error = ''
+
+	$: $settings.backupMicrosoftOAuth && browser && goto('/auth/login/backup/')
 
 	function clearStatus() {
 		;(loginPending = false), (loginStatus = ''), (statusDetails = ''), (error = '')

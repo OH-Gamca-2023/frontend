@@ -21,5 +21,6 @@ export interface GenericSettings {
 export interface Settings extends GenericSettings {
     darkMode: Setting<boolean>;
     debugMode: Setting<boolean>;
+    backupMicrosoftOAuth: Setting<boolean>;
     requireLogin: Setting<boolean>;
 }
