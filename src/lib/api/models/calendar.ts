@@ -35,3 +35,19 @@ export const calendarData = new LoadableModel<CalendarData>(
 	'single',
 	true,
 )
+
+// Update calendar when userState changes
+import { userState } from '$lib/state'
+import { get } from 'svelte/store'
+let previusUser = get(userState).loggedIn ? get(userState).user?.id : null
+userState.subscribe((user) => {
+	if (user.loggedIn) {
+		if (previusUser !== user.user?.id) {
+			previusUser = user.user?.id
+			calendarData.reload()
+		}
+	} else {
+		previusUser = null
+		calendarData.reload()
+	}
+})
