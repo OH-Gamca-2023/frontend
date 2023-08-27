@@ -33,9 +33,9 @@
 >
 	<div id="computer" class="hidden lmd:flex items-center justify-between flex-1 w-full">
 		<div id="left" class="flex items-center justify-start">
-			<div id="home" transition:fade|global>
+			<div id="home" transition:fade>
 				<a href="/">
-					<Icon icon="carbon:home" class="h-6 w-6" />
+					<Icon icon="mdi:home-outline" class="h-7 w-7" />
 				</a>
 			</div>
 			<div
@@ -76,7 +76,7 @@
 								from-zinc-200 to-zinc-300 dark:from-zinc-900 dark:to-zinc-950 z-10
 								bg-gradient-to-b border border-zinc-300 dark:border-zinc-700 border-t-0"
 								style="top: -1px"
-								transition:slide|global={{ duration: 500 }}
+								transition:slide={{ duration: 500 }}
 							>
 								{#each categoriesIterable as category}
 									<a
@@ -95,7 +95,7 @@
 						href="/results"
 						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
-						<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
+						<Icon icon="mdi:format-list-numbered" class="h-6 w-6" />
 						<span>Výsledky</span>
 					</a>
 				</div>
@@ -104,7 +104,7 @@
 						href="/calendar"
 						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
-						<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
+						<Icon icon="mdi:calendar-month" class="h-6 w-6" />
 						<span>Kalendár</span>
 					</a>
 				</div>
@@ -113,7 +113,7 @@
 						href="/ciphers"
 						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
-						<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
+						<Icon icon="mdi:puzzle-outline" class="h-6 w-6 -mt-[1px] " />
 						<span>Šifrovačka</span>
 					</a>
 				</div>
@@ -170,7 +170,7 @@
 				sticky top-0 flex flex-col justify-start items-start
 				[&>*]:w-full [&>*]:py-3 [&>*]:px-4 divide-y
 				divide-zinc-300 dark:divide-zinc-700"
-			transition:slide|global
+			transition:slide
 		>
 			<div class="flex justify-between">
 				<a
@@ -179,7 +179,7 @@
 					class="flex items-center justify-start px-2 -py-1"
 					on:click={() => (sidebarOpen = !sidebarOpen)}
 				>
-					<Icon icon="tabler:home" class="h-7 w-7 cursor-pointer" />
+					<Icon icon="mdi:home-outline" class="h-7 w-7 cursor-pointer" />
 				</a>
 
 				<button
@@ -214,7 +214,7 @@
 								: ''}"
 						/>
 					{/await}
-					<Icon icon="bxs:category-alt" class="h-6 w-6" />
+					<Icon icon="iconamoon:category" class="h-6 w-6" />
 					<span>Kategórie</span>
 				</button>
 				{#if categoriesOpen}
@@ -237,15 +237,15 @@
 				{/if}
 			</div>
 			<a href="/results" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
-				<Icon icon="material-symbols:format-list-bulleted-rounded" class="h-6 w-6" />
+				<Icon icon="mdi:format-list-numbered" class="h-6 w-6" />
 				<span>Výsledky</span>
 			</a>
 			<a href="/calendar" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
-				<Icon icon="material-symbols:calendar-month-rounded" class="h-6 w-6" />
+				<Icon icon="mdi:calendar-month" class="h-6 w-6" />
 				<span>Kalendár</span>
 			</a>
 			<a href="/ciphers" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
-				<Icon icon="tabler:puzzle" class="h-6 w-6" style="scale: -1 1;" />
+				<Icon icon="mdi:puzzle-outline" class="h-6 w-6 -mt-[1px]" />
 				<span>Šifrovačka</span>
 			</a>
 		</div>

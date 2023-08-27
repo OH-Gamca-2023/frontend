@@ -21,7 +21,7 @@
 	</div>
 	{#if email && user.email}
 		<div class="flex justify-between items-center">
-			<Icon icon="entypo:email" />
+			<Icon icon="mdi:at" />
 			<a
 				class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
 				href="mailto:{user.email}{mail_subject ? `?subject=${mail_subject}` : ``}">{user.email}</a
@@ -30,7 +30,7 @@
 	{/if}
 	{#if phone && user.phone_number}
 		<div class="flex justify-between items-center">
-			<Icon icon="ph:phone-bold" />
+			<Icon icon="mdi:phone" />
 			<a
 				class="text-md text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
 				href="tel:{user.phone_number}">{user.phone_number}</a

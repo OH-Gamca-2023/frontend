@@ -46,7 +46,7 @@
 				<div class="flex flex-col items-right text-right gap-1 font-medium">
 					<span class="flex items-center gap-1 md:gap-2 md:justify-end">
 						<span class="order-2">{authorFullName}</span>
-						<Icon icon="wpf:name" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
+						<Icon icon="mdi:account" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
 					</span>
 					<div class="flex items-center gap-1 md:gap-2 md:justify-end">
 						<span class="order-2">

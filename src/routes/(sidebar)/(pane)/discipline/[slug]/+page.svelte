@@ -245,7 +245,7 @@
 									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500"
 								>
-									<Icon icon="octicon:x-12" />
+									<Icon icon="mdi:close-octagon-outline" class="w-8 h-8" />
 									<span class="text-md">Zatiaľ nikto</span>
 								</div>
 							{/if}
@@ -265,7 +265,7 @@
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
-										<Icon icon="octicon:x-12" class="w-6 h-6" />
+										<Icon icon="mdi:close-thick" class="w-6 h-6" />
 										Odhlásiť sa
 									</button>
 								{:else}
@@ -274,7 +274,7 @@
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
-										<Icon icon="typcn:plus" class="w-6 h-6" />
+										<Icon icon="mdi:plus-thick" class="w-6 h-6" />
 										Pridať sa
 									</button>
 								{/if}
@@ -313,7 +313,7 @@
 									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
 								border-b border-neutral-400 dark:border-neutral-500"
 								>
-									<Icon icon="octicon:x-12" />
+									<Icon icon="mdi:close-octagon-outline" class="w-8 h-8" />
 									<span class="text-md">Zatiaľ nikto</span>
 								</div>
 							{/if}
@@ -333,7 +333,7 @@
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
-										<Icon icon="octicon:x-12" />
+										<Icon icon="mdi:close-thick" class="w-6 h-6" />
 										Odhlásiť sa
 									</button>
 								{:else}
@@ -342,7 +342,7 @@
 								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
-										<Icon icon="typcn:plus" />
+										<Icon icon="mdi:plus-thick" class="w-6 h-6" />
 										Pridať sa
 									</button>
 								{/if}

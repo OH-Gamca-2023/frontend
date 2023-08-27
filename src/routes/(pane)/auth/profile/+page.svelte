@@ -371,10 +371,10 @@
 								disabled={savingProfile}
 							>
 								{#if savingProfile}
-									<Icon icon="mdi:loading" class="w-4 h-4 mr-2 animate-spin" />
+									<Icon icon="mdi:loading" class="w-5 h-5 mr-2 animate-spin" />
 									Ukladám...
 								{:else}
-									<Icon icon="material-symbols:save" class="w-4 h-4 mr-2" />
+									<Icon icon="mdi:content-save" class="w-5 h-5 mr-2" />
 									Uložiť zmeny
 								{/if}
 							</button>
@@ -443,10 +443,10 @@
 								disabled={changingPassword}
 							>
 								{#if changingPassword}
-									<Icon icon="mdi:loading" class="w-4 h-4 mr-2 animate-spin" />
+									<Icon icon="mdi:loading" class="w-5 h-5 mr-2 animate-spin" />
 									Ukladám...
 								{:else}
-									<Icon icon="material-symbols:vpn-key" class="w-6 h-6 mr-2" />
+									<Icon icon="mdi:key" class="w-5 h-5 mr-2" />
 									Zmeniť heslo
 								{/if}
 							</button>
@@ -463,10 +463,10 @@
 					disabled={loggingOutAll}
 				>
 					{#if loggingOutAll}
-						<Icon icon="mdi:loading" class="w-4 h-4 mr-2 animate-spin" />
+						<Icon icon="mdi:loading" class="w-5 h-5 mr-2 animate-spin" />
 						Odhlasujem...
 					{:else}
-						<Icon icon="material:logout" class="w-6 h-6 mr-2" />
+						<Icon icon="mdi:logout-variant" class="w-6 h-6 mr-2" />
 						Odhlásiť
 					{/if}
 				</button>

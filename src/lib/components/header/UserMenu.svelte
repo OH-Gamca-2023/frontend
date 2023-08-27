@@ -1,11 +1,11 @@
 <script context="module" lang="ts">
 	export const userRoleDict = {
-		admin: ['Administrátor', 'clarity:administrator-solid'],
-		organiser: ['Organizátor', 'wpf:administrator'],
+		admin: ['Administrátor', 'mdi:account-cog'],
+		organiser: ['Organizátor', 'mdi:account-tie'],
 		teacher: ['Učiteľ', 'mdi:account-student'],
-		student: ['Študent', 'wpf:name'],
-		alumni: ['Absolvent', 'vaadin:academy-cap'],
-		unknown: ['Unknown', 'carbon:unknown-filled'],
+		student: ['Študent', 'mdi:account'],
+		alumni: ['Absolvent', 'mdi:school'],
+		unknown: ['Unknown', 'mdi:account-question-outline'],
 	}
 </script>
 
@@ -37,7 +37,7 @@
 			class="flex items-center justify-center cursor-pointer"
 			on:click={() => (userMenuOpen = !userMenuOpen)}
 		>
-			<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-6 w-6 mr-2" />
+			<Icon icon={userRoleDict[$userState.user?.type ?? 'unknown'][1]} class="h-8 w-8 mr-1" />
 			<div id="user-data" class="flex flex-col items-start justify-center mr-2 ml-2">
 				<div id="user-name" class="text-sm font-medium">
 					{$userState.user?.username ?? 'Neznámy'}
@@ -53,7 +53,7 @@
 			class="flex items-center justify-center"
 			data-tooltip="Odhlásiť sa"
 		>
-			<Icon icon="carbon:logout" class="h-6 w-6 ml-2" />
+			<Icon icon="mdi:logout" class="h-6 w-6 ml-2" />
 		</a>
 		<div class="absolute -bottom-3 left-0 right-0 z-10">
 			{#if userMenuOpen && $userState.loggedIn}
@@ -70,7 +70,7 @@
 						class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 						on:click={() => (userMenuOpen = false)}
 					>
-						<Icon icon="carbon:user-profile" class="h-6 w-6" />
+						<Icon icon="mdi:account-details-outline" class="h-7 w-7" />
 						<span class="ml-2 text-sm font-medium">Profil</span>
 					</a>
 					<a
@@ -78,7 +78,7 @@
 						class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 						on:click={() => (userMenuOpen = false)}
 					>
-						<Icon icon="ph:wrench" class="h-6 w-6" />
+						<Icon icon="mdi:wrench-outline" class="h-7 w-7" />
 						<span class="ml-2 text-sm font-medium">Nastavenia</span>
 					</a>
 					{#if $userState.user?.permissions.staff}
@@ -87,7 +87,7 @@
 							class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
 							on:click={() => (userMenuOpen = false)}
 						>
-							<Icon icon="carbon:settings" class="h-8 w-8" />
+							<Icon icon="mdi:cog-outline" class="h-10 w-10" />
 							<span class="text-sm font-medium text-right">Organizátorské rozhranie</span>
 						</a>
 					{/if}
@@ -97,7 +97,7 @@
 	</div>
 {:else}
 	<a id="login" href="/auth/login" class="flex items-center justify-center cursor-pointer">
-		<Icon icon="carbon:login" class="h-6 w-6 mr-2" />
+		<Icon icon="mdi:login" class="h-6 w-6 mr-2" />
 		Prihlásiť sa
 	</a>
 {/if}
