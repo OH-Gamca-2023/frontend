@@ -7,6 +7,7 @@ export const categories = new LoadableModel<Category>(
 		id: rawCategory.id,
 		name: rawCategory.name,
 		calendarClass: rawCategory.calendar_class,
+		icon: rawCategory.icon,
 	}),
 	true,
 	[],
