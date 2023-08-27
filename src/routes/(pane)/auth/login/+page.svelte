@@ -15,11 +15,16 @@
 	let loginStatus = ''
 	let statusDetails = ''
 	let error = ''
+	let errorDetails = ''
 
 	$: $settings.backupMicrosoftOAuth.value && browser && goto('/auth/login/backup/')
 
 	function clearStatus() {
-		;(loginPending = false), (loginStatus = ''), (statusDetails = ''), (error = '')
+		;(loginPending = false),
+			(loginStatus = ''),
+			(statusDetails = ''),
+			(error = ''),
+			(errorDetails = '')
 	}
 
 	async function microsoftLogin() {
@@ -66,30 +71,35 @@
 							error = data.error.split(':', 2)[1]
 						} else {
 							error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+							errorDetails = JSON.stringify(data)
 						}
 					}
 				} else {
 					clearStatus()
 					console.error('Login error', serverResp)
 					error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+					errorDetails = JSON.stringify(serverResp)
 				}
-			} catch (e) {
+			} catch (e: any) {
 				clearStatus()
 				console.error('Login error', e)
 				error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+				errorDetails = e.message + '\n' + e.stack
 			}
-		} catch (e) {
+		} catch (e: any) {
 			clearStatus()
 			if (e instanceof BrowserAuthError) {
 				if (e.errorCode == 'user_cancelled') {
 					error = 'Prihlásenie bolo zrušené'
 				} else {
-					console.error('Login error', e)
+					console.error('Login error', e, e.errorCode)
 					error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+					errorDetails = e.message + ' ' + e.errorCode
 				}
 			} else {
 				console.error('Login error', e)
 				error = 'Pri prihlasovaní nastala neznáma chyba.<br>Skúste to prosím znovu.'
+				errorDetails = e.message + '\n' + e.stack
 			}
 		}
 	}
@@ -121,6 +131,12 @@
 
 {#if error}
 	<h3 class="text-red-500 dark:text-red-400 font-semibold text-center pb-4">{@html error}</h3>
+{/if}
+
+{#if $settings.debugMode.value && errorDetails}
+	<div class="text-xs text-gray-600 dark:text-gray-300 pb-2">
+		{errorDetails}
+	</div>
 {/if}
 
 <h4 class="text-gray-800 dark:text-gray-100 pb-4">Vyberte si spôsob prihlásenia</h4>
