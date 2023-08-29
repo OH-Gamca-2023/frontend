@@ -9,6 +9,7 @@ import type { LoadableModel } from '$lib/utils/models'
 class InternalUserState implements Readable<UserState> {
 	private subscribers: Set<Subscriber<UserState>> = new Set()
 	private modelsUpdatingOnUserChange = new Set<LoadableModel<any>>()
+	private wasModelsUpdateTriggered = false
 
 	private previousUser: number | null | undefined = undefined
 	private currentState: UserState = {
@@ -37,12 +38,14 @@ class InternalUserState implements Readable<UserState> {
 				console.debug('[UserState] Reloading model', model.getApiUrl())
 				model.reload()
 			})
+			this.wasModelsUpdateTriggered = true
 		} else if (this.previousUser !== newState.user?.id) {
 			this.previousUser = newState.user?.id || null
 			this.modelsUpdatingOnUserChange.forEach(model => {
 				console.debug('[UserState] Reloading model', model.getApiUrl())	
 				model.reload()
 			})
+			this.wasModelsUpdateTriggered = true
 		}
 		
 		this.subscribers.forEach((subscriber) => subscriber(newState))
@@ -145,6 +148,10 @@ class InternalUserState implements Readable<UserState> {
 
 	public registerModel(model: LoadableModel<any>) {
 		this.modelsUpdatingOnUserChange.add(model)
+		if(this.wasModelsUpdateTriggered) {
+			console.debug('[UserState] Reloading model', model.getApiUrl())
+			model.reload()
+		}
 	}
 
 	public unregisterModel(model: LoadableModel<any>) {

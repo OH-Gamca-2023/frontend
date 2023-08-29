@@ -37,4 +37,7 @@ export const calendarData = new LoadableModel<CalendarData>(
 	true,
 )
 
-userState.registerModel(calendarData)
+setTimeout(async () => {
+	const { userState } = await import('$lib/state')
+	userState.registerModel(calendarData)
+}, 100)

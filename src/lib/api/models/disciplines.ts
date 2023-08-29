@@ -3,7 +3,6 @@ import { PartialModel } from '$lib/utils/models'
 import { get } from 'svelte/store'
 import { categories, grades, tags } from '$lib/api/models/generic'
 import { getUser, setRawUser } from '../../data/users'
-import { userState } from '$lib/state'
 
 class DisciplineModel extends PartialModel<Discipline> {
 	constructor() {
@@ -73,4 +72,8 @@ class DisciplineModel extends PartialModel<Discipline> {
 }
 
 export const disciplines = new DisciplineModel()
-userState.registerModel(disciplines)
+
+setTimeout(async () => {
+	const { userState } = await import('$lib/state')
+	userState.registerModel(disciplines)
+}, 100)
