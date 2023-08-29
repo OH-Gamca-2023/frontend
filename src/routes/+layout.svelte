@@ -22,7 +22,9 @@
 		posts,
 		tags,
 	} from '$lib/api/models'
+	import { initConsoleLog } from '$lib/utils/consoleLog'
 
+	initConsoleLog()
 	onMount(startConnectionCheck)
 
 	$: loginRequired = $settings.requireLogin.value

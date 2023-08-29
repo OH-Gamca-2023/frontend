@@ -93,8 +93,10 @@ const handler: (value: Settings) => void = ($settings) => {
     }
 }
 
-settings.subscribe(handler)
-handler(get(settings))
+export function initConsoleLog() {
+    settings.subscribe(handler)
+    handler(get(settings))
+}
 
 
 export default consoleLogReadable
