@@ -95,7 +95,6 @@
 <style lang="scss">
 	.app {
 		min-height: 100vh;
-		min-width: 100vw;
 
 		&.dark {
 			color: #fff;
