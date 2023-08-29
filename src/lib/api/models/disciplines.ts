@@ -65,6 +65,15 @@ class DisciplineModel extends PartialModel<Discipline> {
 			true,
 		)
 	}
+
+	protected shouldCache(respData: any): boolean {
+		return respData.date_published || respData.details_published || respData.results_published
+	}
 }
 
 export const disciplines = new DisciplineModel()
+
+setTimeout(async () => {
+	const { userState } = await import('$lib/state')
+	userState.registerModel(disciplines)
+}, 100)

@@ -3,10 +3,15 @@ import type { Readable, Subscriber } from 'svelte/store'
 import type { UserState } from '$lib/types'
 import { clazzes } from '$lib/api/models'
 import { getAccessToken, setAccessToken } from './token'
+import type { LoadableModel } from '$lib/utils/models'
+
 
 class InternalUserState implements Readable<UserState> {
 	private subscribers: Set<Subscriber<UserState>> = new Set()
+	private modelsUpdatingOnUserChange = new Set<LoadableModel<any>>()
+	private wasModelsUpdateTriggered = false
 
+	private previousUser: number | null | undefined = undefined
 	private currentState: UserState = {
 		user: null,
 		loggedIn: false,
@@ -26,6 +31,23 @@ class InternalUserState implements Readable<UserState> {
 
 	set state(newState: UserState) {
 		this.currentState = newState
+		
+		if(this.previousUser === undefined) {
+			this.previousUser = newState.user?.id || null
+			this.modelsUpdatingOnUserChange.forEach(model => {
+				console.debug('[UserState] Reloading model', model.getApiUrl())
+				model.reload()
+			})
+			this.wasModelsUpdateTriggered = true
+		} else if (this.previousUser !== newState.user?.id) {
+			this.previousUser = newState.user?.id || null
+			this.modelsUpdatingOnUserChange.forEach(model => {
+				console.debug('[UserState] Reloading model', model.getApiUrl())	
+				model.reload()
+			})
+			this.wasModelsUpdateTriggered = true
+		}
+		
 		this.subscribers.forEach((subscriber) => subscriber(newState))
 	}
 
@@ -123,6 +145,19 @@ class InternalUserState implements Readable<UserState> {
 		await this.fetchUser()
 		return true
 	}
+
+	public registerModel(model: LoadableModel<any>) {
+		this.modelsUpdatingOnUserChange.add(model)
+		if(this.wasModelsUpdateTriggered) {
+			console.debug('[UserState] Reloading model', model.getApiUrl())
+			model.reload()
+		}
+	}
+
+	public unregisterModel(model: LoadableModel<any>) {
+		this.modelsUpdatingOnUserChange.delete(model)
+	}
+	
 }
 
 export const userState = new InternalUserState()

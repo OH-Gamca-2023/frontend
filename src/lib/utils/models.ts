@@ -98,6 +98,10 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		})
 	}
 
+	public getApiUrl(): string {
+		return this.apiUrl
+	}
+
 	/**
 	 * Attempts to load the model from the cache
 	 */
@@ -205,9 +209,16 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		this.saveToCache(respData)
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	protected shouldCache(respData: any): boolean {
+		return true  // Intended to be overridden
+	}
+
 	protected saveToCache(respData: any) {
 		if (!browser) return
 		if (!this.cache) return
+
+		if(!this.shouldCache(respData)) return
 
 		if (this.type == 'single') {
 			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(respData))

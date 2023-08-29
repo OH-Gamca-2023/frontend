@@ -17,14 +17,15 @@
 <svelte:window on:resize={() => window.innerWidth > 860 && (sidebarOpen = false)} />
 
 <navbar
-	class="h-14 p-2 flex
+	class="min-h-14 p-2 flex
         bg-gradient-to-b from-gray-100 to-gray-200
         dark:from-gray-800 dark:to-gray-900
         border-b border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200 pl-4 pr-4
         shadow-md sticky top-0 z-50"
 >
-	<div id="computer" class="hidden lmd:flex items-center justify-between flex-1 w-full">
+	<div class="h-10" />
+	<div id="computer" class="hidden lmd:flex items-center justify-between flex-grow flex-wrap">
 		<div id="left" class="flex items-center justify-start">
 			<div id="home">
 				<a href="/">
@@ -45,8 +46,8 @@
 					</a>
 				</div>
 				<div class="relative">
-					<a class="flex gap-1 cursor-pointer rounded-md p-1 relative" href="/disciplines">
-						<Icon icon="iconamoon:category" class="h-6 w-6" />
+					<a class="flex cursor-pointer rounded-md p-1 relative" href="/disciplines">
+						<Icon icon="iconamoon:category" class="h-6 w-6 mr-1" />
 						<span>Disciplíny</span>
 						{#await categories.load()}
 							<Icon icon="mdi:loading" class="w-6 h-6 animate-spin opacity-50 ml-2" />
@@ -54,7 +55,7 @@
 							<button on:click|preventDefault={() => (categoriesOpen = !categoriesOpen)}>
 								<Icon
 									icon="tabler:chevron-left"
-									class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
+									class="ml-2 h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
 										? '-rotate-90'
 										: ''}"
 								/>
@@ -67,7 +68,6 @@
 								class="flex flex-col gap-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
 								from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-950 z-10
 								bg-gradient-to-b border border-gray-300 dark:border-gray-700 border-t-0"
-								style="top: -1px"
 								transition:slide={{ duration: 500 }}
 							>
 								{#each categoriesIterable as category}
@@ -116,7 +116,7 @@
 			id="right"
 			class="flex items-center justify-end divide-x
 				divide-gray-300 dark:divide-gray-700
-				[&>*]:pr-2 [&>*]:pl-2"
+				[&>*]:pr-2 [&>*]:pl-2 flex-grow"
 		>
 			<UserMenu />
 			<button
