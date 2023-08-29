@@ -30,7 +30,7 @@
 	} as { [key in ConsoleLogEntry['type']]: { class: string; icon: string } }
 </script>
 
-<div class="flex flex-col min-w-[50rem] max-w-[50rem]">
+<div class="flex flex-col min-w-full lmd:min-w-[50rem] max-w-[50rem]">
 	<span class="text-xl font-bold">Debug</span>
 	<div class="flex justify-between">
 		<span class="text-lg">State</span>

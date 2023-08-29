@@ -10,6 +10,11 @@
 	import { getApiHost } from '$lib/data/api'
 	import { setAccessToken } from '$lib/state/token'
 	import { browser } from '$app/environment'
+	import { getUserDetails } from '$lib/api'
+	import type { User } from '$lib/types'
+	import type { PageData } from './$types'
+
+	export let data: PageData
 
 	let loginPending = false
 	let loginStatus = ''
@@ -17,7 +22,81 @@
 	let error = ''
 	let errorDetails = ''
 
+	// If backup login is enabled, redirect to it
 	$: $settings.backupMicrosoftOAuth.value && browser && goto('/auth/login/backup/')
+
+	// Data processing for secondary login (uses backup login)
+	if (data.status !== 'none') {
+		;(loginPending = true),
+			(loginStatus = 'Overujem údaje...'),
+			(statusDetails = 'Spracovávam odpoveď zo serveru')
+
+		const response = data.params
+		if (response.status === 'error') {
+			console.warn('[BACKUPL] Login error', response)
+			clearStatus()
+			if (response.error.startsWith('STRERROR')) {
+				error = 'Nastala chyba pri prihlasovaní: ' + response.error.split(':', 2)[1]
+			} else {
+				error = 'Pri prihlasovaní nastala chyba. Skúste to prosím znovu.'
+			}
+		} else if (response.status === 'success') {
+			try {
+				;(async () => {
+					const userToken = JSON.parse(response.user_token)
+					const user = JSON.parse(response.logged_user) as User
+
+					loginStatus = 'Overujem prihlásenie...'
+					statusDetails = 'Zisťujem prihláseného používateľa'
+
+					setAccessToken(userToken.token, userToken.expiry)
+
+					const serverStatus = await getUserDetails()
+					if (serverStatus.error) {
+						clearStatus()
+						error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
+						console.error('[BACKUPL] Error getting user details', serverStatus)
+					} else {
+						const serverUser = serverStatus.data
+						if (!serverUser) {
+							clearStatus()
+							error = 'Nastala chyba pri overovaní prihlásenia. Skúste to prosím znovu.'
+							console.error('[BACKUPL] Received invalid user details', serverStatus)
+							return
+						}
+						if (serverUser.id == user.id) {
+							statusDetails = 'Aktualizujem stav prihlásenia'
+
+							await userState.fetchUser()
+							clearStatus()
+							toast({
+								title: 'Prihlásenie úspešné',
+								type: 'success',
+								duration: 3000,
+							})
+							goto('/')
+						}
+					}
+				})()
+			} catch (e) {
+				console.error('[BACKUPL] Failed to parse login data', e)
+				clearStatus()
+				error = 'Nastala chyba pri spracovaní údajov. Skúste to prosím znovu.'
+			}
+		} else {
+			console.error('[BACKUPL] Unknown login response', response)
+			clearStatus()
+			error = 'Nastala chyba pri komunikácii so serverom. Skúste to prosím znovu.'
+		}
+	}
+
+	function backupLogin() {
+		loginPending = true
+		window.open(
+			`${getApiHost()}/auth/begin/microsoft/?next=${window.location.origin}/auth/login/`,
+			'_self',
+		)
+	}
 
 	function clearStatus() {
 		;(loginPending = false),
@@ -32,7 +111,7 @@
 		;(loginPending = true), (statusDetails = 'Pripravujem prihlásenie')
 		await msalInitialization
 		const respP = signIn()
-		statusDetails = 'Bolo otvorené prihlasovacie okno'
+		statusDetails = 'Prihlasovacie okno otvorené'
 		try {
 			const resp = await respP
 			;(loginStatus = 'Spracúvam údaje...'), (statusDetails = 'Získavam údaje o používateľovi')
@@ -91,6 +170,12 @@
 			if (e instanceof BrowserAuthError) {
 				if (e.errorCode == 'user_cancelled') {
 					error = 'Prihlásenie bolo zrušené'
+				} else if (e.errorCode == 'popup_window_error') {
+					;(loginPending = true),
+						(loginStatus = 'Skúšam záložné prihlásenie...'),
+						(statusDetails = 'Zlyhalo prihlasovacie okno')
+					console.error('Popup login failed, falling back to redirect login')
+					backupLogin()
 				} else {
 					console.error('Login error', e, e.errorCode)
 					error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
