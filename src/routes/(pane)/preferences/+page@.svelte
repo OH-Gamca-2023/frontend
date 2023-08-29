@@ -42,7 +42,7 @@
 									class="sr-only peer"
 									bind:checked={$settingsObject[setting.key]}
 									id={setting.key}
-									disabled={isOverridden(setting.key)}
+									disabled={isOverridden(setting.key) || !setting.userEditable}
 								/>
 								<div
 									class="w-11 h-6 bg-gray-300 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300
@@ -56,14 +56,16 @@
 								type="number"
 								class="form-input rounded-md shadow-sm block mt-1 w-full"
 								id={setting.key}
-								disabled={isOverridden(setting.key)}
+								disabled={isOverridden(setting.key) || !setting.userEditable}
+								bind:value={$settingsObject[setting.key]}
 							/>
 						{:else if setting.type == 'string'}
 							<input
 								type="text"
 								class="form-input rounded-md shadow-sm block mt-1 w-full"
 								id={setting.key}
-								disabled={isOverridden(setting.key)}
+								disabled={isOverridden(setting.key) || !setting.userEditable}
+								bind:value={$settingsObject[setting.key]}
 							/>
 						{:else}
 							<i class="text-red-500">Failed to render setting</i>
