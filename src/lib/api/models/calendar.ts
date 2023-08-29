@@ -2,6 +2,7 @@ import { categories } from '$lib/api/models'
 import { grades as gradesModel } from './generic'
 import { LoadableModel } from '$lib/utils/models'
 import type { CalendarData, CalendarEvent, CalendarProps } from '$lib/types/calendar'
+import { userState } from '$lib/state'
 
 export const calendarData = new LoadableModel<CalendarData>(
 	'calendar/auto.json',
@@ -36,25 +37,4 @@ export const calendarData = new LoadableModel<CalendarData>(
 	true,
 )
 
-// Update calendar when userState changes
-let previusUser: number | null | undefined = undefined
-
-setTimeout(async () => {
-	const { userState } = await import('$lib/state')
-	userState.subscribe((state) => {
-		if (previusUser === undefined) {
-			previusUser = state.user?.id || null
-			if (state.loggedIn) calendarData.reload()
-			return
-		}
-		if (state.loggedIn) {
-			if (previusUser !== state.user?.id) {
-				previusUser = state.user?.id || null
-				calendarData.reload()
-			}
-		} else {
-			previusUser = null
-			calendarData.reload()
-		}
-	})
-}, 100)
+userState.registerModel(calendarData)

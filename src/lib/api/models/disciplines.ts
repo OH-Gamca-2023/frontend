@@ -3,6 +3,7 @@ import { PartialModel } from '$lib/utils/models'
 import { get } from 'svelte/store'
 import { categories, grades, tags } from '$lib/api/models/generic'
 import { getUser, setRawUser } from '../../data/users'
+import { userState } from '$lib/state'
 
 class DisciplineModel extends PartialModel<Discipline> {
 	constructor() {
@@ -65,6 +66,11 @@ class DisciplineModel extends PartialModel<Discipline> {
 			true,
 		)
 	}
+
+	protected shouldCache(respData: any): boolean {
+		return respData.date_published || respData.details_published || respData.results_published
+	}
 }
 
 export const disciplines = new DisciplineModel()
+userState.registerModel(disciplines)
