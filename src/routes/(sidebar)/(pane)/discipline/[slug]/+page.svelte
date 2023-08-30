@@ -1,7 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+
 	import 'prismjs/themes/prism.min.css'
-	import '../../../../../markdown.css'
+	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
+	import { highlightPlugin } from '$lib/prism'
+	import Markdown from 'svelte-exmarkdown'
 
 	import { disciplines } from '$lib/api/models'
 	import Icon from '$lib/components/Icon.svelte'
@@ -222,9 +225,19 @@
 				<span class="text-xl font-bold">Detaily</span>
 				{#if discipline.details_published}
 					{#if discipline.details.length > 0}
-						{discipline.details}
+						<div class="prose prose-slate">
+							<Markdown md={discipline.details} plugins={[gfmPlugin, highlightPlugin]} />
+						</div>
 					{:else}
 						<div class="text-red-500 text-lg font-bold">Nastala chyba pri spracovaní údajov</div>
+					{/if}
+				{:else if $userState.user?.permissions.permissions.includes('disciplines.view_hidden')}
+					{#if discipline.details.length > 0}
+						<div class="prose prose-slate dark:prose-invert">
+							<Markdown md={discipline.details} plugins={[gfmPlugin, highlightPlugin]} />
+						</div>
+					{:else}
+						<div class="text-amber-500 text-lg font-bold">Informácie ešte neboli zadané</div>
 					{/if}
 				{:else}
 					<div class="text-amber-500 text-lg font-bold">Informácie ešte neboli zverejnené</div>
