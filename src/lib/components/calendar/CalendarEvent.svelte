@@ -10,8 +10,8 @@
 </script>
 
 <div class="flex flex-col rounded-2xl p-1 event {item.className}">
-	<div class="flex justify-start items-center header pl-2">
-		<span class="text-lg font-bold">{item.title}</span>
+	<div class="flex text-start header px-2">
+		<span class="font-bold" class:text-lg={item.title.length < 15}>{item.title}</span>
 	</div>
 	<div class="flex flex-col body p-2 rounded-xl">
 		<div class="flex justify-between items-center">
@@ -56,7 +56,7 @@
 <style lang="scss">
 	.task--warning {
 		background-color: #fc9b10;
-		color: #fef0db;
+		color: hsl(36, 95%, 95%);
 
 		.body {
 			color: #e69423;
@@ -66,6 +66,7 @@
 
 	.task--danger {
 		background: #f8254e;
+		color: hsl(347, 100%, 95%);
 
 		.body {
 			color: #fa607e;
@@ -75,6 +76,7 @@
 
 	.task--info {
 		background: #0a5eff;
+		color: hsl(220, 100%, 95%);
 
 		.body {
 			color: #4786ff;
@@ -84,6 +86,7 @@
 
 	.task--success {
 		background: #4d9b4d;
+		color: hsl(120, 100%, 95%);
 
 		.body {
 			color: #3c763d;

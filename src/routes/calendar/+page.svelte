@@ -6,6 +6,4 @@
 	<title>Kalendár &centerdot; OH Gamča 2023</title>
 </svelte:head>
 
-<div class="flex flex-col items-center justify-center h-full">
-	<Calendar />
-</div>
+<Calendar />

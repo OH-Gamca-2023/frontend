@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+
 	import 'prismjs/themes/prism.min.css'
-	import '../../../../../markdown.css'
+	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
+	import { highlightPlugin } from '$lib/prism'
+	import Markdown from 'svelte-exmarkdown'
 
 	import { darkTheme } from '$lib/data/settings'
 	import { posts } from '$lib/api/models'
-	import { highlightPlugin } from '$lib/prism'
-	import Markdown from 'svelte-exmarkdown'
-	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 	import Icon from '$lib/components/Icon.svelte'
 	import { browser } from '$app/environment'
 	import { goto } from '$app/navigation'
@@ -74,7 +74,9 @@
 					<span class="text-lg font-bold z-10">Prebieha presmerovanie...</span>
 				</div>
 			{:else}
-				<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
+				<div class="prose prose-slate dark:prose-invert">
+					<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
+				</div>
 			{/if}
 		</div>
 	{:else}
