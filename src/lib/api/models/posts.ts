@@ -22,7 +22,7 @@ class PostModel extends PartialModel<Post> {
 							type: 'admin',
 					  }
 
-				Promise.all(rawPost.related_disciplines.map((id: any) => disciplines.load(id))).then(() => {
+				Promise.all(rawPost.related_disciplines.map((id: any) => disciplines.loadSingle(id, true))).then(() => {
 					this.triggerUpdated()
 				})
 
