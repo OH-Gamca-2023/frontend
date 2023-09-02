@@ -5,26 +5,29 @@
 
 const sw = self as unknown as ServiceWorkerGlobalScope
 
-import { build, files, version } from '$service-worker'
+import { build, files, prerendered, version } from '$service-worker'
 
 // Create a cache name from the current version
 const CACHE_NAME = `cache-${version}`
 
 // Create a list of all the files we want to cache
-const CACHE_FILES = [...build, ...files]
+const CACHE_FILES = [...build, ...files, ...prerendered.map((page) => `${page}index.html`), '/fallback.html']
 
-const IGNORED_PATHS = [
+const IGNORED_OBJECTS = [
+	'robots.txt',
+	'service-worker.js',
+]
+
+const IGNORED_ROOTS = [
 	'/api',
+	'/_webhook',
 	'/admin',
-	'/docker',
 	'/admin_static',
-	'/robots.txt',
 	'/uploads',
-	'/staticfiles',
 ]
 
 // Install the service worker
-sw.addEventListener('install', (event) => {
+sw.addEventListener('install', (event) => { 
 	async function addAll() {
 		const cache = await caches.open(CACHE_NAME)
 		await cache.addAll(CACHE_FILES)
@@ -36,7 +39,6 @@ sw.addEventListener('install', (event) => {
 	sw.skipWaiting()
 })
 
-// Activate the service worker
 sw.addEventListener('activate', (event) => {
 	async function deleteOldCaches() {
 		const keys = await caches.keys()
@@ -47,43 +49,40 @@ sw.addEventListener('activate', (event) => {
 	event.waitUntil(deleteOldCaches())
 })
 
-// Intercept fetch requests
 sw.addEventListener('fetch', (event) => {
-	// Only handle GET requests
-	if (event.request.method !== 'GET') return
+	// Ignore requests which are not GET
+	if(event.request.method !== 'GET') return
 
-	// Ignore requests for certain paths
-	if (
-		IGNORED_PATHS.some((path) => event.request.url.includes(path)) ||
-		event.request.url.includes('?')
-	)
-		return
+	const url = new URL(event.request.url)
 
-	async function respond() {
-		const url = new URL(event.request.url)
-		const cache = await caches.open(CACHE_NAME)
+	// Ignore requests with path starting with something in IGNORED_ROOTS
+	if(IGNORED_ROOTS.some((path) => url.pathname.startsWith(path))) return
+	// Ignore requests with path including something in IGNORED_OBJECTS
+	if(IGNORED_OBJECTS.some((path) => url.pathname.includes(path))) return
+	// Ignore requests with query string
+	if(url.search) return
 
-		if (CACHE_FILES.includes(url.pathname)) {
+	if(prerendered.includes(url.pathname)) {
+		event.respondWith((async () => {
+			const cache = await caches.open(CACHE_NAME)
+			const response = await cache.match(`${url.pathname}index.html`)
+			if(response) return response
+			return (await caches.match('/fallback.html')) || Response.error()
+		})())
+	} else if(event.type === 'navigate') {
+		event.respondWith((async () => {
+			const cache = await caches.open(CACHE_NAME)
+			const response = await cache.match('/fallback.html')
+			if(response) return response
+			return Response.error()
+		})())
+	} else {
+		event.respondWith((async () => {
+			// attempt to get the cached response, otherwise fallback to the network
+			const cache = await caches.open(CACHE_NAME)
 			const response = await cache.match(event.request)
-			if (response) return response
-
-			console.error('SW cache error')
-			return Response.error()
-		}
-
-		try {
-			const response = await fetch(event.request)
-			if (response.status === 200) {
-				cache.put(event.request, response.clone())
-			}
-			return response
-		} catch (error) {
-			const resp = await cache.match(event.request)
-			if (resp) return resp
-			console.error('SW fetch error: ', error)
-			return Response.error()
-		}
+			if(response) return response
+			return fetch(event.request)
+		})())
 	}
-
-	event.respondWith(respond())
 })
