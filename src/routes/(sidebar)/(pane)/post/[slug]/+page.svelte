@@ -74,7 +74,7 @@
 					<span class="text-lg font-bold z-10">Prebieha presmerovanie...</span>
 				</div>
 			{:else}
-				<div class="prose prose-slate dark:prose-invert">
+				<div class="prose prose-zinc dark:prose-invert max-w-full">
 					<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
 				</div>
 			{/if}
