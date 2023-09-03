@@ -42,6 +42,7 @@
 	}
 
 	function processSW() {
+		return
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.oncontrollerchange = () => {
 				console.log('Controller changed detected, reloading page')
