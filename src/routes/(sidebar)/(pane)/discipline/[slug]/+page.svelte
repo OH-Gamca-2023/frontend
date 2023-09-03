@@ -224,7 +224,7 @@
 			<div class="flex flex-col flex-1">
 				{#if discipline.details_published}
 					{#if discipline.details.length > 0}
-						<div class="prose prose-slate">
+						<div class="prose prose-slate dark:prose-inverted">
 							<Markdown md={discipline.details} plugins={[gfmPlugin, highlightPlugin]} />
 						</div>
 					{:else}
