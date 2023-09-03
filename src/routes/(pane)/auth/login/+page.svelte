@@ -156,8 +156,18 @@
 				} else {
 					clearStatus()
 					console.error('Login error', serverResp)
-					error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
-					errorDetails = JSON.stringify(serverResp)
+					try {
+						const data = await serverResp.json()
+						if (data.error.startsWith('STRERROR')) {
+							error = data.error.split(':', 2)[1]
+						} else {
+							error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+							errorDetails = JSON.stringify(data)
+						}
+					} catch (e: any) {
+						error = 'Pri prihlasovaní nastala chyba.<br>Skúste to prosím znovu.'
+						errorDetails = e.message + '\n' + JSON.stringify(serverResp)
+					}
 				}
 			} catch (e: any) {
 				clearStatus()
