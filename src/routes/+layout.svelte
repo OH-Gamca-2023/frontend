@@ -40,7 +40,40 @@
 			if (browser) goto('/auth/login')
 		}
 	}
+
+	function processSW() {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.oncontrollerchange = () => {
+				console.log('Controller changed detected, reloading page')
+				window.location.reload()
+			}
+
+			navigator.serviceWorker
+				.register('/service-worker.js')
+				.then((registration) => {
+					console.log('SW registered: ', registration)
+				})
+				.catch((registrationError) => {
+					console.warn('SW registration failed: ', registrationError)
+				})
+
+			navigator.serviceWorker.ready.then((registration) => {
+				console.log('SW ready: ', registration)
+				registration.update()
+				setInterval(
+					() => {
+						registration.update()
+					},
+					1000 * 60 * 60 * 12,
+				)
+			})
+		} else {
+			console.warn('Service worker not supported')
+		}
+	}
 </script>
+
+<svelte:window on:load={processSW} />
 
 <main class="app flex flex-col" class:dark={$darkTheme}>
 	{#if headerAndFooter}
