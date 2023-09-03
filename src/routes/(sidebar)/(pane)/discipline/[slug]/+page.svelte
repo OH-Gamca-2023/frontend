@@ -222,7 +222,6 @@
 				{/if}
 			</div>
 			<div class="flex flex-col flex-1">
-				<span class="text-xl font-bold">Detaily</span>
 				{#if discipline.details_published}
 					{#if discipline.details.length > 0}
 						<div class="prose prose-slate">
