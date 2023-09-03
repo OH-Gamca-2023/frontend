@@ -110,7 +110,7 @@
 </script>
 
 <div
-	class="calendar-container {$$props.class} rounded-lg shadow-lg w-full bg-zinc-50 dark:bg-zinc-700"
+	class="calendar-container {$$props.class ?? ''} rounded-lg shadow-lg bg-zinc-50 dark:bg-zinc-700"
 	class:dark={$darkTheme}
 >
 	{#if showHeader}
@@ -139,98 +139,81 @@
 
 	<div
 		class="calendars rounded-b-lg"
-		style="--curr-rows: {(days[displayedMonth]?.length ?? 0) / 7}"
+		style="min-height: {((days[displayedMonth]?.length ?? 0) / 7) * 150}px"
 	>
-		<div class="calendar-grid" class:dark={$darkTheme}>
+		<div class="flex">
 			{#each usedHeaders as header}
 				<span class="day-name text-red-400" class:dark={$darkTheme}>{header}</span>
 			{/each}
-			{#each Array.from({ length: 12 }) as _, i}
-				<div
-					class="calendar-wrapper"
-					class:active={displayedMonth == i}
-					style="--current-month: {displayedMonth}; --index: {i}; --rows: {(days[i]?.length ?? 0) /
-						7}"
-				>
-					<CalendarDisplay
-						days={days[i] ?? []}
-						{items}
-						{usedHeaders}
-						{selected}
-						visible={displayedMonth == i}
-						on:dayClick={(e) => dayClick(e.detail, i)}
-						on:itemClick={(e) => itemClick(e.detail, i)}
-						on:clickOutside={() => deselectAll(i)}
-					/>
-				</div>
-			{/each}
 		</div>
+		{#each Array.from({ length: 12 }) as _, i}
+			<div
+				class="calendar-wrapper"
+				class:active={displayedMonth == i}
+				style="--current-month: {displayedMonth}; --index: {i}; --rows: {(days[i]?.length ?? 0) /
+					7}"
+			>
+				<CalendarDisplay
+					days={days[i] ?? []}
+					{items}
+					{usedHeaders}
+					{selected}
+					visible={displayedMonth == i}
+					on:dayClick={(e) => dayClick(e.detail, i)}
+					on:itemClick={(e) => itemClick(e.detail, i)}
+					on:clickOutside={() => deselectAll(i)}
+				/>
+			</div>
+		{/each}
 	</div>
 </div>
 
 <style lang="scss">
 	.calendar-container {
-		max-width: calc(200px * 7 + 2rem);
+		width: 100%;
+		max-width: calc(185px * 7);
 	}
 
 	.calendars {
 		position: relative;
-		width: 100%;
+		transition: min-height 0.5s ease-in-out;
 		overflow: hidden;
-		height: calc(150px * var(--curr-rows) + 50px);
-		transition: height 0.5s ease-in-out;
+		display: flex;
+		flex-direction: column;
 
 		.calendar-wrapper {
 			position: absolute;
 			top: 50px;
 			width: 100%;
-			height: calc(150px * var(--rows));
-
-			grid-row: 2/7;
-			grid-column: 1/8;
 
 			$diff: calc(var(--index) - var(--current-month));
-			left: calc(100% * $diff);
+			left: calc(7 * 185px * $diff);
 			transition: left 0.5s ease-in-out;
 
-			overflow-x: hidden;
-			overflow-y: visible;
+			overflow-x: auto;
 
 			&.active {
 				top: 0;
 				position: relative;
-				opacity: 1;
 			}
 
-			@media (max-width: 1100px) {
+			@media (max-width: 1380px) {
 				top: 0;
-				height: calc(150px * var(--rows) + 50px);
-
-				&.active {
-					top: -50px;
-				}
 			}
-		}
-
-		.calendar-grid {
-			display: grid;
-			width: 100%;
-			grid-template-columns: repeat(7, 1fr);
-			grid-template-rows: 50px;
-			grid-auto-rows: 120px;
 		}
 	}
 
 	.day-name {
 		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
 
-		font-size: 12px;
 		text-transform: uppercase;
 		text-align: center;
 		line-height: 50px;
 		font-weight: 500;
 
-		@media (max-width: 1100px) {
+		width: 185px;
+
+		@media (max-width: 1380px) {
 			display: none;
 		}
 

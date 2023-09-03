@@ -262,8 +262,8 @@
 					</div>
 				</div>
 			</div>
-			<form style="border-top: none;" class="pb-4">
-				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+			<form style="border-top: none;" class="pb-4 [&>*]:items-center [&>*]:justify-center">
+				<div class="flex flex-col md:flex-row pb-2">
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Meno </span>
 						<input
@@ -285,7 +285,7 @@
 						/>
 					</div>
 				</div>
-				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+				<div class="flex flex-col md:flex-row pb-2">
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Email </span>
 						<input
@@ -307,7 +307,7 @@
 						/>
 					</div>
 				</div>
-				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+				<div class="flex flex-col md:flex-row pb-2">
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> Telefónne číslo </span>
 						<input
@@ -330,7 +330,7 @@
 						/>
 					</div>
 				</div>
-				<div class="flex flex-col md:flex-row items-center justify-start pb-2">
+				<div class="flex flex-col md:flex-row pb-2">
 					<div class="flex flex-col">
 						<span class="text-md font-medium pb-1"> ID Discord účtu </span>
 						<input

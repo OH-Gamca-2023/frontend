@@ -19,7 +19,7 @@
 	let statusDetails = ''
 	let error = ''
 
-	$: !$settings.backupMicrosoftOAuth?.value && browser && goto('/auth/login/')
+	$: !$settings.backupMicrosoftOAuth.value && browser && goto('/auth/login/')
 
 	if (loginPending) {
 		loginStatus = 'Overujem údaje...'
@@ -123,10 +123,9 @@
 	<h3 class="text-red-500 dark:text-red-400 pb-4">{error}</h3>
 {/if}
 
-<h4 class="text-gray-800 dark:text-gray-100 pb-1">Alternatívne prihlasovanie pre Microsoft</h4>
-<p class="pb-4 text-gray-500 dark:text-gray-400 text-center">
-	Táto možnosť vám môže pomôcť ak<br />váš prehliadač blokuje vyskakovacie okná.
-</p>
+<h4 class="text-gray-800 dark:text-gray-100 pb-1 text-center">
+	Alternatívne prihlasovanie pre Microsoft
+</h4>
 
 <button
 	id="microsoft-login"

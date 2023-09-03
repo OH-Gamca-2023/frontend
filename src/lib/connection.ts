@@ -7,7 +7,7 @@ type Check = {
 	time: number
 	server: boolean
 	internet: boolean
-	status: string
+	status: '00' | '01' | '10' | '11'
 	response: {
 		status: string
 		time: string
@@ -17,17 +17,17 @@ type Check = {
 
 let consecutiveFailures = 0
 let previousCheck: Check | undefined = undefined
-const lastCheck = {
+const checkResult: Check = {
 	time: -1,
 	server: false,
 	internet: false,
-	status: '00', // 00 = offline, 01 = internet, 10 = server, 11 = online (10 should never happen)
+	status: '00', // 00 = offline, 01 = internet, 10 = server, 11 = online (10 should happen only in dev)
 	response: {
 		status: 'error',
 		time: '',
 		authenticated: false,
 	},
-} as Check
+}
 
 let errorToast: any = undefined
 let waitingCheck: any = undefined
@@ -52,7 +52,7 @@ async function runCheck() {
 
 		const serverResult = await fetch(getApiHost() + '/status/', { method: 'GET', headers })
 		if (serverResult.status === 200) {
-			lastCheck.server = true
+			checkResult.server = true
 		} else if (serverResult.status === 401) {
 			try {
 				console.log('Status check returned 401, validating logout...')
@@ -79,26 +79,26 @@ async function runCheck() {
 			}
 			await runCheck()
 		} else {
-			lastCheck.server = false
+			checkResult.server = false
 		}
-		lastCheck.response = await serverResult.json()
+		checkResult.response = await serverResult.json()
 	} catch (e) {
-		lastCheck.server = false
-		lastCheck.response = {
+		checkResult.server = false
+		checkResult.response = {
 			status: 'error',
 			time: '',
 			authenticated: false,
 		}
 	}
-	lastCheck.internet = navigator.onLine
-	lastCheck.status = (lastCheck.server ? '1' : '0') + (lastCheck.internet ? '1' : '0')
-	lastCheck.time = now
+	checkResult.internet = navigator.onLine
+	checkResult.status = (checkResult.server ? '1' : '0') + (checkResult.internet ? '1' : '0') as Check['status']
+	checkResult.time = now
 	processCheckResult()
 }
 
 async function processCheckResult() {
 	let nextCheck = 60000
-	if (lastCheck.status === '00') {
+	if (checkResult.status === '00') {
 		if (previousCheck === undefined) {
 			// Internet and server are offline, no previous check
 			errorToast?.remove()
@@ -122,7 +122,7 @@ async function processCheckResult() {
 		} else {
 			nextCheck = consecutiveFailures > 5 ? 30000 : 10000
 		}
-	} else if (lastCheck.status === '01') {
+	} else if (checkResult.status === '01') {
 		if (previousCheck === undefined) {
 			// Internet is online, server is offline, no previous check
 			errorToast?.remove()
@@ -163,17 +163,22 @@ async function processCheckResult() {
 			}
 			if (consecutiveFailures > 3) nextCheck = 20000
 		}
-	} else if (lastCheck.status === '10') {
-		// Internet is offline, server is online, how did this happen?
-		errorToast?.remove()
-		errorToast = toast({
-			title: 'Stránka sa ocitla v neplatnom stave',
-			message: 'Prosím, nahláste túto chybu administrátorovi (Stav: IC 10)',
-			type: 'warning',
-			duration: 5000,
-		})
-		nextCheck = 20000
-	} else if (lastCheck.status === '11') {
+	} else if (checkResult.status === '10') {
+		if(window.location.host.includes('localhost') || window.location.host.includes('127.0.0.1')) {
+			errorToast?.remove()
+			consecutiveFailures = -1
+		} else if (consecutiveFailures == 0) {
+			// Internet is offline, server is online and the host isn't local, how did this happen?
+			errorToast?.remove()
+			errorToast = toast({
+				title: 'Bez internetu',
+				message: 'Server je dostupný aj bez internetu. Funkcionalita stránky môže byť obmedzená',
+				type: 'warning',
+				duration: 10000,
+			})
+			nextCheck = 20000
+		}
+	} else if (checkResult.status === '11') {
 		// Internet and server are online
 		errorToast?.remove()
 		if (previousCheck && !previousCheck.internet) {
@@ -194,7 +199,7 @@ async function processCheckResult() {
 		consecutiveFailures = -1
 
 		if (getAccessToken()) {
-			if (!lastCheck.response.authenticated) {
+			if (!checkResult.response.authenticated) {
 				console.log('Status check returned unauthenticated, validating...')
 				// User was probably logged out
 				const state = (await import('./state/state')).userState
@@ -212,7 +217,7 @@ async function processCheckResult() {
 		}
 	}
 	consecutiveFailures++
-	previousCheck = { ...lastCheck }
+	previousCheck = { ...checkResult }
 
 	if (waitingCheck) clearTimeout(waitingCheck)
 	waitingCheck = setTimeout(runCheck, nextCheck)

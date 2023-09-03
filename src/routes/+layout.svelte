@@ -22,16 +22,21 @@
 		posts,
 		tags,
 	} from '$lib/api/models'
+	import { initConsoleLog } from '$lib/utils/consoleLog'
 
+	initConsoleLog()
 	onMount(startConnectionCheck)
 
 	$: loginRequired = $settings.requireLogin.value
 
 	$: headerAndFooter =
 		(!loginRequired || $userState.loggedIn) && !$page.url.pathname.includes('auth/login/callback')
-	$: showContent = headerAndFooter || $page.url.pathname.includes('auth/login')
+	$: showContent =
+		headerAndFooter ||
+		$page.url.pathname.includes('auth/login') ||
+		$page.url.pathname.includes('debug')
 	$: if (loginRequired && !$userState.loggedIn && !$userState.loading) {
-		if (!$page.url.pathname.includes('auth/login')) {
+		if (!$page.url.pathname.includes('auth/login') && !$page.url.pathname.includes('debug')) {
 			if (browser) goto('/auth/login')
 		}
 	}
@@ -60,9 +65,9 @@
 		<div
 			class="fixed bottom-0 right-1/2 transform translate-x-1/2 flex flex-col items-center text-center z-50 text-xs text-neutral-800 dark:text-neutral-400"
 		>
-			<p>
+			<a href="/debug">
 				Debug Mode Enabled {isOverridden('debugMode') ? '(Overriden)' : ''}
-			</p>
+			</a>
 			<p>
 				Ld {$userState.loading ? '1' : '0'} | L {$userState.loggedIn ? '1' : '0'} | U
 				{$userState.user ? $userState.user.id : 'null'} | T {$userState.user
@@ -90,7 +95,6 @@
 <style lang="scss">
 	.app {
 		min-height: 100vh;
-		min-width: 100vw;
 
 		&.dark {
 			color: #fff;

@@ -24,16 +24,17 @@
 <svelte:body on:click={handleBodyClick} />
 
 <navbar
-	class="h-14 p-2 flex
+	class="min-h-14 p-2 flex
         bg-gradient-to-b from-zinc-100 to-zinc-200
         dark:from-zinc-800 dark:to-zinc-900
         border-b border-zinc-300 dark:border-zinc-700
         text-zinc-800 dark:text-zinc-200 pl-4 pr-4
         shadow-md sticky top-0 z-50"
 >
-	<div id="computer" class="hidden lmd:flex items-center justify-between flex-1 w-full">
+	<div class="h-10" />
+	<div id="computer" class="hidden lmd:flex items-center justify-between flex-grow flex-wrap">
 		<div id="left" class="flex items-center justify-start">
-			<div id="home" transition:fade>
+			<div id="home">
 				<a href="/">
 					<Icon icon="mdi:home-outline" class="h-7 w-7" />
 				</a>
@@ -45,34 +46,33 @@
 				<div>
 					<a
 						href="/news"
-						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
+						class="flex gap-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-md p-1"
 					>
 						<Icon icon="tabler:news" class="h-6 w-6" />
 						<span>Novinky</span>
 					</a>
 				</div>
-				<div class="relative" id="categories">
-					<button
-						class="flex space-x-1 cursor-pointer rounded-md p-1 relative"
-						on:click={() => (categoriesOpen = !categoriesOpen)}
-					>
-						<Icon icon="iconamoon:category" class="h-6 w-6" />
-						<span>Kategórie</span>
+				<div class="relative">
+					<a class="flex cursor-pointer rounded-md p-1 relative" href="/disciplines">
+						<Icon icon="iconamoon:category" class="h-6 w-6 mr-1" />
+						<span>Disciplíny</span>
 						{#await categories.load()}
 							<Icon icon="mdi:loading" class="w-6 h-6 animate-spin opacity-50 ml-2" />
 						{:then}
-							<Icon
-								icon="tabler:chevron-left"
-								class="h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
-									? '-rotate-90'
-									: ''}"
-							/>
+							<button on:click|preventDefault={() => (categoriesOpen = !categoriesOpen)}>
+								<Icon
+									icon="tabler:chevron-left"
+									class="ml-2 h-6 w-6 transform transition-transform duration-500 ease-in-out {categoriesOpen
+										? '-rotate-90'
+										: ''}"
+								/>
+							</button>
 						{/await}
-					</button>
+					</a>
 					<div class="absolute -bottom-3 left-0 right-0">
 						{#if categoriesOpen}
 							<div
-								class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
+								class="flex flex-col gap-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
 								from-zinc-200 to-zinc-300 dark:from-zinc-900 dark:to-zinc-950 z-10
 								bg-gradient-to-b border border-zinc-300 dark:border-zinc-700 border-t-0"
 								style="top: -1px"
@@ -81,8 +81,9 @@
 								{#each categoriesIterable as category}
 									<a
 										href={`/disciplines/categories/${category.id}`}
-										class="flex space-x-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1"
+										class="flex gap-1 hover:bg-zinc-100 dark:hover:bg-zinc-750 rounded-md p-1 items-center"
 									>
+										<Icon icon={category.icon} class="h-6 w-6" />
 										<span>{category.name}</span>
 									</a>
 								{/each}
@@ -93,7 +94,7 @@
 				<div>
 					<a
 						href="/results"
-						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
+						class="flex gap-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
 						<Icon icon="mdi:format-list-numbered" class="h-6 w-6" />
 						<span>Výsledky</span>
@@ -102,7 +103,7 @@
 				<div>
 					<a
 						href="/calendar"
-						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
+						class="flex gap-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
 						<Icon icon="mdi:calendar-month" class="h-6 w-6" />
 						<span>Kalendár</span>
@@ -111,7 +112,7 @@
 				<div>
 					<a
 						href="/ciphers"
-						class="flex space-x-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
+						class="flex gap-1 hover:bg-zinc-300 dark:hover:bg-zinc-750 rounded-md p-1"
 					>
 						<Icon icon="mdi:puzzle-outline" class="h-6 w-6 -mt-[1px] " />
 						<span>Šifrovačka</span>
@@ -123,7 +124,7 @@
 			id="right"
 			class="flex items-center justify-end divide-x
 				divide-zinc-300 dark:divide-zinc-700
-				[&>*]:pr-2 [&>*]:pl-2"
+				[&>*]:pr-2 [&>*]:pl-2 flex-grow"
 		>
 			<UserMenu />
 			<button
@@ -195,30 +196,34 @@
 					{/if}
 				</button>
 			</div>
-			<a href="/news" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
+			<a href="/news" class="flex gap-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="tabler:news" class="h-6 w-6" />
 				<span>Novinky</span>
 			</a>
-			<div class="flex flex-col space-y-1">
-				<button
-					class="flex space-x-1 cursor-pointer"
-					on:click={() => categories.isLoaded && (categoriesOpen = !categoriesOpen)}
-				>
-					{#await categories.load()}
-						<Icon icon="mdi:loading" class="w-6 h-6 animate-spin ml-2" />
-					{:then}
-						<Icon
-							icon="tabler:chevron-right"
-							class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
-								? 'rotate-90'
-								: ''}"
-						/>
-					{/await}
-					<Icon icon="iconamoon:category" class="h-6 w-6" />
-					<span>Kategórie</span>
-				</button>
+			<div class="flex flex-col gap-1">
+				<div class="flex gap-1 cursor-pointer">
+					<button
+						class="contents"
+						on:click={() => categories.isLoaded && (categoriesOpen = !categoriesOpen)}
+					>
+						{#await categories.load()}
+							<Icon icon="mdi:loading" class="w-6 h-6 animate-spin ml-2" />
+						{:then}
+							<Icon
+								icon="tabler:chevron-right"
+								class="h-6 w-6  transform transition-transform duration-500 ease-in-out {categoriesOpen
+									? 'rotate-90'
+									: ''}"
+							/>
+						{/await}
+					</button>
+					<a href="/disciplines" class="flex gap-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
+						<Icon icon="iconamoon:category" class="h-6 w-6" />
+						Disciplíny
+					</a>
+				</div>
 				{#if categoriesOpen}
-					<div class="flex flex-col space-y-2" transition:slide|global>
+					<div class="flex flex-col space-y-2" transition:slide>
 						<div
 							class="pt-2 px-8 divide-y
 							divide-zinc-300 dark:divide-zinc-700"
@@ -226,9 +231,10 @@
 							{#each categoriesIterable as category}
 								<a
 									href={`/disciplines/categories/${category.id}`}
-									class="flex p-1 pr-0"
+									class="flex p-1 pr-0 gap-1 items-center"
 									on:click={() => (sidebarOpen = !sidebarOpen)}
 								>
+									<Icon icon={category.icon} class="h-5 w-5" />
 									<span>{category.name}</span>
 								</a>
 							{/each}
@@ -236,15 +242,15 @@
 					</div>
 				{/if}
 			</div>
-			<a href="/results" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
+			<a href="/results" class="flex gap-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="mdi:format-list-numbered" class="h-6 w-6" />
 				<span>Výsledky</span>
 			</a>
-			<a href="/calendar" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
+			<a href="/calendar" class="flex gap-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="mdi:calendar-month" class="h-6 w-6" />
 				<span>Kalendár</span>
 			</a>
-			<a href="/ciphers" class="flex space-x-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
+			<a href="/ciphers" class="flex gap-1" on:click={() => (sidebarOpen = !sidebarOpen)}>
 				<Icon icon="mdi:puzzle-outline" class="h-6 w-6 -mt-[1px]" />
 				<span>Šifrovačka</span>
 			</a>

@@ -98,6 +98,10 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		})
 	}
 
+	public getApiUrl(): string {
+		return this.apiUrl
+	}
+
 	/**
 	 * Attempts to load the model from the cache
 	 */
@@ -176,7 +180,14 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 					if (this.type !== 'partial') this.data.clear()
 					else respData = respData.results
 					if (this.type === 'list' || this.type === 'partial') {
-						if (this.type === 'partial') data = data.results
+						if (this.type === 'partial') {
+							if(data.previous == null && data.next == null) {
+								// All available objects were loaded, clear cache before proceeding
+								console.log(`[partial model ${this.apiUrl}] full load, clearing previous data`)
+								this.data.clear()
+							}
+							data = data.results
+						}
 						for (const item of data) {
 							// Using this method, instead of expanding the parsed object, allows us to keep getters without flattening them
 							const obj = this.parser(item) as T & { fromServer: boolean }
@@ -205,11 +216,18 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 		this.saveToCache(respData)
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	protected shouldCache(respData: any): boolean {
+		return true  // Intended to be overridden
+	}
+
 	protected saveToCache(respData: any) {
 		if (!browser) return
 		if (!this.cache) return
 
+
 		if (this.type == 'single') {
+			if(!this.shouldCache(respData)) return
 			localStorage.setItem('cache_' + this.apiUrl, JSON.stringify(respData))
 			console.debug(`[model ${this.apiUrl}] (single) saved to cache`)
 			return
@@ -220,10 +238,16 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 
 			const currentCache = localStorage.getItem('cache_' + this.apiUrl)
 			if (currentCache) {
-				const currentCacheData = JSON.parse(currentCache)
+				const currentCacheData: Array<any> = JSON.parse(currentCache)
 				const currentKeys = currentCacheData.map((i: any) => i.id)
 				if (this.type === 'list' || this.type === 'partial') {
 					for (const item of respData) {
+						if(!this.shouldCache(item)) {
+							if (currentKeys.includes(item.id)) {
+								currentCacheData.splice(currentKeys.indexOf(item.id), currentKeys.indexOf(item.id))
+							}
+							continue
+						}
 						if (currentKeys.includes(item.id)) {
 							Object.assign(currentCacheData[currentKeys.indexOf(item.id)], item)
 						} else {
@@ -330,11 +354,12 @@ export class PartialModel<T> extends LoadableModel<T> {
 	) {
 		super(apiUrl, parser, cache, dependencies, 'partial', auth)
 	}
-
-	public async loadSingle(id: string) {
+	
+	public async loadSingle(id: string, soft: boolean = false) {
 		if (!browser) return
 		await this.dependencyLoadingPromise
 		await this.loadingPromise
+		if(soft && this.data.has(id)) return
 
 		let respData: unknown
 		try {

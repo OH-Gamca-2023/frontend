@@ -61,9 +61,8 @@
 					class="flex flex-col space-y-1 rounded-b-lg p-2 shadow-md absolute left-0 right-0
 						from-zinc-200 to-zinc-300 dark:from-zinc-900 dark:to-zinc-950 z-10
 						bg-gradient-to-b border border-zinc-300 dark:border-zinc-700 border-t-0
-						[&>*]:justify-between [&>*]:items-center"
-					style="top: -3px"
-					transition:slide|global={{ duration: 500 }}
+						[&>*]:justify-between [&>*]:items-center -top-[2px]"
+					transition:slide={{ duration: 500 }}
 				>
 					<a
 						href={`/auth/profile/`}

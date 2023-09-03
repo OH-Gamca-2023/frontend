@@ -29,7 +29,7 @@ const settings: Settings = {
 		description:
 			'Ak je zapnuté, použije sa prihlasovací systém na základe presmerovania namiesto štandardného SPA systému. ' +
 			'Neodporúča sa používať ale vie pomôcť pri niektorých problémoch s prihlásením.',
-		userEditable: true,
+		userEditable: false,
 		type: 'boolean',
 
 		key: 'backupMicrosoftOAuth',

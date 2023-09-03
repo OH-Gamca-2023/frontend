@@ -4,6 +4,7 @@ export interface Category {
 	id: number
 	name: string
 	calendarClass: string
+	icon: string
 }
 
 export interface Discipline {
