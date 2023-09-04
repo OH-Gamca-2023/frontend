@@ -93,7 +93,7 @@
 				<span class="text-sm font-medium">Informácie o disciplíne môžu byť neaktuálne</span>
 			</div>
 		{/if}
-		{#if !(discipline.date_published || discipline.details_published || discipline.results_published)}
+		{#if !(discipline.date_published || discipline.details_published || discipline.results_published) || (discipline.details && discipline.details.length === 0 && !discipline.details_published)}
 			<div
 				class="flex items-center gap-1 dark:bg-yellow-600 border-l-4 dark:border-yellow-800 rounded rounded-r-lg p-2 mb-4
 				bg-yellow-100 border-yellow-400"

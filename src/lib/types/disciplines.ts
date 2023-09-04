@@ -44,3 +44,9 @@ export interface Placement {
 	place: number
 	participated: boolean
 }
+
+export interface Sidebar {
+	upcoming: Partial<Discipline>[]
+	organising?: Partial<Discipline>[]
+	supervising?: Partial<Discipline>[]
+}
