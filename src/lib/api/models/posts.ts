@@ -1,5 +1,5 @@
 import { clazzes, grades } from '$lib/api/models'
-import type { Discipline, Post, User } from '$lib/types'
+import type { Category, Discipline, Post, User } from '$lib/types'
 import { PartialModel } from '$lib/utils/models'
 import { derived } from 'svelte/store'
 import { categories, tags } from '$lib/api/models/generic'
@@ -45,7 +45,8 @@ class PostModel extends PartialModel<Post> {
 					},
 
 					get discipline_categories() {
-						return this.related_disciplines.map((d: Discipline) => d?.category)
+						const categories = this.related_disciplines.map((d: Discipline) => d?.category) as Category[]
+						return categories.filter((c, i) => categories.indexOf(c) === i)
 					},
 				}
 			},
