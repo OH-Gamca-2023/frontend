@@ -85,17 +85,22 @@
 	{/if}
 	<Background>
 		{#if showContent}
-			<div class="flex flex-col -mt-6 mb-6 p-4 w-full">
-				{#each alertList as alert}
-					<div
-						class="flex items-center gap-1 border-l-4 rounded rounded-r-lg p-2 mb-2 last:mb-0 {alert
-							.typeDetails?.classes}"
-					>
-						<Icon class="w-6 h-6 mr-1" icon={alert.typeDetails?.icon ?? 'mdi:exclamation-circle'} />
-						<h1 class="text-xl font-medium">{alert.message}</h1>
-					</div>
-				{/each}
-			</div>
+			{#if headerAndFooter}
+				<div class="flex flex-col -mt-6 mb-6 pt-2 md:p-4 w-full text-sm md:text-base">
+					{#each alertList as alert}
+						<div
+							class="flex items-center gap-1 border-l-4 rounded rounded-r-lg p-2 mb-2 last:mb-0 {alert
+								.typeDetails?.classes}"
+						>
+							<Icon
+								class="w-6 h-6 mr-1"
+								icon={alert.typeDetails?.icon ?? 'mdi:exclamation-circle'}
+							/>
+							<h1 class="font-medium">{alert.message}</h1>
+						</div>
+					{/each}
+				</div>
+			{/if}
 			<div class="flex flex-grow justify-center">
 				<slot />
 			</div>
