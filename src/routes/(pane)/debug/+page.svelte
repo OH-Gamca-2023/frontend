@@ -2,6 +2,7 @@
 	import Icon from '$lib/components/Icon.svelte'
 	import { userState } from '$lib/state'
 	import consoleLog, { type ConsoleLogEntry } from '$lib/utils/consoleLog'
+	import { onMount } from 'svelte'
 
 	let stateCollapsed = true
 	let consoleCollapsed = true
@@ -28,10 +29,33 @@
 			icon: 'mdi:alert',
 		},
 	} as { [key in ConsoleLogEntry['type']]: { class: string; icon: string } }
+
+	let wHeight = -1,
+		wWidth = -1
+	onMount(() => {
+		;(wHeight = window.innerHeight), (wWidth = window.innerWidth)
+	})
 </script>
+
+<svelte:window
+	on:resize={() => {
+		;(wHeight = window.innerHeight), (wWidth = window.innerWidth)
+	}}
+/>
 
 <div class="flex flex-col min-w-full lmd:min-w-[50rem] max-w-[50rem]">
 	<span class="text-xl font-bold">Debug</span>
+
+	<div class="flex gap-2 p-4">
+		<div class="px-2 py-1 rounded bg-pink-500 text-black">{wWidth}x{wHeight}</div>
+		<div class="hidden sm:block px-2 py-1 rounded bg-red-500 text-black">sm</div>
+		<div class="hidden md:block px-2 py-1 rounded bg-orange-500 text-black">md</div>
+		<div class="hidden lmd:block px-2 py-1 rounded bg-amber-500 text-black">lmd</div>
+		<div class="hidden lg:block px-2 py-1 rounded bg-yellow-500 text-black">lg</div>
+		<div class="hidden xl:block px-2 py-1 rounded bg-lime-500 text-black">xl</div>
+		<div class="hidden 2xl:block px-2 py-1 rounded bg-green-500 text-black">2xl</div>
+	</div>
+
 	<div class="flex justify-between">
 		<span class="text-lg">State</span>
 		<button

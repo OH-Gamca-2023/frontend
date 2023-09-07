@@ -64,7 +64,6 @@ const settingsLoaded = new Promise<void>(
 let serverOverrides: { [key: string]: any } = {}
 
 const localOverrides = {
-	requireLogin: true,
 }
 
 function isOverridden(key: string) {

@@ -1,6 +1,7 @@
 import { userState } from '$lib/state'
-import type { Results, Submission, SuccessResponse, User } from '$lib/types'
-import { clazzes, disciplines, grades } from './models'
+import type { Sidebar, Results, Submission, SuccessResponse, User, Discipline } from '$lib/types'
+import { get } from 'svelte/store'
+import { categories, clazzes, disciplines, grades } from './models'
 import { makeApiRequest } from './requests'
 
 /**
@@ -20,6 +21,49 @@ import { makeApiRequest } from './requests'
  */
 export async function getServerStatus() {
 	return makeApiRequest<{ status: string }>('status', 'GET', undefined, false)
+}
+
+function parseDiscipline(data: any) {
+	return {
+		id: data.id,
+
+		name: data.name,
+		short_name: data.short_name,
+
+		date: data.date ? new Date(data.date) : null,
+		start_time: data.start_time
+			? new Date('1970-01-01T' + data.start_time)
+			: null,
+		end_time: data.end_time
+			? new Date('1970-01-01T' + data.end_time)
+			: null,
+		location: data.location,
+
+		details_published: data.details_published,
+
+		get category() {
+			return get(categories)[data.category]
+		},
+		get target_grades() {
+			return data.target_grades.map((grade: any) => get(grades)[grade])
+		},
+	} as Partial<Discipline>
+}
+
+/**
+ * Get data for sidebar
+ * @returns the sidebar data
+ */
+export async function getSidebar() {
+	const resp = await makeApiRequest<Sidebar>('disciplines/sidebar', 'GET', undefined, true)
+	if(resp.error) return resp
+	const data = {
+		upcoming: resp.data!.upcoming.map(parseDiscipline),
+		organising: resp.data!.organising?.map(parseDiscipline),
+		supervising: resp.data!.supervising?.map(parseDiscipline),
+	}
+	resp.data = data
+	return resp
 }
 
 // USER ENDPOINTS

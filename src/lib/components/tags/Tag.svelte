@@ -3,11 +3,16 @@
 	export let styleClass = ''
 
 	export let alwaysBig = false
+	export let alwaysSmall = false
+	export let xs = false
 </script>
 
-<div class="ampule {styleClass}" class:shrinkable={!alwaysBig}>
-	<span class="dot" />
-	<span class="{alwaysBig ? '' : 'text-xs lg:'}text-sm font-bold">{name}</span>
+<div class="ampule {styleClass}" class:shrinkable={!alwaysBig} class:small={alwaysSmall} class:xs>
+	<span class="dot" class:hidden={xs} />
+	<span
+		class="{alwaysSmall || xs ? 'text-xs' : alwaysBig ? 'text-sm' : 'text-xs md:text-sm'} font-bold"
+		>{name}</span
+	>
 </div>
 
 <style lang="scss">
@@ -24,18 +29,34 @@
 		color: hsl(0, 0%, 31%);
 
 		&.shrinkable {
-			@media (max-width: 1023px) {
+			@media (max-width: 767px) {
 				height: 1.25rem;
 				padding: 3px 7px 3.025px 5px;
 			}
 
 			.dot {
-				@media (max-width: 1023px) {
+				@media (max-width: 767px) {
 					width: 10px;
 					height: 10px;
 					margin: 0px 3px 0px 2px;
 				}
 			}
+		}
+
+		&.small {
+			height: 1.25rem;
+			padding: 3px 7px 3.025px 5px;
+
+			.dot {
+				width: 10px;
+				height: 10px;
+				margin: 0px 3px 0px 2px;
+			}
+		}
+
+		&.xs {
+			height: 1.25rem;
+			padding: 2px 6px 2px 6px;
 		}
 
 		.dot {
