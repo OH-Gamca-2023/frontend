@@ -106,17 +106,17 @@
 		{/if}
 		<div class="flex justify-center items-center pb-5">
 			<div class="flex flex-col justify-center items-center">
-				<span class="text-3xl font-bold pb-1">{discipline.name}</span>
+				<span class="text-xl md:text-2xl 2xl:text-3xl font-bold pb-1">{discipline.name}</span>
 				<Taglist {discipline} alwaysBig={true} class="justify-center" />
 			</div>
 		</div>
-		<div class="flex flex-col space-y-5 2xl:space-y-0 2xl:flex-row flex-wrap pt-2">
-			<div class="flex flex-col basis-1/2 2xl:basis-1/5 2xl:mr-5">
+		<div class="flex flex-col justify-between space-y-5 2xl:space-y-0 2xl:flex-row pt-2">
+			<div class="flex flex-col">
 				<div class="flex flex-col">
-					<span class="text-xl font-bold">Čas a miesto</span>
-					<div class="flex flex-col space-y-1 pt-1">
+					<span class="text-lg md:text-xl font-bold">Čas a miesto</span>
+					<div class="flex flex-col gap-1 pt-1">
 						{#if discipline.date}
-							<div class="flex space-x-1">
+							<div class="flex gap-1">
 								<Icon icon="mdi:calendar" />
 								<span class="text-sm"
 									>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
@@ -126,7 +126,7 @@
 							</div>
 						{/if}
 						{#if discipline.start_time}
-							<div class="flex space-x-1">
+							<div class="flex gap-1">
 								<Icon icon="mdi:clock-outline" />
 								<span class="text-sm"
 									>{#if discipline.end_time}
@@ -144,7 +144,7 @@
 							</div>
 						{/if}
 						{#if discipline.location}
-							<div class="flex space-x-1">
+							<div class="flex gap-1">
 								<Icon icon="mdi:map-marker" />
 								<span class="text-sm">{discipline.location}</span>
 							</div>
@@ -221,10 +221,10 @@
 					</div>
 				{/if}
 			</div>
-			<div class="flex flex-col flex-1">
+			<div class="flex flex-col">
 				{#if discipline.details_published}
 					{#if discipline.details.length > 0}
-						<div class="prose prose-slate dark:prose-invert">
+						<div class="prose prose-slate dark:prose-invert max-w-">
 							<Markdown md={discipline.details} plugins={[gfmPlugin, highlightPlugin]} />
 						</div>
 					{:else}
@@ -242,8 +242,8 @@
 					<div class="text-amber-500 text-lg font-bold">Informácie ešte neboli zverejnené</div>
 				{/if}
 			</div>
-			{#if $userState.loggedIn && $userState.user && ($userState.user.permissions.staff || $userState.user.permissions.teacher)}
-				<div class="flex flex-col basis-1/2 2xl:basis-1/3 2xl:ml-5">
+			<div class="flex flex-col">
+				{#if $userState.loggedIn && $userState.user && ($userState.user.permissions.staff || $userState.user.permissions.teacher)}
 					<div class="flex flex-col">
 						<span class="text-xl font-bold">Zodpovední organizátori</span>
 						<div
@@ -380,8 +380,8 @@
 							{/if}
 						</div>
 					</div>
-				</div>
-			{/if}
+				{/if}
+			</div>
 		</div>
 	{:else if loadingFailed}
 		<div class="w-full h-12 relative flex items-center justify-center">
