@@ -2,18 +2,13 @@
 	import { darkTheme } from '$lib/data/settings'
 </script>
 
-<div class="h-52 flex w-full fixed -z-20 cf-bg overflow-hidden" class:dark={$darkTheme}>
-	<div class="rounded-full overflow-hidden h-44 w-44 m-4 bg-[#f8e6f0]">
-		<img src="/assets/logos/vybuch/bg_color.svg" alt="Logo" class="pt-3 pl-5" />
+<div class="h-52 flex w-full align-middle justify-center fixed -z-20 cf-bg" class:dark={$darkTheme}>
+	<div class="flex justify-center h-52 w-80" id="top-logo-wrap">
+		<img src="/assets/logos/vybuch/nobg_color.svg" alt="Logo" class="-my-10" id="top-logo" />
 	</div>
-	<img
-		src="/assets/logos/vybuch/nobg_color.svg"
-		alt="Logo"
-		class="absolute w-screen -top-[250px] -z-10"
-	/>
 </div>
 
-<div class="h-52" id="spacer" />
+<div class="h-52 relative" id="spacer" />
 
 <style lang="scss">
 	:global(.cf-bg) {
@@ -65,6 +60,18 @@
 		--color-2: rgb(8, 8, 8);
 		--color-3: 0, 0, 0;
 		--color-4: black;
-		--opacity-modifier: 0;
+		--opacity-modifier: 0.2;
+	}
+
+	#top-logo {
+		background: radial-gradient(
+			circle,
+			rgba(var(--color-3), calc(0.7 + var(--opacity-modifier))) 0%,
+			rgba(var(--color-3), calc(0.4 + var(--opacity-modifier))) 50%,
+			rgba(var(--color-3), 0.1) 65%,
+			rgba(var(--color-3), 0) 60%
+		);
+		background-position: -22px -10px;
+		background-repeat: no-repeat;
 	}
 </style>
