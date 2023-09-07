@@ -44,46 +44,48 @@
 						{discipline.details_published ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
 					>
 						<div class="flex flex-col gap-1">
-							<span class="font-semibold">{discipline.name}</span>
+							<div class="flex gap-4">
+								<span class="font-semibold">{discipline.name}</span>
+								<div class="flex flex-col">
+									{#if discipline.date}
+										<div class="flex gap-1 items-center justify-end">
+											<span
+												>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
+													discipline.date.getMonth() + 1,
+												).padStart(2, '0')}. {discipline.date.getFullYear()}</span
+											>
+											<Icon icon="mdi:calendar" />
+										</div>
+									{/if}
+									{#if discipline.start_time}
+										<div class="flex gap-1 items-center justify-end">
+											<span
+												>{#if discipline.end_time}
+													{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+														discipline.start_time.getMinutes(),
+													).padStart(2, '0')}&nbsp;-&nbsp;{String(
+														discipline.end_time.getHours(),
+													).padStart(2, '0')}:{String(discipline.end_time.getMinutes()).padStart(
+														2,
+														'0',
+													)}
+												{:else}
+													{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+														discipline.start_time.getMinutes(),
+													).padStart(2, '0')}
+												{/if}
+											</span>
+											<Icon icon="mdi:clock-outline" />
+										</div>
+									{/if}
+									{#if discipline.details_published}
+										<div class="flex gap-1 items-center justify-end">
+											<Icon icon="mdi:book-open-page-variant" />
+										</div>
+									{/if}
+								</div>
+							</div>
 							<Taglist {discipline} alwaysSmall={true} />
-						</div>
-						<div class="flex flex-col">
-							{#if discipline.date}
-								<div class="flex gap-1 items-center justify-end">
-									<span
-										>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
-											discipline.date.getMonth() + 1,
-										).padStart(2, '0')}. {discipline.date.getFullYear()}</span
-									>
-									<Icon icon="mdi:calendar" />
-								</div>
-							{/if}
-							{#if discipline.start_time}
-								<div class="flex gap-1 items-center justify-end">
-									<span
-										>{#if discipline.end_time}
-											{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
-												discipline.start_time.getMinutes(),
-											).padStart(2, '0')}&nbsp;-&nbsp;{String(
-												discipline.end_time.getHours(),
-											).padStart(2, '0')}:{String(discipline.end_time.getMinutes()).padStart(
-												2,
-												'0',
-											)}
-										{:else}
-											{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
-												discipline.start_time.getMinutes(),
-											).padStart(2, '0')}
-										{/if}
-									</span>
-									<Icon icon="mdi:clock-outline" />
-								</div>
-							{/if}
-							{#if discipline.details_published}
-								<div class="flex gap-1 items-center justify-end">
-									<Icon icon="mdi:book-open-page-variant" />
-								</div>
-							{/if}
 						</div>
 					</svelte:element>
 				{:else}

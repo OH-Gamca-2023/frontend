@@ -33,32 +33,32 @@
 
 		{#each posts as post}
 			<a
-				href="/post/{post.id}"
-				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-1 w-full"
+				href={post.redirect ? post.redirect : '/post/' + post.id}
+				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex flex-col py-2 w-full"
 			>
-				<div class="flex flex-col justify-between flex-1 items-left">
-					<h3 class="text-lg font-bold">{post.title}</h3>
-					<Taglist {post} />
-				</div>
-				<div class="flex flex-col items-right text-right gap-1 font-medium text-sm">
-					<div class="flex items-center gap-2 justify-end">
-						<span>
-							{String(post.date.getDate()).padStart(2, '0')}. {String(
-								post.date.getMonth() + 1,
-							).padStart(2, '0')}.
-							{String(post.date.getHours()).padStart(2, '0')}:{String(
-								post.date.getMinutes(),
-							).padStart(2, '0')}
-						</span>
-						<Icon icon="formkit:datetime" class="w-4 h-4" />
+				<div class="flex justify-between gap-4">
+					<h3 class="md:text-lg font-bold">{post.title}</h3>
+					<div class="flex flex-col items-right text-right gap-1 font-medium text-sm">
+						<div class="flex items-center gap-2 justify-end">
+							<span>
+								{String(post.date.getDate()).padStart(2, '0')}. {String(
+									post.date.getMonth() + 1,
+								).padStart(2, '0')}.
+								{String(post.date.getHours()).padStart(2, '0')}:{String(
+									post.date.getMinutes(),
+								).padStart(2, '0')}
+							</span>
+							<Icon icon="formkit:datetime" class="w-4 h-4" />
+						</div>
+						<div class="flex items-center gap-2 justify-end">
+							<span>
+								{post.author.username}
+							</span>
+							<Icon icon="wpf:name" class="w-4 h-4" />
+						</div>
 					</div>
-					<div class="flex items-center gap-2 justify-end">
-						<span>
-							{post.author.username}
-						</span>
-						<Icon icon="wpf:name" class="w-4 h-4" />
-					</div>
 				</div>
+				<Taglist {post} />
 			</a>
 		{:else}
 			<div
@@ -83,50 +83,49 @@
 		{#each disciplines as discipline}
 			<a
 				href="/discipline/{discipline.id}"
-				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-1 w-full"
+				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex flex-col py-1 w-full"
 			>
-				<div class="flex flex-col flex-grow justify-between">
+				<div class="flex justify-between gap-4">
 					<h3 class="text-lg font-semibold">{discipline.name}</h3>
-					<Taglist {discipline} />
+					<div class="flex flex-col items-right text-right gap-1 font-medium text-sm">
+						{#if discipline.date}
+							<div class="flex items-center gap-2 justify-end">
+								<span class="text-sm"
+									>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
+										discipline.date.getMonth() + 1,
+									).padStart(2, '0')}. {discipline.date.getFullYear()}</span
+								>
+								<Icon icon="mdi:calendar" class="w-4 h-4" />
+							</div>
+						{/if}
+						{#if discipline.start_time}
+							<div class="flex items-center gap-2 justify-end">
+								<span class="text-sm"
+									>{#if discipline.end_time}
+										{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+											discipline.start_time.getMinutes(),
+										).padStart(2, '0')}&nbsp;-&nbsp;{String(
+											discipline.end_time.getHours(),
+										).padStart(2, '0')}:{String(discipline.end_time.getMinutes()).padStart(2, '0')}
+									{:else}
+										{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+											discipline.start_time.getMinutes(),
+										).padStart(2, '0')}
+									{/if}
+								</span>
+								<Icon icon="mdi:clock-outline" class="w-4 h-4" />
+							</div>
+						{/if}
+						{#if discipline.location}
+							<div class="flex items-center gap-2 justify-end">
+								<span class="text-sm">{discipline.location}</span>
+								<Icon icon="mdi:map-marker" class="w-4 h-4" />
+							</div>
+						{/if}
+					</div>
 				</div>
-				<div class="flex flex-col items-right text-right gap-1 font-medium text-sm">
-					{#if discipline.date}
-						<div class="flex items-center gap-2 justify-end">
-							<span class="text-sm"
-								>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
-									discipline.date.getMonth() + 1,
-								).padStart(2, '0')}. {discipline.date.getFullYear()}</span
-							>
-							<Icon icon="mdi:calendar" class="w-4 h-4" />
-						</div>
-					{/if}
-					{#if discipline.start_time}
-						<div class="flex items-center gap-2 justify-end">
-							<span class="text-sm"
-								>{#if discipline.end_time}
-									{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
-										discipline.start_time.getMinutes(),
-									).padStart(2, '0')}&nbsp;-&nbsp;{String(discipline.end_time.getHours()).padStart(
-										2,
-										'0',
-									)}:{String(discipline.end_time.getMinutes()).padStart(2, '0')}
-								{:else}
-									{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
-										discipline.start_time.getMinutes(),
-									).padStart(2, '0')}
-								{/if}
-							</span>
-							<Icon icon="mdi:clock-outline" class="w-4 h-4" />
-						</div>
-					{/if}
-					{#if discipline.location}
-						<div class="flex items-center gap-2 justify-end">
-							<span class="text-sm">{discipline.location}</span>
-							<Icon icon="mdi:map-marker" class="w-4 h-4" />
-						</div>
-					{/if}
-				</div>
-			</a>
+				<Taglist {discipline} /></a
+			>
 		{:else}
 			<div
 				class="border-b border-gray-300 dark:border-gray-500 border-dotted flex py-2 w-full justify-center"
