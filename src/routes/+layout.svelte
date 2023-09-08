@@ -116,7 +116,7 @@
 
 	{#if $settings.debugMode.value}
 		<div
-			class="fixed bottom-0 right-1/2 transform translate-x-1/2 flex flex-col items-center text-center z-50 text-xs text-gray-400"
+			class="fixed bottom-0 right-1/2 transform translate-x-1/2 flex flex-col items-center text-center z-50 text-xs text-neutral-800 dark:text-neutral-400"
 		>
 			<a href="/debug">
 				Debug Mode Enabled {isOverridden('debugMode') ? '(Overriden)' : ''}

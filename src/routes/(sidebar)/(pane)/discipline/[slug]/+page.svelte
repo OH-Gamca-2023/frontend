@@ -38,8 +38,8 @@
 		if (resp.status == 200) {
 			toast({
 				title: was_primary
-					? 'Boli ste odstránení zo zodpovedných organizátorov'
-					: 'Boli ste pridaní medzi zodpovedných organizátorov',
+					? 'Boli ste odstránený zo zodpovedných organizátorov'
+					: 'Boli ste pridaný medzi zodpovedných organizátorov',
 				type: 'success',
 				duration: 5000,
 			})
@@ -59,8 +59,8 @@
 		if (resp.status == 200) {
 			toast({
 				title: was_supervisor
-					? 'Boli ste odstránení z dozorujúcich učiteľov'
-					: 'Boli ste pridaní medzi dozorujúcich učiteľov',
+					? 'Boli ste odstránený z dozorujúcich učiteľov'
+					: 'Boli ste pridaný medzi dozorujúcich učiteľov',
 				type: 'success',
 				duration: 5000,
 			})
@@ -160,7 +160,7 @@
 						{#if resultPromise}
 							{#await resultPromise}
 								<div
-									class="w-full h-6 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative"
+									class="w-full h-6 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative"
 								/>
 							{:then resultResponse}
 								{#if resultResponse.error}
@@ -171,7 +171,7 @@
 									<div class="text-amber-500 font-bold">Žiadne výsledky neboli nájdené</div>
 								{:else}
 									<div
-										class="flex flex-col divide-y-4 divide-zinc-200 dark:divide-slate-500 divide-dotted"
+										class="flex flex-col divide-y-4 divide-zinc-200 dark:divide-zinc-500 divide-dotted"
 									>
 										{#each resultResponse.data as results}
 											{@const top3 = results.placements.filter((p) => p.participated).slice(0, 3)}
@@ -181,7 +181,7 @@
 												{/if}
 												<Taglist
 													tags={results.grades.map((g) => g.name)}
-													class="pt-0 border-b border-zinc-200 dark:border-slate-500 pb-3 mb-1"
+													class="pt-0 border-b border-zinc-200 dark:border-zinc-500 pb-3 mb-1"
 												/>
 												<div class="flex flex-col relative">
 													{#each top3 as placement}
@@ -198,10 +198,10 @@
 													{/each}
 
 													<div
-														class="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-700"
+														class="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-100 dark:to-zinc-700"
 													/>
 												</div>
-												<div class="border-t border-zinc-200 dark:border-slate-500 pt-1 mt-1">
+												<div class="border-t border-zinc-200 dark:border-zinc-500 pt-1 mt-1">
 													<a
 														href="/discipline/{discipline.id}/results/"
 														class="text-lg font-bold text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
@@ -224,7 +224,7 @@
 			<div class="flex flex-col">
 				{#if discipline.details_published}
 					{#if discipline.details.length > 0}
-						<div class="prose prose-slate dark:prose-invert max-w-">
+						<div class="prose prose-zinc dark:prose-invert">
 							<Markdown md={discipline.details} plugins={[gfmPlugin, highlightPlugin]} />
 						</div>
 					{:else}
@@ -247,13 +247,13 @@
 					<div class="flex flex-col">
 						<span class="text-xl font-bold">Zodpovední organizátori</span>
 						<div
-							class="flex flex-col rounded-md border border-b-0 border-gray-300 dark:border-gray-500 mt-5"
+							class="flex flex-col rounded-md border border-b-0 border-neutral-400 dark:border-neutral-500 mt-5"
 						>
 							{#if discipline.primary_organisers && discipline.primary_organisers.length > 0}
 								{#each discipline.primary_organisers as organiser}
 									{#if organiser}
 										<div
-											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400 border-b border-neutral-400 dark:border-neutral-500 flex"
 										>
 											<Person
 												user={organiser}
@@ -265,10 +265,10 @@
 								{/each}
 							{:else}
 								<div
-									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500"
+									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
+								border-b border-neutral-400 dark:border-neutral-500"
 								>
-									<Icon icon="octicon:x-12" />
+									<Icon icon="mdi:close-octagon-outline" class="w-8 h-8" />
 									<span class="text-md">Zatiaľ nikto</span>
 								</div>
 							{/if}
@@ -276,35 +276,35 @@
 							{#if $userState.user.clazz.grade.is_organiser}
 								{#if primary_loading}
 									<div
-										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-						border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+						border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 									>
 										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
 										Spracúvam...
 									</div>
 								{:else if is_primary}
 									<button
-										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
-										<Icon icon="octicon:x-12" class="w-6 h-6" />
+										<Icon icon="mdi:close-thick" class="w-6 h-6" />
 										Odhlásiť sa
 									</button>
 								{:else}
 									<button
-										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={primary_click}
 									>
-										<Icon icon="typcn:plus" class="w-6 h-6" />
+										<Icon icon="mdi:plus-thick" class="w-6 h-6" />
 										Pridať sa
 									</button>
 								{/if}
 							{:else}
 								<div
-									class="flex justify-between items-center bg-opacity-20 p-2 bg-gray-400
-							border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-not-allowed"
+									class="flex justify-between items-center bg-opacity-20 p-2 bg-neutral-400
+							border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
 									Nie si organizátor
@@ -315,13 +315,13 @@
 					<div class="hidden flex-col pt-4">
 						<span class="text-xl font-bold">Učiteľský dozor</span>
 						<div
-							class="flex flex-col rounded-md border border-b-0 border-gray-300 dark:border-gray-500 mt-5"
+							class="flex flex-col rounded-md border border-b-0 border-neutral-400 dark:border-neutral-500 mt-5"
 						>
 							{#if discipline.teacher_supervisors && discipline.teacher_supervisors.length > 0}
 								{#each discipline.teacher_supervisors as teacher}
 									{#if teacher}
 										<div
-											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400 border-b border-gray-300 dark:border-gray-500 flex"
+											class="bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400 border-b border-neutral-400 dark:border-neutral-500 flex"
 										>
 											<Person
 												user={teacher}
@@ -333,10 +333,10 @@
 								{/each}
 							{:else}
 								<div
-									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500"
+									class="flex justify-between items-center bg-opacity-0 hover:bg-opacity-10 p-2 bg-neutral-400
+								border-b border-neutral-400 dark:border-neutral-500"
 								>
-									<Icon icon="octicon:x-12" />
+									<Icon icon="mdi:close-octagon-outline" class="w-8 h-8" />
 									<span class="text-md">Zatiaľ nikto</span>
 								</div>
 							{/if}
@@ -344,35 +344,35 @@
 							{#if $userState.user.clazz.grade.is_teacher}
 								{#if supervisor_loading}
 									<div
-										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-						border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+						border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 									>
 										<Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
 										Spracúvam...
 									</div>
 								{:else if is_supervisor}
 									<button
-										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
-										<Icon icon="octicon:x-12" />
+										<Icon icon="mdi:close-thick" class="w-6 h-6" />
 										Odhlásiť sa
 									</button>
 								{:else}
 									<button
-										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-gray-400
-								border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-pointer"
+										class="flex justify-between items-center bg-opacity-20 hover:bg-opacity-50 p-2 bg-neutral-400
+								border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-pointer"
 										on:click={supervisor_click}
 									>
-										<Icon icon="typcn:plus" />
+										<Icon icon="mdi:plus-thick" class="w-6 h-6" />
 										Pridať sa
 									</button>
 								{/if}
 							{:else}
 								<div
-									class="flex justify-between items-center bg-opacity-20 p-2 bg-gray-400
-							border-b border-gray-300 dark:border-gray-500 rounded-b-md cursor-not-allowed"
+									class="flex justify-between items-center bg-opacity-20 p-2 bg-neutral-400
+							border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
 									Nie si učiteľ
@@ -392,9 +392,9 @@
 					Nastala chyba pri načítavaní údajov
 				{/if}
 			</div>
-			<div class="absolute inset-0 bg-gray-200 dark:bg-slate-600 rounded animate-pulse" />
+			<div class="absolute inset-0 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse" />
 		</div>
 	{:else}
-		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
+		<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />
 	{/if}
 </div>

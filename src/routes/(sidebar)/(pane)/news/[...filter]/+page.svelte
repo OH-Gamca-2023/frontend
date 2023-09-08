@@ -72,7 +72,7 @@
 {#each posts as post}
 	<a
 		href={post.redirect ? post.redirect : '/post/' + post.id}
-		class="border-b border-gray-300 dark:border-gray-500 border-dotted flex flex-col py-2 w-full"
+		class="border-b border-neutral-400 dark:border-neutral-500 border-dotted flex flex-col py-2 w-full"
 	>
 		<div class="flex justify-between gap-4">
 			<h3 class="md:text-lg font-bold">{post.title}</h3>
@@ -86,13 +86,13 @@
 							post.date.getMinutes(),
 						).padStart(2, '0')}
 					</span>
-					<Icon icon="formkit:datetime" class="w-4 h-4" />
+					<Icon icon="mdi:calendar-clock" class="w-4 h-4" />
 				</div>
 				<div class="flex items-center gap-2 justify-end">
 					<span>
 						{post.author.username}
 					</span>
-					<Icon icon="wpf:name" class="w-4 h-4" />
+					<Icon icon="mdi:account" class="w-4 h-4" />
 				</div>
 			</div>
 		</div>

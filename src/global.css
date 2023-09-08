@@ -1,3 +1,18 @@
 body {
 	overflow: overlay;
 }
+
+@font-face {
+	font-family: 'ModernLove';
+	src: url('/fonts/modernlove-regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'ModernLove-Grunge';
+	src: url('/fonts/modernlove-grunge.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'ModernLove-Rough';
+	src: url('/fonts/modernlove-rough.ttf') format('truetype');
+}

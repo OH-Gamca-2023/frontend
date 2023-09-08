@@ -46,7 +46,7 @@
 				<div class="flex flex-col items-right text-right gap-1 font-medium">
 					<span class="flex items-center gap-1 md:gap-2 md:justify-end">
 						<span class="order-2">{authorFullName}</span>
-						<Icon icon="wpf:name" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
+						<Icon icon="mdi:account" class="w-5 h-5 md:w-6 md:h-6 order-1 md:order-3" />
 					</span>
 					<div class="flex items-center gap-1 md:gap-2 md:justify-end">
 						<span class="order-2">
@@ -70,16 +70,16 @@
 		<div id="content" class="markdown" class:dark={$darkTheme}>
 			{#if post.redirect}
 				<div class="flex flex-col items-center justify-center w-full h-12 relative mt-6">
-					<div class="absolute bg-gray-200 dark:bg-slate-600 rounded animate-pulse w-full h-12" />
+					<div class="absolute bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse w-full h-12" />
 					<span class="text-lg font-bold z-10">Prebieha presmerovanie...</span>
 				</div>
 			{:else}
-				<div class="prose prose-slate dark:prose-invert">
+				<div class="prose prose-zinc dark:prose-invert max-w-full">
 					<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
 				</div>
 			{/if}
 		</div>
 	{:else}
-		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
+		<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />
 	{/if}
 </div>

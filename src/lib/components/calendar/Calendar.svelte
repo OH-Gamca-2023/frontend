@@ -109,9 +109,12 @@
 	initDays(year)
 </script>
 
-<div class="calendar-container {$$props.class ?? ''} rounded-lg shadow-lg" class:dark={$darkTheme}>
+<div
+	class="calendar-container {$$props.class ?? ''} rounded-lg shadow-lg bg-zinc-50 dark:bg-zinc-700"
+	class:dark={$darkTheme}
+>
 	{#if showHeader}
-		<div class="calendar-header rounded-t-lg bg-violet-100 py-5 px-0 text-center">
+		<div class="calendar-header rounded-t-lg bg-zinc-300 dark:bg-zinc-750 py-5 px-0 text-center">
 			<h1 class="text-xl flex justify-center items-center">
 				{#if displayedMonth > 0}
 					<button class="mr-2 text-gray-700 dark:text-gray-200" on:click={() => displayedMonth--}
@@ -140,7 +143,7 @@
 	>
 		<div class="flex">
 			{#each usedHeaders as header}
-				<span class="day-name" class:dark={$darkTheme}>{header}</span>
+				<span class="day-name text-red-400" class:dark={$darkTheme}>{header}</span>
 			{/each}
 		</div>
 		{#each Array.from({ length: 12 }) as _, i}
@@ -167,16 +170,8 @@
 
 <style lang="scss">
 	.calendar-container {
-		background-color: white;
 		width: 100%;
 		max-width: calc(185px * 7);
-
-		&.dark {
-			background-color: #374151;
-			.calendar-header {
-				background-color: #2b3544;
-			}
-		}
 	}
 
 	.calendars {
@@ -209,9 +204,7 @@
 	}
 
 	.day-name {
-		color: #e9a1a7;
 		border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-		background-color: white;
 
 		text-transform: uppercase;
 		text-align: center;
@@ -219,11 +212,6 @@
 		font-weight: 500;
 
 		width: 185px;
-
-		&.dark {
-			background-color: #374151;
-			color: #f36974;
-		}
 
 		@media (max-width: 1380px) {
 			display: none;

@@ -49,7 +49,7 @@
 		<div class="flex flex-col w-full justify-center items-center">
 			{#if discipline.results_published}
 				{#await resultPromise}
-					<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
+					<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />
 				{:then resultResponse}
 					{#if resultResponse.error}
 						<div class="text-red-500 text-xl font-bold text-center">
@@ -63,10 +63,10 @@
 						<div class="flex gap-4 w-full justify-center">
 							{#each resultResponse.data as result}
 								<div
-									class="flex flex-col items-center bg-zinc-100 dark:bg-slate-600 shadow-lg rounded-lg p-5 w-80"
+									class="flex flex-col items-center bg-zinc-50 dark:bg-zinc-600 shadow-lg rounded-lg p-5 w-80"
 								>
 									<div
-										class="flex flex-col justify-center items-center border-b-2 border-zinc-200 dark:border-slate-500 px-3 pb-3 mb-3"
+										class="flex flex-col justify-center items-center border-b-2 border-zinc-200 dark:border-zinc-500 px-3 pb-3 mb-3"
 									>
 										{#if result.name}
 											<span class="text-2xl font-bold">{result.name}</span>
@@ -115,6 +115,6 @@
 			{/if}
 		</div>
 	{:else}
-		<div class="w-full h-12 bg-gray-200 dark:bg-slate-600 rounded animate-pulse relative" />
+		<div class="w-full h-12 bg-neutral-200 dark:bg-zinc-600 rounded animate-pulse relative" />
 	{/if}
 </div>
