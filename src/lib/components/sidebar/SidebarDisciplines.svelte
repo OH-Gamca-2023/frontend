@@ -46,7 +46,7 @@
 						<div class="flex flex-col gap-1">
 							<div class="flex justify-between gap-4">
 								<span class="font-semibold">{discipline.name}</span>
-								<div class="flex flex-col">
+								<div class="flex flex-col text-right">
 									{#if discipline.date}
 										<div class="flex gap-1 items-center justify-end">
 											<span
@@ -123,7 +123,7 @@
 						<div class="flex flex-col gap-1">
 							<div class="flex justify-between gap-4">
 								<span class="font-semibold">{discipline.name}</span>
-								<div class="flex flex-col">
+								<div class="flex flex-col text-right">
 									{#if discipline.date}
 										<div class="flex gap-1 items-center justify-end">
 											<span
