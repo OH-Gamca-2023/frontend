@@ -43,7 +43,7 @@
 						class="flex p-2 rounded-lg gap-4
 						{discipline.details_published ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
 					>
-						<div class="flex flex-col gap-1">
+						<div class="flex flex-col gap-1 w-full">
 							<div class="flex justify-between gap-4">
 								<span class="font-semibold">{discipline.name}</span>
 								<div class="flex flex-col text-right">
@@ -120,7 +120,7 @@
 						class="flex p-2 rounded-lg gap-4
 						{discipline.details_published ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
 					>
-						<div class="flex flex-col gap-1">
+						<div class="flex flex-col gap-1 w-full">
 							<div class="flex justify-between gap-4">
 								<span class="font-semibold">{discipline.name}</span>
 								<div class="flex flex-col text-right">

@@ -60,7 +60,7 @@
 							Žiadne výsledky neboli nájdené
 						</div>
 					{:else}
-						<div class="flex gap-4 w-full justify-center">
+						<div class="flex gap-4 w-full justify-center flex-wrap">
 							{#each resultResponse.data as result}
 								<div
 									class="flex flex-col items-center bg-zinc-50 dark:bg-zinc-600 shadow-lg rounded-lg p-5 w-80"
