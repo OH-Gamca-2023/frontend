@@ -4,7 +4,7 @@
 	import Icon from '$lib/components/Icon.svelte'
 	import { disciplines as rawDisciplines } from '$lib/api/models'
 
-	$: posts = $postList.slice(0, 5)
+	$: posts = $postList.slice(0, 10)
 	let today = new Date()
 	today.setHours(0, 0, 0, 0)
 	$: disciplines = Object.values($rawDisciplines)
@@ -48,13 +48,13 @@
 									post.date.getMinutes(),
 								).padStart(2, '0')}
 							</span>
-							<Icon icon="mdi:calendar-clock" class="w-4 h-4" />
+							<Icon icon="mdi:calendar-clock" class="w-5 h-5" />
 						</div>
 						<div class="flex items-center gap-2 justify-end">
 							<span>
 								{post.author.username}
 							</span>
-							<Icon icon="mdi:account" class="w-4 h-4" />
+							<Icon icon="mdi:account" class="w-5 h-5" />
 						</div>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 			>
 		</div>
 	</div>
-	<div class="flex flex-col w-full px-4">
+	<!-- <div class="flex flex-col w-full px-4">
 		<div class="flex flex-col justify-between items-center w-full">
 			<h1 class="text-2xl font-semibold pb-3">Najbližšie disciplíny</h1>
 		</div>
@@ -141,5 +141,5 @@
 				>Všetky disciplíny</a
 			>
 		</div>
-	</div>
+	</div> -->
 </div>

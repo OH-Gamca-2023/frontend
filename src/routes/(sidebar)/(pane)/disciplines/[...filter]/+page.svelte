@@ -5,6 +5,7 @@
 	import Filter, { type FilterResult } from '$lib/components/filter/Filter.svelte'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import type { Discipline } from '$lib/types'
+	import Icon from '$lib/components/Icon.svelte'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -13,6 +14,10 @@
 	let searchQuery = ''
 
 	let disciplines: Discipline[] = []
+
+	let entriesPerPage = 10
+	let pageNum = 0
+	let maxPage = 0
 
 	$: {
 		let list = Object.values($rawDisciplines)
@@ -36,7 +41,10 @@
 			)
 		}
 
-		disciplines = list
+		maxPage = Math.ceil(list.length / entriesPerPage) - 1
+		pageNum = Math.min(maxPage, Math.max(0, pageNum))
+
+		disciplines = list.slice(pageNum * entriesPerPage, (pageNum + 1) * entriesPerPage)
 	}
 
 	$: {
@@ -76,3 +84,74 @@
 		<p class="text-lg font-bold">Žiadne disciplíny vyhovujúce filtru neboli nájdené</p>
 	</div>
 {/if}
+
+<div
+	class="flex flex-col rounded-md shadow-md mt-3 bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300"
+>
+	<div class="flex">
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-tl-md hover:bg-neutral-300 dark:hover:bg-neutral-700 dark:text-neutral-400
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={pageNum === 0}
+			on:click={() => (pageNum -= 1)}
+		>
+			<Icon icon="mdi:chevron-left" class="w-5 h-5" />
+		</button>
+		<div
+			class="flex items-center justify-center w-10 h-10 bg-neutral-200 dark:bg-neutral-800 cursor-default"
+		>
+			{pageNum + 1}
+		</div>
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-tr-md hover:bg-neutral-300 dark:hover:bg-neutral-700 dark:text-neutral-300
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={pageNum === maxPage}
+			on:click={() => (pageNum += 1)}
+		>
+			<Icon icon="mdi:chevron-right" class="w-5 h-5" />
+		</button>
+	</div>
+	<div class="flex">
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-bl-md hover:bg-neutral-300 dark:hover:bg-neutral-700
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={entriesPerPage === 5}
+			on:click={() => (entriesPerPage = 5)}
+		>
+			5
+		</button>
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			hover:bg-neutral-300 dark:hover:bg-neutral-700
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={entriesPerPage === 10}
+			on:click={() => (entriesPerPage = 10)}
+		>
+			10
+		</button>
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-br-md hover:bg-neutral-300 dark:hover:bg-neutral-700
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={entriesPerPage === 20}
+			on:click={() => (entriesPerPage = 20)}
+		>
+			20
+		</button>
+	</div>
+</div>
+
+<style lang="scss">
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type='number'] {
+		-moz-appearance: textfield;
+	}
+</style>
