@@ -41,6 +41,7 @@ export const ciphers = new LoadableModel<Cipher>(
 		if (base.started) {
 			base.name = rawData.name
 			base.task_file = rawData.task_file
+			base.task_file_ext = rawData.task_file_ext
 		}
 
 		if (base.hint_visible) {

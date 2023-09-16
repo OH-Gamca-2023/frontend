@@ -5,6 +5,11 @@
 	import { getDisciplineResults } from '$lib/api'
 	import Icon from '$lib/components/Icon.svelte'
 
+	import 'prismjs/themes/prism.min.css'
+	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
+	import { highlightPlugin } from '$lib/prism'
+	import Markdown from 'svelte-exmarkdown'
+
 	export let data: PageData
 
 	$: discipline = $disciplines[data.disciplineId]
@@ -55,56 +60,63 @@
 						<div class="text-red-500 text-xl font-bold text-center">
 							Nastala chyba pri načítavaní výsledkov ({resultResponse.status})
 						</div>
-					{:else if !resultResponse.data || resultResponse.data.length === 0}
+					{:else if !resultResponse.data || (resultResponse.data.length === 0 && !discipline.result_details)}
 						<div class="text-amber-500 text-xl font-bold text-center">
 							Žiadne výsledky neboli nájdené
 						</div>
 					{:else}
-						<div class="flex gap-4 w-full justify-center flex-wrap">
-							{#each resultResponse.data as result}
-								<div
-									class="flex flex-col items-center bg-zinc-50 dark:bg-zinc-600 shadow-lg rounded-lg p-5 w-80"
-								>
+						<div class="flex flex-col gap-4">
+							<div class="flex gap-4 w-full justify-center flex-wrap">
+								{#each resultResponse.data as result}
 									<div
-										class="flex flex-col justify-center items-center border-b-2 border-zinc-200 dark:border-zinc-500 px-3 pb-3 mb-3"
+										class="flex flex-col items-center bg-zinc-50 dark:bg-zinc-600 shadow-lg rounded-lg p-5 w-80"
 									>
-										{#if result.name}
-											<span class="text-2xl font-bold">{result.name}</span>
-										{/if}
-										<Taglist
-											tags={result.grades.map((grade) => grade.name)}
-											class="justify-center"
-										/>
-									</div>
-									<div class="flex flex-col justify-center items-center">
-										{#each result.placements.filter((p) => p.participated) as placement}
-											<div class="flex justify-center items-center text-xl">
-												<span class="font-bold">
-													{placement.place}.
-												</span>
-												<span class="pl-3 font-semibold">
-													{placement.clazz.name}
-												</span>
-											</div>
-										{/each}
 										<div
-											class="flex flex-col justify-center items-center font-semibold pt-3 text-lg"
+											class="flex flex-col justify-center items-center border-b-2 border-zinc-200 dark:border-zinc-500 px-3 pb-3 mb-3"
 										>
-											Nezúčastnili sa:
-											{#if result.placements.filter((p) => !p.participated).length > 0}
-												<span class="pl-2 font-medium">
-													{@html result.placements
-														.filter((p) => !p.participated)
-														.map((p) => p.clazz.name.replace(' ', '&nbsp;'))
-														.join(', ')}
-												</span>
-											{:else}
-												<span class="pl-2 font-medium"> - </span>
+											{#if result.name}
+												<span class="text-2xl font-bold">{result.name}</span>
 											{/if}
+											<Taglist
+												tags={result.grades.map((grade) => grade.name)}
+												class="justify-center"
+											/>
+										</div>
+										<div class="flex flex-col justify-center items-center">
+											{#each result.placements.filter((p) => p.participated) as placement}
+												<div class="flex justify-center items-center text-xl">
+													<span class="font-bold">
+														{placement.place}.
+													</span>
+													<span class="pl-3 font-semibold">
+														{placement.clazz.name}
+													</span>
+												</div>
+											{/each}
+											<div
+												class="flex flex-col justify-center items-center font-semibold pt-3 text-lg"
+											>
+												Nezúčastnili sa:
+												{#if result.placements.filter((p) => !p.participated).length > 0}
+													<span class="pl-2 font-medium">
+														{@html result.placements
+															.filter((p) => !p.participated)
+															.map((p) => p.clazz.name.replace(' ', '&nbsp;'))
+															.join(', ')}
+													</span>
+												{:else}
+													<span class="pl-2 font-medium"> - </span>
+												{/if}
+											</div>
 										</div>
 									</div>
+								{/each}
+							</div>
+							{#if discipline.result_details && discipline.result_details.length > 0}
+								<div class="prose prose-zinc dark:prose-invert">
+									<Markdown md={discipline.result_details} plugins={[gfmPlugin, highlightPlugin]} />
 								</div>
-							{/each}
+							{/if}
 						</div>
 					{/if}
 				{/await}

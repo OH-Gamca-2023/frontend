@@ -12,7 +12,7 @@
 	$: fileType =
 		Object.keys(fileTypes).find((type) =>
 			fileTypes[type as 'image' | 'text' | 'document'].includes(
-				cipher.task_file?.split('.').pop() ?? '',
+				cipher.task_file_ext ?? cipher.task_file?.split('.').pop() ?? '',
 			),
 		) ?? 'unknown'
 </script>

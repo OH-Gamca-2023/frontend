@@ -12,6 +12,7 @@ export interface Discipline {
 	name: string
 	short_name: string
 	details: string
+	result_details: string
 
 	date: Date | null
 	start_time: Date | null

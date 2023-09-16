@@ -29,6 +29,7 @@ class DisciplineModel extends PartialModel<Discipline> {
 					name: rawDiscipline.name,
 					short_name: rawDiscipline.short_name,
 					details: rawDiscipline.details,
+					result_details: rawDiscipline.result_details,
 
 					date: rawDiscipline.date ? new Date(rawDiscipline.date) : null,
 					start_time: rawDiscipline.start_time

@@ -10,6 +10,7 @@ export interface Cipher {
 
 	name?: string
 	task_file?: string // URL
+	task_file_ext?: string
 	hint?: string
 
 	hint_publish_time?: Date
