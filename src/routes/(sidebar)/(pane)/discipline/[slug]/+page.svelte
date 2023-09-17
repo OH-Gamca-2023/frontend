@@ -168,7 +168,15 @@
 										Nastala chyba pri načítavaní výsledkov ({resultResponse.status})
 									</div>
 								{:else if !resultResponse.data || resultResponse.data.length === 0}
-									<div class="text-amber-500 font-bold">Žiadne výsledky neboli nájdené</div>
+									{#if discipline.result_details}
+										<a
+											href="/discipline/{discipline.id}/results/"
+											class="text-lg pt-1 font-bold text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400
+											underline">Kompletné výsledky</a
+										>
+									{:else}
+										<div class="text-amber-500 font-bold">Žiadne výsledky neboli nájdené</div>
+									{/if}
 								{:else}
 									<div
 										class="flex flex-col divide-y-4 divide-zinc-200 dark:divide-zinc-500 divide-dotted"
