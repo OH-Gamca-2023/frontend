@@ -6,6 +6,7 @@
 	import '../global.css'
 	import Background from '$lib/components/Background.svelte'
 	import Footer from '$lib/components/footer/Footer.svelte'
+	import Markdown from 'svelte-exmarkdown'
 	import { ToastContainer, FlatToast } from 'svelte-toasts'
 	import { startConnectionCheck } from '$lib/connection'
 	import { onMount } from 'svelte'
@@ -96,7 +97,7 @@
 								class="w-6 h-6 mr-1"
 								icon={alert.typeDetails?.icon ?? 'mdi:exclamation-circle'}
 							/>
-							<h1 class="font-medium">{alert.message}</h1>
+							<h1 class="font-medium"><Markdown md={alert.message} /></h1>
 						</div>
 					{/each}
 				</div>
