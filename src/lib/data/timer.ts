@@ -19,6 +19,15 @@ export const minutes = readable(new Date(), (set) => {
 })
 
 /**
+ * A readable store that updates every hour with the current time.
+ */
+export const hours = readable(new Date(), (set) => {
+	const update = () => set(new Date())
+	const interval = setInterval(update, 60 * 60 * 1000)
+	return () => clearInterval(interval)
+})
+
+/**
  * A readable store that updates in sub-second intervals with the current time.
  */
 export const subSeconds = readable(new Date(), (set) => {

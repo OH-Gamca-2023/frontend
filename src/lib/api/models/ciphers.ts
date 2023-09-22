@@ -15,6 +15,7 @@ export const ciphers = new LoadableModel<Cipher>(
 			start: new Date(rawData.start),
 			started: rawData.started,
 			submission_delay: rawData.submission_delay,
+			max_submissions_per_day: rawData.max_submissions_per_day,
 			hint_visible: rawData.hint_visible,
 			end: new Date(rawData.end),
 			has_ended: rawData.has_ended,
@@ -82,6 +83,8 @@ export async function loadCipherSubmissions(id: number): Promise<Submission[]> {
 
 export async function updateCipherSubmissions(id: number) {
 	const promise = loadCipherSubmissions(id)
+	console.log('Updating submissions for cipher', id)
 	submissionPromiseCache.set(id, promise)
+	promise.then(() => (console.log('Updated submissions for cipher', id), ciphers.triggerUpdated()))
 	return promise
 }

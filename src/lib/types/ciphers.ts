@@ -7,6 +7,7 @@ export interface Cipher {
 	started: boolean
 
 	submission_delay: number // Seconds
+	max_submissions_per_day: number
 
 	name?: string
 	task_file?: string // URL

@@ -8,7 +8,7 @@
 	import timeAgo from '$lib/utils/timeago'
 	import { toast } from '$lib/utils/toasts'
 	import { submitCipherSolution, type ErrorResponse } from '$lib/api'
-	import { subSeconds } from '$lib/data/timer'
+	import { hours, subSeconds } from '$lib/data/timer'
 	import CipherTask from '$lib/components/ciphers/CipherTask.svelte'
 
 	export let data: PageData
@@ -38,8 +38,14 @@
 			? 0
 			: submissions[0].time.getTime() +
 			  1000 * cipher.submission_delay * (solving == 'individual' ? 2 : 1)
+
+	$: today = $hours.setHours(0, 0, 0, 0)
+	$: maxSubmissionsReached =
+		submissions.filter((s) => s.time.getTime() > today).length >=
+		(cipher?.max_submissions_per_day ?? 0)
 	$: canSubmit =
 		!solved &&
+		!maxSubmissionsReached &&
 		(!cipher ? false : submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
 
 	let submitting = false
@@ -303,43 +309,46 @@
 											{:then submissionsL}
 												{#each submissionsL as submission, i}
 													<div
-															class="flex justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
+														class="flex justify-between items-center bg-opacity-40 hover:bg-opacity-60 p-2
 													border-b border-neutral-400 dark:border-neutral-500 h-10"
-															class:bg-green-500={submission.correct}
-															class:bg-red-500={!submission.correct}
-															class:rounded-b-md={i === submissionsL.length - 1}
+														class:bg-green-500={submission.correct}
+														class:bg-red-500={!submission.correct}
+														class:rounded-b-md={i === submissionsL.length - 1}
+													>
+														<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
+															>{submission.answer}</span
 														>
-															<span class="text-sm 2xl:text-md font-bold basis-2/5 text-left"
-																>{submission.answer}</span
+														<span class="text-sm 2xl:text-md font-bold">
+															{#if submission.after_hint}
+																<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
+															{:else}
+																<Icon
+																	icon="mdi:lightbulb-outline"
+																	class="w-6 h-6 text-neutral-500"
+																/>
+															{/if}
+														</span>
+														<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
+															<span class="pr-1"
+																>{String(submission.time.getDate()).padStart(2, '0')}. {String(
+																	submission.time.getMonth() + 1,
+																).padStart(2, '0')}.</span
 															>
-															<span class="text-sm 2xl:text-md font-bold">
-																{#if submission.after_hint}
-																	<Icon icon="mdi:lightbulb-on" class="w-6 h-6 text-orange-400" />
-																{:else}
-																	<Icon icon="mdi:lightbulb-outline" class="w-6 h-6 text-neutral-500" />
-																{/if}
-															</span>
-															<span class="text-sm 2xl:text-md font-bold basis-2/5 text-right">
-																<span class="pr-1"
-																	>{String(submission.time.getDate()).padStart(2, '0')}. {String(
-																		submission.time.getMonth() + 1,
-																	).padStart(2, '0')}.</span
-																>
-																<span
-																	>{String(submission.time.getHours()).padStart(2, '0')}:{String(
-																		submission.time.getMinutes(),
-																	).padStart(2, '0')}</span
-																>
-															</span>
-														</div>
-													{:else}
-														<div
-															class="flex justify-between items-center bg-opacity-40 p-2
+															<span
+																>{String(submission.time.getHours()).padStart(2, '0')}:{String(
+																	submission.time.getMinutes(),
+																).padStart(2, '0')}</span
+															>
+														</span>
+													</div>
+												{:else}
+													<div
+														class="flex justify-between items-center bg-opacity-40 p-2
 													border-b border-neutral-400 dark:border-neutral-500"
-														>
-															<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
-														</div>
-													{/each}
+													>
+														<i class="text-lg">Ešte ste neodoslali žiadne riešenie</i>
+													</div>
+												{/each}
 											{:catch error}
 												<div
 													class="flex justify-between items-center bg-opacity-40 p-2
@@ -358,22 +367,26 @@
 										<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
 										<form>
 											<label for="answer" class="text-sm font-bold text-red-500 dark:text-red-400">
-												{#if !canSubmit && nextSubmitTime}
-													{#key $subSeconds}
-														Ďalšie riešenie môžete odoslať {String(
-															timeAgo.format(nextSubmitTime),
-														).replace('teraz', 'o menej ako minútu')}.
-													{/key}
-												{:else if !cipher.started}
-													Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
-												{:else if cipher.has_ended}
-													Nemôžete odoslať riešenie, keďže šifra už skončila.
-												{:else if !canSubmit}
-													Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste
-													prosím obnoviť stránku.<br />
-													<i class="text-sm text-neutral-500 dark:text-neutral-400"
-														>Ak sa chyba nevyrieši, kontaktujte administrátora.</i
-													>
+												{#if !canSubmit}
+													{#if maxSubmissionsReached}
+														Dnes ste už odoslali maximálny počet riešení ({cipher.max_submissions_per_day}).
+													{:else if nextSubmitTime}
+														{#key $subSeconds}
+															Ďalšie riešenie môžete odoslať {String(
+																timeAgo.format(nextSubmitTime),
+															).replace('teraz', 'o menej ako minútu')}.
+														{/key}
+													{:else if !cipher.started}
+														Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
+													{:else if cipher.has_ended}
+														Nemôžete odoslať riešenie, keďže šifra už skončila.
+													{:else}
+														Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste
+														prosím obnoviť stránku.<br />
+														<i class="text-sm text-neutral-500 dark:text-neutral-400"
+															>Ak sa chyba nevyrieši, kontaktujte administrátora.</i
+														>
+													{/if}
 												{/if}
 											</label>
 											<div class="flex flex-col md:flex-row w-full pt-2">
