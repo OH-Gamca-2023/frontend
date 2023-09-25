@@ -41,6 +41,24 @@
 			)
 		}
 
+		const today = new Date().setHours(0, 0, 0, 0)
+		list.sort((a, b) => {
+			if (!a.date && !b.date) return 0
+			if (!a.date) return 1
+			if (!b.date) return -1
+
+			if (a.date.getTime() > today && b.date.getTime() < today) return -1
+			if (a.date.getTime() < today && b.date.getTime() > today) return 1
+
+			if (a.date.getTime() !== b.date.getTime()) return a.date.getTime() - b.date.getTime()
+
+			if (a.start_time && !b.start_time) return -1
+			if (!a.start_time && b.start_time) return 1
+			if (a.start_time && b.start_time) return a.start_time.getTime() - b.start_time.getTime()
+
+			return 0
+		})
+
 		maxPage = Math.ceil(list.length / entriesPerPage) - 1
 		pageNum = Math.min(maxPage, Math.max(0, pageNum))
 

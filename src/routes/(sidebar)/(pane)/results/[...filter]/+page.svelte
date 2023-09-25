@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment'
 	import { goto } from '$app/navigation'
 	import { disciplines as rawDisciplines } from '$lib/api/models'
+	import Icon from '$lib/components/Icon.svelte'
 	import Filter, { type FilterResult } from '$lib/components/filter/Filter.svelte'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import type { Discipline } from '$lib/types'
@@ -13,6 +14,10 @@
 	let searchQuery = ''
 
 	let disciplines: Discipline[] = []
+
+	let entriesPerPage = 10
+	let pageNum = 0
+	let maxPage = 0
 
 	$: {
 		let list = Object.values($rawDisciplines).filter((e) => e.results_published)
@@ -36,7 +41,24 @@
 			)
 		}
 
-		disciplines = list
+		list.sort((a, b) => {
+			if (!a.date && !b.date) return 0
+			if (!a.date) return 1
+			if (!b.date) return -1
+
+			if (a.date.getTime() !== b.date.getTime()) return b.date.getTime() - a.date.getTime()
+
+			if (a.start_time && !b.start_time) return -1
+			if (!a.start_time && b.start_time) return 1
+			if (a.start_time && b.start_time) return b.start_time.getTime() - a.start_time.getTime()
+
+			return 0
+		})
+
+		maxPage = Math.ceil(list.length / entriesPerPage) - 1
+		pageNum = Math.min(maxPage, Math.max(0, pageNum))
+
+		disciplines = list.slice(pageNum * entriesPerPage, (pageNum + 1) * entriesPerPage)
 	}
 
 	$: {
@@ -76,3 +98,74 @@
 		<p class="text-lg font-bold">Žiadne výsledky vyhovujúce filtru neboli nájdené</p>
 	</div>
 {/if}
+
+<div
+	class="flex flex-col rounded-md shadow-md mt-3 bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300"
+>
+	<div class="flex">
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-tl-md hover:bg-neutral-300 dark:hover:bg-neutral-700 dark:text-neutral-400
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={pageNum === 0}
+			on:click={() => (pageNum -= 1)}
+		>
+			<Icon icon="mdi:chevron-left" class="w-5 h-5" />
+		</button>
+		<div
+			class="flex items-center justify-center w-10 h-10 bg-neutral-200 dark:bg-neutral-800 cursor-default"
+		>
+			{pageNum + 1}
+		</div>
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-tr-md hover:bg-neutral-300 dark:hover:bg-neutral-700 dark:text-neutral-300
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={pageNum === maxPage}
+			on:click={() => (pageNum += 1)}
+		>
+			<Icon icon="mdi:chevron-right" class="w-5 h-5" />
+		</button>
+	</div>
+	<div class="flex">
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-bl-md hover:bg-neutral-300 dark:hover:bg-neutral-700
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={entriesPerPage === 5}
+			on:click={() => (entriesPerPage = 5)}
+		>
+			5
+		</button>
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			hover:bg-neutral-300 dark:hover:bg-neutral-700
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={entriesPerPage === 10}
+			on:click={() => (entriesPerPage = 10)}
+		>
+			10
+		</button>
+		<button
+			class="flex items-center justify-center w-10 h-10 cursor-pointer
+			rounded-br-md hover:bg-neutral-300 dark:hover:bg-neutral-700
+			disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+			disabled={entriesPerPage === 20}
+			on:click={() => (entriesPerPage = 20)}
+		>
+			20
+		</button>
+	</div>
+</div>
+
+<style lang="scss">
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type='number'] {
+		-moz-appearance: textfield;
+	}
+</style>
