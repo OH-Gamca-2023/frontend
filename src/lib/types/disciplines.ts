@@ -29,6 +29,7 @@ export interface Discipline {
 	// Only available for organisers and teachers
 	primary_organisers?: Partial<User>[]
 	teacher_supervisors?: Partial<User>[]
+	teacher_supervisors_enabled: boolean
 }
 
 export interface Results {

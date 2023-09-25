@@ -58,9 +58,7 @@
 		const resp = await modifyTeacherSupervisors(discipline!.id, is_supervisor ? 'remove' : 'add')
 		if (resp.status == 200) {
 			toast({
-				title: was_supervisor
-					? 'Boli ste odstránený z dozorujúcich učiteľov'
-					: 'Boli ste pridaný medzi dozorujúcich učiteľov',
+				title: was_supervisor ? 'Boli ste odstránený z poroty' : 'Boli ste pridaný do poroty',
 				type: 'success',
 				duration: 5000,
 			})
@@ -315,13 +313,13 @@
 							border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
-									Nie si organizátor
+									Nie ste organizátor
 								</div>
 							{/if}
 						</div>
 					</div>
-					<div class="hidden flex-col pt-4">
-						<span class="text-xl font-bold">Učiteľský dozor</span>
+					<div class="flex-col pt-4 {discipline.teacher_supervisors_enabled ? 'flex' : 'hidden'}">
+						<span class="text-xl font-bold">Učiteľská porota</span>
 						<div
 							class="flex flex-col rounded-md border border-b-0 border-neutral-400 dark:border-neutral-500 mt-5"
 						>
@@ -383,7 +381,7 @@
 							border-b border-neutral-400 dark:border-neutral-500 rounded-b-md cursor-not-allowed"
 								>
 									<Icon icon="mdi:stop-remove-outline" />
-									Nie si učiteľ
+									Nie ste učiteľ
 								</div>
 							{/if}
 						</div>

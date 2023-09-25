@@ -59,6 +59,7 @@ class DisciplineModel extends PartialModel<Discipline> {
 						if (!rawDiscipline.teacher_supervisors) return []
 						return rawDiscipline.teacher_supervisors.map((teacher: any) => getUser(teacher.id))
 					},
+					teacher_supervisors_enabled: rawDiscipline.teacher_supervisors_enabled,
 				} as Discipline
 			},
 			true,

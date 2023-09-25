@@ -37,11 +37,15 @@
 				</div>
 			{:else if resolvedSidebar}
 				{#each resolvedSidebar.upcoming as discipline}
+					{@const clickable =
+						discipline.details_published ||
+						($userState.loggedIn &&
+							$userState.user?.permissions.permissions.includes('disciplines.view_hidden'))}
 					<svelte:element
-						this={discipline.details_published ? 'a' : 'div'}
-						href={discipline.details_published ? `/discipline/${discipline.id}` : undefined}
+						this={clickable ? 'a' : 'div'}
+						href={clickable ? `/discipline/${discipline.id}` : undefined}
 						class="flex p-2 rounded-lg gap-4
-						{discipline.details_published ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
+						{clickable ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
 					>
 						<div class="flex flex-col gap-1 w-full">
 							<div class="flex justify-between gap-4">
@@ -114,11 +118,83 @@
 					>Najbližšie disciplíny ktoré organizuješ
 				</span>
 				{#each resolvedSidebar.organising as discipline}
+					{@const clickable =
+						discipline.details_published ||
+						($userState.loggedIn &&
+							$userState.user?.permissions.permissions.includes('disciplines.view_hidden'))}
 					<svelte:element
-						this={discipline.details_published ? 'a' : 'div'}
-						href={discipline.details_published ? `/discipline/${discipline.id}` : undefined}
+						this={clickable ? 'a' : 'div'}
+						href={clickable ? `/discipline/${discipline.id}` : undefined}
 						class="flex p-2 rounded-lg gap-4
-						{discipline.details_published ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
+						{clickable ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
+					>
+						<div class="flex flex-col gap-1 w-full">
+							<div class="flex justify-between gap-4">
+								<span class="font-semibold">{discipline.name}</span>
+								<div class="flex flex-col text-right">
+									{#if discipline.date}
+										<div class="flex gap-1 items-center justify-end">
+											<span
+												>{String(discipline.date.getDate()).padStart(2, '0')}. {String(
+													discipline.date.getMonth() + 1,
+												).padStart(2, '0')}. {discipline.date.getFullYear()}</span
+											>
+											<Icon icon="mdi:calendar" class="h-4 w-4" />
+										</div>
+									{/if}
+									{#if discipline.start_time}
+										<div class="flex gap-1 items-center justify-end">
+											<span
+												>{#if discipline.end_time}
+													{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+														discipline.start_time.getMinutes(),
+													).padStart(2, '0')}&nbsp;-&nbsp;{String(
+														discipline.end_time.getHours(),
+													).padStart(2, '0')}:{String(discipline.end_time.getMinutes()).padStart(
+														2,
+														'0',
+													)}
+												{:else}
+													{String(discipline.start_time.getHours()).padStart(2, '0')}:{String(
+														discipline.start_time.getMinutes(),
+													).padStart(2, '0')}
+												{/if}
+											</span>
+											<Icon icon="mdi:clock-outline" class="h-4 w-4" />
+										</div>
+									{/if}
+								</div>
+							</div>
+							<div class="flex justify-between gap-1 items-center">
+								<Taglist {discipline} alwaysSmall={true} />
+								{#if discipline.details_published}
+									<Icon icon="mdi:book-open-page-variant" class="h-4 w-4" />
+								{/if}
+							</div>
+						</div>
+					</svelte:element>
+				{:else}
+					<div class="flex items-center justify-center gap-2 py-1">
+						<span class="font-medium">Nenašli sa žiadne disciplíny</span>
+					</div>
+				{/each}
+			</div>
+		{/if}
+		{#if resolvedSidebar && resolvedSidebar.supervising && resolvedSidebar.supervising.length > 0}
+			<div class="flex flex-col pt-3">
+				<span class="font-bold text-lg text-center border-b border-gray-500 dark:border-gray-400"
+					>Najbližšie disciplíny v ktorých ste porotca
+				</span>
+				{#each resolvedSidebar.supervising as discipline}
+					{@const clickable =
+						discipline.details_published ||
+						($userState.loggedIn &&
+							$userState.user?.permissions.permissions.includes('disciplines.view_hidden'))}
+					<svelte:element
+						this={clickable ? 'a' : 'div'}
+						href={clickable ? `/discipline/${discipline.id}` : undefined}
+						class="flex p-2 rounded-lg gap-4
+						{clickable ? 'hover:bg-gray-200 dark:hover:bg-slate-600' : 'cursor-not-allowed'}"
 					>
 						<div class="flex flex-col gap-1 w-full">
 							<div class="flex justify-between gap-4">
