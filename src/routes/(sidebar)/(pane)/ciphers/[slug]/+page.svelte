@@ -128,7 +128,7 @@
 				<span class="text-xl font-bold">Nepodarilo sa nájsť šifru.</span>
 			</div>
 		{:else}
-			<div class="flex flex-col space-y-5 md:space-y-0 md:flex-row flex-wrap">
+			<div class="flex flex-col space-y-5 md:space-y-0">
 				<div class="flex flex-col space-y-5 basis-1/2 2xl:basis-2/5 3xl:basis-1/5 order-1 p-3">
 					<div class="flex flex-col space-y-2">
 						<span class="text-xl font-bold text-neutral-500 dark:text-neutral-400"
@@ -232,11 +232,6 @@
 							{/if}
 						</div>
 					{/if}
-				</div>
-				<div
-					class="flex flex-col p-5 flex-1 order-4 3xl:order-2 border-t basis-full 3xl:basis-2/5 border-neutral-400 pt-4 mt-4 dark:border-neutral-500 md:border-t-0 md:pt-3 md:mt-0"
-				>
-					<CipherTask {cipher} />
 				</div>
 				<div class="hidden 2xl:block 3xl:hidden flex-grow order-2" />
 				<div
@@ -437,6 +432,11 @@
 									rounded-md shadow-md">Prihlásiť sa</a
 						>
 					{/if}
+				</div>
+				<div
+					class="flex flex-col p-5 flex-1 order-4 3xl:order-2 border-t basis-full 3xl:basis-2/5 border-neutral-400 pt-4 mt-4 dark:border-neutral-500 md:border-t-0 md:pt-3 md:mt-0"
+				>
+					<CipherTask {cipher} />
 				</div>
 			</div>
 		{/if}

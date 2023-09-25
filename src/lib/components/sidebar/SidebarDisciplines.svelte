@@ -54,7 +54,7 @@
 													discipline.date.getMonth() + 1,
 												).padStart(2, '0')}. {discipline.date.getFullYear()}</span
 											>
-											<Icon icon="mdi:calendar" />
+											<Icon icon="mdi:calendar" class="h-4 w-4" />
 										</div>
 									{/if}
 									{#if discipline.start_time}
@@ -75,17 +75,17 @@
 													).padStart(2, '0')}
 												{/if}
 											</span>
-											<Icon icon="mdi:clock-outline" />
-										</div>
-									{/if}
-									{#if discipline.details_published}
-										<div class="flex gap-1 items-center justify-end">
-											<Icon icon="mdi:book-open-page-variant" />
+											<Icon icon="mdi:clock-outline" class="h-4 w-4" />
 										</div>
 									{/if}
 								</div>
 							</div>
-							<Taglist {discipline} alwaysSmall={true} />
+							<div class="flex justify-between gap-1 items-center">
+								<Taglist {discipline} alwaysSmall={true} />
+								{#if discipline.details_published}
+									<Icon icon="mdi:book-open-page-variant" class="h-4 w-4" />
+								{/if}
+							</div>
 						</div>
 					</svelte:element>
 				{:else}
@@ -131,7 +131,7 @@
 													discipline.date.getMonth() + 1,
 												).padStart(2, '0')}. {discipline.date.getFullYear()}</span
 											>
-											<Icon icon="mdi:calendar" />
+											<Icon icon="mdi:calendar" class="h-4 w-4" />
 										</div>
 									{/if}
 									{#if discipline.start_time}
@@ -152,17 +152,17 @@
 													).padStart(2, '0')}
 												{/if}
 											</span>
-											<Icon icon="mdi:clock-outline" />
-										</div>
-									{/if}
-									{#if discipline.details_published}
-										<div class="flex gap-1 items-center justify-end">
-											<Icon icon="mdi:book-open-page-variant" />
+											<Icon icon="mdi:clock-outline" class="h-4 w-4" />
 										</div>
 									{/if}
 								</div>
 							</div>
-							<Taglist {discipline} alwaysSmall={true} />
+							<div class="flex justify-between gap-1 items-center">
+								<Taglist {discipline} alwaysSmall={true} />
+								{#if discipline.details_published}
+									<Icon icon="mdi:book-open-page-variant" class="h-4 w-4" />
+								{/if}
+							</div>
 						</div>
 					</svelte:element>
 				{:else}
