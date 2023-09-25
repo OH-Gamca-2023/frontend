@@ -80,7 +80,8 @@
 
 <svelte:window on:load={processSW} />
 
-<main class="app flex flex-col bg-zinc-200 dark:bg-zinc-800" class:dark={$darkTheme}>
+<main class="app flex flex-col" class:dark={$darkTheme}>
+	<div class="fixed inset-0 -z-[100] bg-zinc-200 dark:bg-zinc-800" id="bg" />
 	{#if headerAndFooter}
 		<Header />
 	{/if}

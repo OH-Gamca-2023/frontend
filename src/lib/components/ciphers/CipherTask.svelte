@@ -17,22 +17,28 @@
 		) ?? 'unknown'
 </script>
 
-{#if !cipher.started || !cipher.task_file}
-	Nepodarilo sa načítať zadanie šifry.
-{:else if fileType == 'image'}
-	<img src={getApiHost() + '/..' + cipher.task_file} alt="Zadanie šifry" />
-{:else if fileType == 'document'}
-	<iframe
-		src={getApiHost() + '/..' + cipher.task_file}
-		class="w-full h-full"
-		style="min-height: 50vh;"
-		title="Zadanie šifry"
-	/>
-{:else}
-	<div class="flex flex-col justify-center items-center">
-		<div class="text-3xl font-bold pb-2">Náhľad zadania nie je k dispozícii.</div>
+<div class="flex flex-col justify-center items-center">
+	{#if !cipher.started || !cipher.task_file}
+		Nepodarilo sa načítať zadanie šifry.
+	{:else if fileType == 'image'}
+		<img src={getApiHost() + '/..' + cipher.task_file} alt="Zadanie šifry" />
 		<a href={getApiHost() + '/..' + cipher.task_file} target="_blank" rel="noopener noreferrer">
-			<div class="text-2xl underline">Stiahnuť zadanie</div>
+			<div class="italic underline">Stiahnuť zadanie</div>
 		</a>
-	</div>
-{/if}
+	{:else if fileType == 'document'}
+		<iframe
+			src={getApiHost() + '/..' + cipher.task_file}
+			class="w-full h-full"
+			style="min-height: 50vh;"
+			title="Zadanie šifry"
+		/>
+		<a href={getApiHost() + '/..' + cipher.task_file} target="_blank" rel="noopener noreferrer">
+			<div class="italic underline">Stiahnuť zadanie</div>
+		</a>
+	{:else}
+		<div class="text-2xl font-bold pb-2">Náhľad zadania nie je k dispozícii.</div>
+		<a href={getApiHost() + '/..' + cipher.task_file} target="_blank" rel="noopener noreferrer">
+			<div class="text-xl underline">Stiahnuť zadanie</div>
+		</a>
+	{/if}
+</div>
