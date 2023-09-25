@@ -68,6 +68,7 @@
 		const resp = await submitCipherSolution(cipher.id, answer)
 		if (!resp.error) {
 			await updateCipherSubmissions(cipher.id)
+			await ciphers.load(true)
 			answer = ''
 			toast({ type: 'success', title: 'Odpoveď bola odoslaná', duration: 5000 })
 			submitting = false
