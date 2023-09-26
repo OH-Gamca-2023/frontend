@@ -99,4 +99,7 @@
 		<Icon icon="mdi:login" class="h-6 w-6 mr-2" />
 		Prihlásiť sa
 	</a>
+	<a href={`/preferences/`} class="flex items-center justify-center cursor-pointer">
+		<Icon icon="mdi:wrench-outline" class="h-6 w-6" />
+	</a>
 {/if}
