@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Results } from '$lib/types'
 	import type { PageData } from './$types'
 	import { disciplines } from '$lib/api/models'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
@@ -17,6 +18,40 @@
 	if (!discipline) disciplines.loadSingle(data.disciplineId)
 
 	let resultPromise = getDisciplineResults(data.disciplineId)
+
+	let results: (Results & { parsed?: Record<string, string> })[] = []
+
+	;(async () => {
+		const resp = await resultPromise
+		if (resp.error || !resp.data || resp.data.length == 0) return
+
+		for (const result of resp.data) {
+			if (result.group_identical) {
+				let parsed: Record<string, string> = {}
+				let places = result.placements
+					.filter((p) => p.participated)
+					.map((p) => p.place)
+					.filter((v, i, a) => a.indexOf(v) === i)
+					.sort((a, b) => a - b)
+
+				for (const place of places) {
+					let amount = result.placements.filter((p) => p.place === place).length
+					parsed[amount > 1 ? `${place}. - ${place + amount - 1}.` : `${place}.`] =
+						result.placements
+							.filter((p) => p.place === place)
+							.map((p) => p.clazz.name.replace(' ', '&nbsp;'))
+							.join(', ')
+				}
+
+				results.push({
+					...result,
+					parsed,
+				})
+			} else {
+				results.push(result)
+			}
+		}
+	})()
 </script>
 
 <svelte:head>
@@ -67,9 +102,9 @@
 					{:else}
 						<div class="flex flex-col gap-4">
 							<div class="flex gap-4 w-full justify-center flex-wrap">
-								{#each resultResponse.data as result}
+								{#each results as result}
 									<div
-										class="flex flex-col items-center bg-zinc-50 dark:bg-zinc-600 shadow-lg rounded-lg p-5 w-80"
+										class="flex flex-col items-center bg-zinc-50 dark:bg-zinc-600 shadow-lg rounded-lg p-5 w-full max-w-[20rem]"
 									>
 										<div
 											class="flex flex-col justify-center items-center border-b-2 border-zinc-200 dark:border-zinc-500 px-3 pb-3 mb-3"
@@ -83,16 +118,29 @@
 											/>
 										</div>
 										<div class="flex flex-col justify-center items-center">
-											{#each result.placements.filter((p) => p.participated) as placement}
-												<div class="flex justify-center items-center text-xl">
-													<span class="font-bold">
-														{placement.place}.
-													</span>
-													<span class="pl-3 font-semibold">
-														{placement.clazz.name}
-													</span>
-												</div>
-											{/each}
+											{#if result.group_identical && result.parsed}
+												{#each Object.entries(result.parsed) as [place, clazzes]}
+													<div class="flex justify-center items-center text-xl">
+														<span class="font-bold whitespace-nowrap">
+															{place}
+														</span>
+														<span class="pl-3">
+															{@html clazzes}
+														</span>
+													</div>
+												{/each}
+											{:else}
+												{#each result.placements.filter((p) => p.participated) as placement}
+													<div class="flex justify-center items-center text-xl">
+														<span class="font-bold">
+															{placement.place}.
+														</span>
+														<span class="pl-3">
+															{placement.clazz.name}
+														</span>
+													</div>
+												{/each}
+											{/if}
 											<div
 												class="flex flex-col justify-center items-center font-semibold pt-3 text-lg"
 											>

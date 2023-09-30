@@ -39,6 +39,7 @@ export interface Results {
 	discipline: Discipline
 
 	placements: Placement[]
+	group_identical: boolean
 }
 
 export interface Placement {

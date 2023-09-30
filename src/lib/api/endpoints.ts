@@ -318,6 +318,7 @@ export async function getDisciplineResults(disciplineId: string) {
 						participated: p.participated,
 					}
 				}),
+				group_identical: result.group_identical ?? true,
 			} as Results)
 		}
 		resp.data = data
