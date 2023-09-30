@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Markdown from 'svelte-exmarkdown'
 	import { slide } from 'svelte/transition'
 	import type { Cipher, Submission } from '$lib/types/ciphers'
 	import Icon from '$lib/components/Icon.svelte'
@@ -219,11 +220,13 @@
 							</button>
 							{#if hintOpen}
 								<div
-									class="flex flex-col mt-4 bg-neutral-900 bg-opacity-25 p-4 rounded-lg"
+									class="flex flex-col mt-4 bg-neutral-900 bg-opacity-25 p-4 rounded-lg break-all"
 									transition:slide|global={{ duration: 300 }}
 								>
 									{#if cipher.hint}
-										<span class="text-lg font-bold">{cipher.hint}</span>
+										<span class="text-lg prose prose-zinc dark:prose-invert">
+											<Markdown md={cipher.hint} />
+										</span>
 									{:else}
 										<span class="text-md text-red-500 dark:text-red-400"
 											>Nápoveda nie je k dispozícii. Pravdepodobne nastala chyba.</span
