@@ -130,7 +130,7 @@
 				<span class="text-xl font-bold">Nepodarilo sa nájsť šifru.</span>
 			</div>
 		{:else}
-			<div class="flex flex-col space-y-5 md:space-y-0">
+			<div class="flex flex-col xl:flex-row space-y-5 md:space-y-0 xl:flex-wrap">
 				<div class="flex flex-col space-y-5 basis-1/2 2xl:basis-2/5 3xl:basis-1/5 order-1 p-3">
 					<div class="flex flex-col space-y-2">
 						<span class="text-xl font-bold text-neutral-500 dark:text-neutral-400"
