@@ -19,6 +19,7 @@ export const ciphers = new LoadableModel<Cipher>(
 			hint_visible: rawData.hint_visible,
 			end: new Date(rawData.end),
 			has_ended: rawData.has_ended,
+			rating: rawData.rating,
 			get submissions() {
 				if (!this.started) return Promise.resolve([])
 				if (!submissionPromiseCache.has(this.id)) {

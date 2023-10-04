@@ -1,5 +1,5 @@
 import { userState } from '$lib/state'
-import type { Sidebar, Results, Submission, SuccessResponse, User, Discipline } from '$lib/types'
+import type { Sidebar, Results, Submission, SuccessResponse, User, Discipline, Rating } from '$lib/types'
 import { get } from 'svelte/store'
 import { categories, clazzes, disciplines, grades } from './models'
 import { makeApiRequest } from './requests'
@@ -207,6 +207,21 @@ export async function getCipherSubmissions(id: number) {
  */
 export async function submitCipherSolution(id: number, solution: string) {
 	return makeApiRequest<Submission>(`ciphers/${id}/submissions`, 'POST', { answer: solution }, true)
+}
+
+
+/**
+ * Submit cipher rating.
+ * 
+ * @param id the cipher ID
+ * @param rating the rating
+ * @returns 201 Created if new rating was created, 204 No Content if existing rating was updated
+ * @throws 401 error if not logged in
+ * @throws 400 error if the rating is invalid in any way
+ * @throws 403 error if the user hasn't solved the cipher yet
+ */
+export async function submitCipherRating(id: number, rating: Rating) {
+	return makeApiRequest<void>(`ciphers/${id}/rating`, 'POST', { ...rating }, true)
 }
 
 // DISCIPLINE ENDPOINTS

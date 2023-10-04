@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Rating as RatingType } from '$lib/types/ciphers'
+	import Rating from '$lib/components/ciphers/Rating.svelte'
 	import Markdown from 'svelte-exmarkdown'
 	import { slide } from 'svelte/transition'
 	import type { Cipher, Submission } from '$lib/types/ciphers'
@@ -8,7 +10,12 @@
 	import { userState } from '$lib/state'
 	import timeAgo from '$lib/utils/timeago'
 	import { toast } from '$lib/utils/toasts'
-	import { submitCipherSolution, type ErrorResponse } from '$lib/api'
+	import {
+		submitCipherSolution,
+		type ErrorResponse,
+		submitCipherRating,
+		type SuccessResponse,
+	} from '$lib/api'
 	import { hours, subSeconds } from '$lib/data/timer'
 	import CipherTask from '$lib/components/ciphers/CipherTask.svelte'
 
@@ -88,6 +95,68 @@
 	}
 
 	let hintOpen = false
+
+	let ratingStars = 0
+	let ratingDetails = ''
+	$: {
+		if (cipher) {
+			ratingDetails = cipher.rating?.detail ?? ''
+			ratingStars = cipher.rating?.stars ?? 0
+		}
+	}
+
+	let submitPending = false
+	let submitResult: { success: boolean; message: string } | null = null
+	async function submitRating() {
+		if (submitPending) {
+			console.warn('Attempted to submit rating while another request is pending')
+			return
+		}
+		if (!cipher) {
+			console.warn('Attempted to submit rating for non-existent cipher')
+			return
+		}
+		;(submitPending = true), (submitResult = null)
+
+		const Rresult = await submitCipherRating(cipher.id, {
+			stars: ratingStars,
+			detail: ratingDetails,
+		} as RatingType)
+
+		if (Rresult.error) {
+			const result = Rresult as ErrorResponse
+			if (result.status == 429) {
+				submitResult = {
+					success: false,
+					message: 'Skúste trochu počkať, než odovzdáte ďalšie hodnotenie',
+				}
+			} else if (result.data) {
+				submitResult = {
+					success: false,
+					message:
+						result.data.details ??
+						result.data.message ??
+						`Nastala chyba pri odosielaní hodnotenia (D${result.status})`,
+				}
+			} else {
+				submitResult = {
+					success: false,
+					message: `Nastala chyba pri odosielaní hodnotenia (${result.status})`,
+				}
+			}
+		} else {
+			const result = Rresult as SuccessResponse<void>
+			if (result.status == 201) {
+				submitResult = { success: true, message: 'Hodnotenie bolo odoslané' }
+			} else if (result.status == 200) {
+				submitResult = { success: true, message: 'Hodnotenie bolo upravené' }
+			} else {
+				submitResult = { success: false, message: 'Server odpovedal s neznámym kódom' }
+			}
+		}
+
+		submitPending = false
+	}
 </script>
 
 <svelte:head>
@@ -407,8 +476,9 @@
 												<button
 													type="submit"
 													class="flex-none rounded-b-md md:rounded-r-md md:rounded-bl-none bg-neutral-50 dark:bg-neutral-700 border border-neutral-400 dark:border-neutral-500
-												px-4 py-2 hover:bg-neutral-200 dark:hover:bg-neutral-600 disabled:opacity-50 disabled:cursor-not-allowed z-10
-												transition-all duration-200 ease-in-out disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-700"
+													cursor-pointer
+															px-4 py-2 hover:bg-neutral-200 dark:hover:bg-neutral-600 disabled:opacity-50 disabled:cursor-not-allowed z-10
+															transition-all duration-200 ease-in-out disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-700"
 													on:click|preventDefault={submitAnswer}
 													disabled={!canSubmit ||
 														submitting ||
@@ -419,6 +489,58 @@
 													Odoslať
 												</button>
 											</div>
+										</form>
+									</div>
+								{:else}
+									<div class="flex flex-col items-center gap-1">
+										<span class="text-2xl font-bold mt-5">Hodnotenie</span>
+										<span class="text-lg">
+											Gratulujeme k vyriešeniu šifry!<br />
+										</span>
+										<span>
+											Radi by sme vedeli ako sa vám šifra páčila. Okrem hodnotenia v hviezdičkách
+											nám môžete aj napísať čo konkrétne sa vám na šifre (ne)páčilo.
+										</span>
+										<form class="contents" on:submit|preventDefault={submitRating}>
+											<Rating
+												rating={ratingStars}
+												on:rating={(r) => (ratingStars = r.detail.rating)}
+											/>
+											<textarea
+												class="text-lg font-bold pl-2 rounded w-full
+												bg-neutral-200 dark:bg-zinc-800 disabled:bg-zinc-350"
+												rows="4"
+												maxlength="2000"
+												value={ratingDetails}
+												on:input={(e) => (ratingDetails = Object(e.target).value)}
+											/>
+											<input
+												type="submit"
+												class="flex-none rounded-md bg-neutral-50 dark:bg-neutral-700 border border-neutral-400 dark:border-neutral-500
+												px-4 py-2 hover:bg-neutral-200 dark:hover:bg-neutral-600 disabled:opacity-50 disabled:cursor-not-allowed z-10
+												transition-all duration-200 ease-in-out disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-700"
+												value="Odoslať"
+												disabled={submitPending}
+											/>
+
+											{#if submitResult}
+												<div class="flex items-center gap-1" transition:slide>
+													{#if submitResult.success}
+														<Icon
+															icon="mdi:check"
+															class="w-8 h-8 text-green-500 dark:text-green-400"
+														/>
+														<span class="text-lg font-bold text-green-500 dark:text-green-400">
+															{submitResult.message}</span
+														>
+													{:else}
+														<Icon icon="mdi:close" class="w-8 h-8 text-red-500 dark:text-red-400" />
+														<span class="text-lg font-bold text-red-500 dark:text-red-400">
+															{submitResult.message}</span
+														>
+													{/if}
+												</div>
+											{/if}
 										</form>
 									</div>
 								{/if}

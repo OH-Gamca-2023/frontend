@@ -20,12 +20,19 @@ export interface Cipher {
 	end: Date
 	has_ended: boolean
 
+	rating?: Rating
+
 	data: {
 		solved: boolean
 		after_hint: boolean
 		attempts: number
 	} | null
 	submissions: Promise<Submission[]>
+}
+
+export interface Rating {
+	stars: number
+	detail: string
 }
 
 export interface Submission {

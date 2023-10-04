@@ -97,7 +97,11 @@ export async function makeApiRequest<T>(
 		if (response.status)
 			if (response.status === 204) return { status: 204 } as SuccessResponse<never>
 			else if (response.ok) {
-				const data = await response.json()
+				let data = undefined
+				try {
+					data = await response.json()
+				} catch (e) { /* ignore as some endpoints return no data */ }
+
 				return { status: response.status, data, error: false } as SuccessResponse<T>
 			} else {
 				if (response.status == 401) {
@@ -114,7 +118,11 @@ export async function makeApiRequest<T>(
 						}
 					}) // Run login check independently from the request
 				}
-				const data = await response.json()
+				let data = undefined
+				try {
+					data = await response.json()
+				} catch (e) { /* ignore */ }
+
 				return {
 					status: response.status,
 					error: true,
