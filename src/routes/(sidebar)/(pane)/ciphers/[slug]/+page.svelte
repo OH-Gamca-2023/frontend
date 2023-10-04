@@ -148,7 +148,7 @@
 			const result = Rresult as SuccessResponse<void>
 			if (result.status == 201) {
 				submitResult = { success: true, message: 'Hodnotenie bolo odoslané' }
-			} else if (result.status == 200) {
+			} else if (result.status == 204) {
 				submitResult = { success: true, message: 'Hodnotenie bolo upravené' }
 			} else {
 				submitResult = { success: false, message: 'Server odpovedal s neznámym kódom' }
