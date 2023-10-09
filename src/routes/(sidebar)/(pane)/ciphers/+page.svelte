@@ -6,16 +6,12 @@
 
 	$: listCiphers = Object.values($ciphers)
 		.sort((a, b) => {
-			// prioritize ciphers with hint, then started and then ended
-			if (a.hint_visible && !b.hint_visible) return -1
-			if (!a.hint_visible && b.hint_visible) return 1
-
-			if (a.started && !b.started) return -1
-			if (!a.started && b.started) return 1
-
 			if (a.has_ended && !b.has_ended) return 1
-			if (!a.has_ended && b.has_ended) return -1
-
+			else if (!a.has_ended && b.has_ended) return -1
+			else if (!a.has_ended && !b.has_ended) {
+				if (a.hint_visible && !b.hint_visible) return 1
+				else if (!a.hint_visible && b.hint_visible) return -1
+			}
 			return a.id - b.id
 		})
 		.filter((cipher) => cipher.started) // only show started ciphers
