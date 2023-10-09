@@ -52,11 +52,8 @@
 		submissions.filter((s) => s.time.getTime() > today).length >=
 		(cipher?.max_submissions_per_day ?? 0)
 	$: canSubmit =
-		cipher &&
 		!solved &&
 		!maxSubmissionsReached &&
-		cipher.started &&
-		cipher.has_ended &&
 		(!cipher ? false : submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
 
 	let submitting = false
@@ -438,6 +435,11 @@
 										<span class="text-2xl font-bold mt-5">Odoslať riešenie</span>
 										<form>
 											<label for="answer" class="text-sm font-bold text-red-500 dark:text-red-400">
+												{#if !cipher.started}
+													Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
+												{:else if cipher.has_ended}
+													Nemôžete odoslať riešenie, keďže šifra už skončila.
+												{/if}
 												{#if !canSubmit}
 													{#if maxSubmissionsReached}
 														Dnes ste už odoslali maximálny počet riešení ({cipher.max_submissions_per_day}).
@@ -447,10 +449,6 @@
 																timeAgo.format(nextSubmitTime),
 															).replace('teraz', 'o menej ako minútu')}.
 														{/key}
-													{:else if !cipher.started}
-														Nemôžete odoslať riešenie, keďže šifra ešte nezačala.
-													{:else if cipher.has_ended}
-														Nemôžete odoslať riešenie, keďže šifra už skončila.
 													{:else}
 														Nastala interná chyba, kvôli ktorej nemôžete odoslať riešenie. Skúste
 														prosím obnoviť stránku.<br />
