@@ -52,8 +52,11 @@
 		submissions.filter((s) => s.time.getTime() > today).length >=
 		(cipher?.max_submissions_per_day ?? 0)
 	$: canSubmit =
+		cipher &&
 		!solved &&
 		!maxSubmissionsReached &&
+		cipher.started &&
+		cipher.has_ended &&
 		(!cipher ? false : submissions.length === 0 || nextSubmitTime < $subSeconds.getTime())
 
 	let submitting = false
