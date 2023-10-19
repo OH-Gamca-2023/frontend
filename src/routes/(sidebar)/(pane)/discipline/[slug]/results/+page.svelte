@@ -41,8 +41,9 @@
 							.filter((p) => p.place === place)
 							.map(
 								(p) =>
-									`${p.clazz.name.replace(' ', '&nbsp;')} 
-									<span class="italic">${p.detail ? `(${p.detail})` : ''}</span>`,
+									`${p.clazz.name.replace(' ', '&nbsp;')}<span class="italic">${
+										p.detail ? `&nbsp;(${p.detail.replaceAll(' ', '&nbsp;')})` : ''
+									}</span>`,
 							)
 							.join(', ')
 				}
