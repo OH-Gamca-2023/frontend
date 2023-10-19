@@ -39,7 +39,11 @@
 					parsed[amount > 1 ? `${place}. - ${place + amount - 1}.` : `${place}.`] =
 						result.placements
 							.filter((p) => p.place === place)
-							.map((p) => p.clazz.name.replace(' ', '&nbsp;'))
+							.map(
+								(p) =>
+									`${p.clazz.name.replace(' ', '&nbsp;')} 
+									<span class="italic">${p.detail ? `(${p.detail})` : ''}</span>`,
+							)
 							.join(', ')
 				}
 
@@ -137,6 +141,11 @@
 														</span>
 														<span class="pl-3">
 															{placement.clazz.name}
+															{#if placement.detail}
+																<span class="italic">
+																	{placement.detail}
+																</span>
+															{/if}
 														</span>
 													</div>
 												{/each}

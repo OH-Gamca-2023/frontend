@@ -46,6 +46,7 @@ export interface Placement {
 	clazz: Clazz
 	place: number
 	participated: boolean
+	detail: string | null
 }
 
 export interface Sidebar {

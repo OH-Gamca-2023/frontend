@@ -1,5 +1,5 @@
 import { userState } from '$lib/state'
-import type { Sidebar, Results, Submission, SuccessResponse, User, Discipline, Rating } from '$lib/types'
+import type { Sidebar, Results, Submission, SuccessResponse, User, Discipline, Rating, Placement } from '$lib/types'
 import { get } from 'svelte/store'
 import { categories, clazzes, disciplines, grades } from './models'
 import { makeApiRequest } from './requests'
@@ -331,7 +331,8 @@ export async function getDisciplineResults(disciplineId: string) {
 						},
 						place: p.place,
 						participated: p.participated,
-					}
+						detail: p.detail ?? null
+					} as Placement
 				}),
 				group_identical: result.group_identical ?? true,
 			} as Results)
