@@ -95,6 +95,9 @@ function load(recursive = false) {
 				const data = await resp.json()
 				serverOverrides = {}
 				for (const obj of data) {
+					try {
+						obj.value = JSON.parse(obj.value)
+					} catch (e) { /* ignored */ }
 					serverOverrides[obj.key] = obj.value
 				}
 				saveServerOverrides()
