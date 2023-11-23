@@ -5,6 +5,8 @@
 	import { gfmPlugin } from 'svelte-exmarkdown/gfm'
 	import { highlightPlugin } from '$lib/prism'
 	import Markdown from 'svelte-exmarkdown'
+	import rehypeRaw from 'rehype-raw'
+	import type { Plugin } from 'svelte-exmarkdown'
 
 	import { darkTheme } from '$lib/data/settings'
 	import { posts } from '$lib/api/models'
@@ -21,6 +23,12 @@
 	$: browser && post?.redirect && goto(post.redirect)
 
 	$: authorFullName = post?.author.first_name + ' ' + post?.author.last_name
+
+	$: plugins = (
+		post?.safe
+			? [{ rehypePlugin: [rehypeRaw] }, gfmPlugin, highlightPlugin]
+			: [gfmPlugin, highlightPlugin]
+	) as Plugin[]
 </script>
 
 <svelte:head>
@@ -75,7 +83,7 @@
 				</div>
 			{:else}
 				<div class="prose prose-zinc dark:prose-invert max-w-full">
-					<Markdown md={post.content} plugins={[gfmPlugin, highlightPlugin]} />
+					<Markdown md={post.content} {plugins} />
 				</div>
 			{/if}
 		</div>

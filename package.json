@@ -45,6 +45,7 @@
 		"javascript-time-ago": "^2.5.9",
 		"prism-svelte": "^0.5.0",
 		"prismjs": "^1.29.0",
+		"rehype-raw": "^7.0.0",
 		"svelte-exmarkdown": "^2.1.0",
 		"svelte-toasts": "^1.1.2",
 		"vite-plugin-iso-import": "^1.0.0"
