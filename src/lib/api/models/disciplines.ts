@@ -41,7 +41,7 @@ class DisciplineModel extends PartialModel<Discipline> {
 					location: rawDiscipline.location,
 
 					get category() {
-						return get(categories)[rawDiscipline.category]
+						return rawDiscipline.category !== null ? get(categories)[rawDiscipline.category] : null
 					},
 					get target_grades() {
 						return rawDiscipline.target_grades.map((grade: any) => get(grades)[grade])

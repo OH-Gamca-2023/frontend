@@ -323,6 +323,9 @@ export async function getDisciplineResults(disciplineId: string) {
 				get discipline() {
 					return disciplines.get(result.discipline)
 				},
+				get categories() {
+					return result.categories.map((c: any) => categories.get(c))
+				},
 
 				placements: result.placements.map((p: any) => {
 					return {

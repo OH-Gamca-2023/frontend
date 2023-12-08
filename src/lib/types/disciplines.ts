@@ -19,7 +19,7 @@ export interface Discipline {
 	end_time: Date | null
 	location: string
 
-	category: Category
+	category: Category | null
 	target_grades: Grade[]
 
 	date_published: boolean
@@ -37,6 +37,7 @@ export interface Results {
 	name: string
 	grades: Grade[]
 	discipline: Discipline
+	categories: Category[]
 
 	placements: Placement[]
 	group_identical: boolean

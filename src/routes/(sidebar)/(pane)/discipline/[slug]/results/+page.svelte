@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Results } from '$lib/types'
 	import type { PageData } from './$types'
-	import { disciplines } from '$lib/api/models'
+	import { categories, disciplines } from '$lib/api/models'
 	import Taglist from '$lib/components/tags/Taglist.svelte'
 	import { getDisciplineResults } from '$lib/api'
 	import Icon from '$lib/components/Icon.svelte'
@@ -117,30 +117,30 @@
 											{#if result.name}
 												<span class="text-2xl font-bold">{result.name}</span>
 											{/if}
-											<Taglist
-												tags={result.grades.map((grade) => grade.name)}
-												class="justify-center"
-											/>
+											<div class="flex pt-2 flex-wrap gap-2 justify-center">
+												<Taglist tags={result.grades.map((grade) => grade.name)} wrapper={false} />
+												{#if result.categories}
+													<Taglist categories={result.categories} wrapper={false} />
+												{/if}
+											</div>
 										</div>
 										<div class="flex flex-col justify-center items-center">
-											{#if result.group_identical && result.parsed}
-												{#each Object.entries(result.parsed) as [place, clazzes]}
-													<div class="flex justify-center items-center text-xl">
-														<span class="font-bold whitespace-nowrap">
+											<div class="grid text-xl grid-cols-[min-content_1fr]">
+												{#if result.group_identical && result.parsed}
+													{#each Object.entries(result.parsed) as [place, clazzes]}
+														<span class="my-auto text-right font-bold mr-3 whitespace-nowrap">
 															{place}
 														</span>
-														<span class="pl-3">
+														<span>
 															{@html clazzes}
 														</span>
-													</div>
-												{/each}
-											{:else}
-												{#each result.placements.filter((p) => p.participated) as placement}
-													<div class="flex justify-center items-center text-xl">
-														<span class="font-bold">
+													{/each}
+												{:else}
+													{#each result.placements.filter((p) => p.participated) as placement}
+														<span class="my-auto text-right font-bold mr-3 whitespace-nowrap">
 															{placement.place}.
 														</span>
-														<span class="pl-3">
+														<span>
 															{placement.clazz.name}
 															{#if placement.detail}
 																<span class="italic">
@@ -148,9 +148,9 @@
 																</span>
 															{/if}
 														</span>
-													</div>
-												{/each}
-											{/if}
+													{/each}
+												{/if}
+											</div>
 											<div
 												class="flex flex-col justify-center items-center font-semibold pt-3 text-lg"
 											>

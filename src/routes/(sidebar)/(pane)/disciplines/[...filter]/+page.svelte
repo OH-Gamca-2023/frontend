@@ -23,7 +23,9 @@
 		let list = Object.values($rawDisciplines)
 		if (list) {
 			if (filter.categories.length > 0) {
-				list = list.filter((e) => filter.categories.includes(e?.category?.id) ?? false)
+				list = list.filter(
+					(e) => e?.category !== null && (filter.categories.includes(e?.category?.id) ?? false),
+				)
 			}
 
 			if (filter.grades.length > 0) {

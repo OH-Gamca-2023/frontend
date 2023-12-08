@@ -1,10 +1,11 @@
 <script lang="ts">
-	import type { Discipline, Post } from '$lib/types'
+	import type { Category, Discipline, Post } from '$lib/types'
 	import Tag from './Tag.svelte'
 
 	export let post: Post | undefined = undefined
 	export let discipline: Partial<Discipline> | undefined = undefined
 	export let tags: string[] | undefined = undefined
+	export let categories: Category[] | undefined = undefined
 
 	export let wrapper = true
 
@@ -53,6 +54,17 @@
 	{#if tags}
 		{#each tags as tag}
 			<Tag name={tag} {alwaysBig} {alwaysSmall} {xs} />
+		{/each}
+	{/if}
+	{#if categories}
+		{#each categories as category}
+			<Tag
+				name={category?.name}
+				styleClass={category?.calendarClass}
+				{alwaysBig}
+				{alwaysSmall}
+				{xs}
+			/>
 		{/each}
 	{/if}
 	<slot />
