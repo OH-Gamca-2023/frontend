@@ -25,6 +25,9 @@
 		</a>
 	</div>
 	<div class="flex items-center">
+		<a href="/dev" class="mr-4">
+			<Icon icon="mdi:application-brackets" class="h-6 w-6" />
+		</a>
 		<a href="https://2023.oh.gamca.sk/link/photos" target="_blank" rel="noopener noreferrer">
 			<Icon icon="bi:images" class="h-6 w-6" />
 		</a>
