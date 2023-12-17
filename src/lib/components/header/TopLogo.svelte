@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { darkTheme } from '$lib/data/settings'
+	import Sponsors from '../footer/Sponsors.svelte'
 </script>
 
-<div class="h-52 flex w-full align-middle justify-center fixed -z-20 cf-bg" class:dark={$darkTheme}>
-	<div class="flex justify-center h-52 w-80" id="top-logo-wrap">
+<div
+	class="h-52 flex w-full align-middle justify-between fixed -z-20 pr-5 cf-bg"
+	class:dark={$darkTheme}
+>
+	<div class="flex justify-center flex-grow h-52" id="top-logo-wrap">
 		<img src="/assets/logos/vybuch/nobg_color.svg" alt="Logo" class="-my-10" id="top-logo" />
+	</div>
+	<div class="hidden lmd:block">
+		<Sponsors />
 	</div>
 </div>
 
