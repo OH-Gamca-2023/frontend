@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<div class="h-52 relative" id="spacer" />
+<div class="h-52 relative pointer-events-none" id="spacer" />
 
 <style lang="scss">
 	:global(.cf-bg) {
