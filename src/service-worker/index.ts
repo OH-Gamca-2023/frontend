@@ -11,7 +11,7 @@ import { build, files, prerendered, version } from '$service-worker'
 const CACHE_NAME = `cache-${version}`
 
 // Create a list of all the files we want to cache
-const CACHE_FILES = [...build, ...files, ...prerendered.map((page) => `${page}index.html`), '/fallback.html']
+const CACHE_FILES = [...build, ...files, ...prerendered.map((page) => `${page}index.html`), '/index.html']
 
 const IGNORED_OBJECTS = [
 	'robots.txt',
@@ -67,12 +67,12 @@ sw.addEventListener('fetch', (event) => {
 			const cache = await caches.open(CACHE_NAME)
 			const response = await cache.match(`${url.pathname}index.html`)
 			if(response) return response
-			return (await caches.match('/fallback.html')) || Response.error()
+			return (await caches.match('/index.html')) || Response.error()
 		})())
 	} else if(event.type === 'navigate') {
 		event.respondWith((async () => {
 			const cache = await caches.open(CACHE_NAME)
-			const response = await cache.match('/fallback.html')
+			const response = await cache.match('/index.html')
 			if(response) return response
 			return Response.error()
 		})())

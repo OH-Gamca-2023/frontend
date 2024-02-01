@@ -7,6 +7,7 @@
 	import UserMenu from './UserMenu.svelte'
 
 	let categoriesOpen = false
+	$: categoriesOpenUpdated = (categoriesOpen || !categoriesOpen) ? Date.now() : 0 
 	let sidebarOpen = false
 
 	$: categoriesOpen = sidebarOpen && false
@@ -14,6 +15,7 @@
 	$: categoriesIterable = Object.values($categories)
 
 	function handleBodyClick(event: MouseEvent) {
+		if (categoriesOpenUpdated + 500 > Date.now()) return
 		if (!sidebarOpen && !(event.target as HTMLElement).closest('#categories')) {
 			categoriesOpen = false
 		}

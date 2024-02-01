@@ -3,6 +3,7 @@ import { browser } from '$app/environment'
 import { addReconnectListener } from '../connection'
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store'
 import { getAccessToken } from '$lib/state/token'
+import { collectedEndpoints } from '$lib/api/collected'
 
 export type ModelParser<T> = (data: unknown) => T
 export type ModelType = 'list' | 'partial' | 'single'
@@ -170,7 +171,8 @@ export class LoadableModel<T> implements Readable<{ [key: string]: T & { fromSer
 				}
 			}
 
-			const response = await fetch(getApiHost() + url, { method: 'GET', headers })
+			// const response = await fetch(getApiHost() + url, { method: 'GET', headers })
+			const response = new Response(JSON.stringify(collectedEndpoints['/api'+url]), { status: 200 })
 
 			if (response.status)
 				if (response.ok) {
@@ -376,7 +378,8 @@ export class PartialModel<T> extends LoadableModel<T> {
 				}
 			}
 
-			const response = await fetch(getApiHost() + url, { method: 'GET', headers })
+			// const response = await fetch(getApiHost() + url, { method: 'GET', headers })
+			const response = new Response(JSON.stringify(collectedEndpoints['/api'+url]), { status: 200 })
 
 			if (response.status)
 				if (response.ok) {

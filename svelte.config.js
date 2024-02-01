@@ -9,7 +9,7 @@ const config = {
 
 	kit: {
 		adapter: staticAdapter({
-			fallback: 'fallback.html',
+			fallback: 'index.html',
 		}),
 		serviceWorker: {
 			register: false

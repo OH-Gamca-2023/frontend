@@ -1,7 +1,6 @@
 import { derived, readable, type Writable } from 'svelte/store'
 import type { Settings } from './types'
 import { browser } from '$app/environment'
-import { getApiHost } from '../api'
 import { Buffer } from 'buffer'
 
 // Contains default values for settings
@@ -87,25 +86,30 @@ function load(recursive = false) {
 	// assigned in 2 steps to ensure that server overrides are not overridden by local overrides
 
 	if (browser && !recursive) {
-		fetch(getApiHost() + '/data/settings/', {
-			method: 'GET',
-		})
-			.then(async (resp) => {
-				if (!resp.ok) throw new Error('Failed to fetch settings')
-				const data = await resp.json()
-				serverOverrides = {}
-				for (const obj of data) {
-					try {
-						obj.value = JSON.parse(obj.value)
-					} catch (e) { /* ignored */ }
-					serverOverrides[obj.key] = obj.value
-				}
-				saveServerOverrides()
-				load(true)
-			})
-			.catch((e) => {
-				console.error('Failed to load settings from server', e)
-			})
+		// Server settings overrides disabled for archivation purposes 
+		serverOverrides = {}
+		saveServerOverrides()
+		load(true)
+
+		// fetch(getApiHost() + '/data/settings/', {
+		// 	method: 'GET',
+		// })
+		// 	.then(async (resp) => {
+		// 		if (!resp.ok) throw new Error('Failed to fetch settings')
+		// 		const data = await resp.json()
+		// 		serverOverrides = {}
+		// 		for (const obj of data) {
+		// 			try {
+		// 				obj.value = JSON.parse(obj.value)
+		// 			} catch (e) { /* ignored */ }
+		// 			serverOverrides[obj.key] = obj.value
+		// 		}
+		// 		saveServerOverrides()
+		// 		load(true)
+		// 	})
+		// 	.catch((e) => {
+		// 		console.error('Failed to load settings from server', e)
+		// 	})
 	}
 	for (const [key, value] of Object.entries(values)) {
 		settings[key].value = value

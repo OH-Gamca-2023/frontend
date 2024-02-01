@@ -4,6 +4,7 @@ import { get } from 'svelte/store'
 import { getApiHost } from '$lib/data/api'
 import type { ApiResponse, RequestMethod, ErrorResponse, SuccessResponse } from '$lib/types'
 import { toast } from '$lib/utils/toasts'
+import { collectedEndpoints } from './collected'
 
 async function internalApiRequest(
 	url: string,
@@ -81,6 +82,41 @@ async function internalApiRequest(
 	return resp
 }
 
+async function collectedApiRequest(
+	url: string,
+	method: RequestMethod
+): Promise<Response> {
+	if (method !== 'GET') return new Response(JSON.stringify({ error: 'Only GET requests are supported' }), {
+		status: 405,
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	})
+
+
+	if (url.startsWith('/api')) url = url.slice(4)
+	if (!url.startsWith('/')) url = '/' + url
+	if (!url.endsWith('/')) url += '/'
+	url = '/api' + url
+	
+	if (collectedEndpoints[url]) {
+		return new Response(JSON.stringify(collectedEndpoints[url]), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+	} else {
+		console.warn('Endpoint not found', url)
+		return new Response(JSON.stringify({ error: `Endpoint ${url} not found` }), {
+			status: 404,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+	}
+}
+
 /**
  * Don't use this function directly, use the endpoints or LoadableModel instead.
  */
@@ -92,7 +128,8 @@ export async function makeApiRequest<T>(
 	ignore401 = false,
 ): Promise<ApiResponse<T>> {
 	try {
-		const response = await internalApiRequest(url, method, body, auth, true, ignore401)
+		// const response = await internalApiRequest(url, method, body, auth, true, ignore401)
+		const response = await collectedApiRequest(url, method)
 
 		if (response.status)
 			if (response.status === 204) return { status: 204 } as SuccessResponse<never>

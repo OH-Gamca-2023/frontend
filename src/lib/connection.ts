@@ -2,6 +2,7 @@ import { getApiHost } from '$lib/data/api'
 import { toast } from '$lib/utils/toasts'
 import { get } from 'svelte/store'
 import { getAccessToken, setAccessToken } from './state/token'
+import { collectedEndpoints } from './api/collected'
 
 type Check = {
 	time: number
@@ -50,7 +51,8 @@ async function runCheck() {
 
 		if (getAccessToken()) headers['Authorization'] = 'Bearer ' + getAccessToken()
 
-		const serverResult = await fetch(getApiHost() + '/status/', { method: 'GET', headers })
+		// const serverResult = await fetch(getApiHost() + '/status/', { method: 'GET', headers })
+		const serverResult = new Response(JSON.stringify(collectedEndpoints['/api/status']), { status: 200 })
 		if (serverResult.status === 200) {
 			checkResult.server = true
 		} else if (serverResult.status === 401) {
