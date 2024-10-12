@@ -80,10 +80,4 @@
 	rozumné miesto a ja vám to môžem ukázať.
 </div>
 
-<div class="pt-5 mr-auto">
-	Programovanie tejto stránky bola zaujímavá cesta, kým sa stránka dostala do stavu, v akom je
-	teraz. V mnohých momentoch som mal chuť to všetko zahodiť, vykašľať sa na to a použiť iba nejaký
-	Wordpress, ale nakoniec som to dokončil a som za to rád. Dúfam, že sa vám stránka páčila a že
-	úspešne splnila svoj účel.
-</div>
 <span class="pt-2 text-sm mr-auto"> ~ Jakub Šiagi</span>

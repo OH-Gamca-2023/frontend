@@ -16,7 +16,7 @@
 	$: usedHeaders = useShortHeaders ? headers.map((h) => h.shortName) : headers.map((h) => h.name)
 
 	let now = new Date()
-	export let year = now.getFullYear()
+	export let year = 2023
 	export let displayedMonth = now.getMonth()
 
 	let days: Day[][] = []
